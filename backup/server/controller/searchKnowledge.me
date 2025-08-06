@@ -1,0 +1,502 @@
+import { Request, Response } from "express";
+import { connectMongo } from "../lib/connectDb";
+import { prompts } from "../lib/constant";
+import { generateEmbedding } from "../lib/generateEmbedding";
+import openai from "../lib/openai";
+import { OpenAIStream } from "../lib/openaiStream";
+
+function cosineSimilarity(a: number[], b: number[]): number {
+  const dotProduct = a.reduce((sum, aVal, index) => sum + aVal * b[index]);
+  const normA = Math.sqrt(a.reduce((sum, aVal) => sum + aVal * aVal, 0));
+  const normB = Math.sqrt(b.reduce((sum, bVal) => sum + bVal * bVal, 0));
+  return dotProduct / (normA * normB);
+}
+
+async function generateFallbackResponse(query: string): Promise<string> {
+  try {
+    const completion = await openai.completions.create({
+      model: "gpt-3.5-turbo-instruct",
+      prompt: query,
+      max_tokens: 150,
+    });
+    return completion.choices[0].text.trim();
+  } catch (error: any) {
+    throw new Error(
+      "Error generating fallback response: " + (error.message || error)
+    );
+  }
+}
+// async function searchKnowledgeBase(req: Request, res: Response): Promise<void> {
+//   const {
+//     query,
+//     bloomLevel,
+//     classSize,
+//     classesSocioEconomic,
+//     curriculum,
+//     location,
+//     schoolLevel,
+//     studentAge,
+//     subSchoolLevel,
+//     subject,
+//     subjectDicipline,
+//     term,
+//     termTheme,
+//     timeAvailable,
+//     week,
+//     yearClass,
+//   } = req.body;
+//   // if (!query) {
+//   //   res.status(400).send("query is required");
+//   // }
+//   try {
+//     const queryEmbedding = await generateEmbedding(
+//       [
+//         bloomLevel,
+//         classSize,
+//         classesSocioEconomic,
+//         curriculum,
+//         location,
+//         schoolLevel,
+//         studentAge,
+//         subSchoolLevel,
+//         subject,
+//         subjectDicipline,
+//         term,
+//         termTheme,
+//         timeAvailable,
+//         week,
+//         yearClass,
+//       ]
+//         .filter(Boolean)
+//         .join(" ")
+//     );
+//     // const queryEmbedding = await generateEmbedding(query);
+//     const collection = await connectMongo();
+//     const documents = await collection.find({}).toArray();
+//     if (documents.length === 0) {
+//       res.status(404).send("No documents found in the collection");
+//     }
+//     const similarites = documents.map((doc: any) => {
+//       const similarity = cosineSimilarity(queryEmbedding, doc.embedding);
+//       return {
+//         ...doc,
+//         similarity,
+//       };
+//     });
+//     similarites.sort((a: any, b: any) => b.similarity - a.similarity);
+//     if (similarites.length === 0 || similarites[0].similarity < 0.5) {
+//       const gptResponse = await generateFallbackResponse(query);
+//       res.status(200).send(`gptResponse`);
+//     }
+//     // return similarites[0];
+//     // const prompt = {
+//     //   Discipline: similarites[0].Discipline,
+//     //   subject: similarites[0].Subjects,
+//     //   class: similarites[0].Class,
+//     //   Description: similarites[0].Description,
+//     //   source: similarites[0].source,
+//     // };
+//     const prompt = `${prompts.lessonPlanPrompts.prompt}\n
+//       Discipline: ${similarites[0].Discipline},
+//       subject: ${similarites[0].Subjects},
+//       class: ${similarites[0].Class},
+//       Description: ${similarites[0].Description},
+//       source: ${similarites[0].source},`;
+//     const gptResponse = await generateFallbackResponse(prompt);
+//     res.status(200).send(gptResponse);
+//     // res.status(200).send(similarites[0]);
+//   } catch (error: any) {
+//     res.status(500).send("Error during search: " + (error.message || error));
+//   }
+// }
+// async function searchKnowledgeBase(req: Request, res: Response) {
+//   const {
+//     query,
+//     bloomLevel,
+//     classSize,
+//     classesSocioEconomic,
+//     curriculum,
+//     location,
+//     schoolLevel,
+//     studentAge,
+//     subSchoolLevel,
+//     subject,
+//     subjectDicipline,
+//     term,
+//     termTheme,
+//     timeAvailable,
+//     week,
+//     yearClass,
+//   } = req.body;
+
+//   try {
+//     // Combine all searchable fields into one query string for embedding
+//     const searchQuery = [
+//       bloomLevel,
+//       classSize,
+//       classesSocioEconomic,
+//       curriculum,
+//       location,
+//       schoolLevel,
+//       studentAge,
+//       subSchoolLevel,
+//       subject,
+//       subjectDicipline,
+//       term,
+//       termTheme,
+//       timeAvailable,
+//       week,
+//       yearClass,
+//     ]
+//       .filter(Boolean)
+//       .join(" ");
+
+//     const queryEmbedding = await generateEmbedding(searchQuery);
+
+//     const collection = await connectMongo();
+//     const documents = await collection.find({}).toArray();
+
+//     if (!documents.length) {
+//       res.status(404).send("No documents found");
+//       return;
+//     }
+
+//     const similarites = documents
+//       .map((doc: any) => ({
+//         ...doc,
+//         similarity: cosineSimilarity(queryEmbedding, doc.embedding),
+//       }))
+//       .sort((a: any, b: any) => b.similarity - a.similarity);
+
+//     const best = similarites[0];
+
+//     const fullPrompt = `
+// Bloom Level: ${bloomLevel}
+// Class Size: ${classSize}
+// Socio-Economic: ${classesSocioEconomic}
+// Curriculum: ${curriculum}
+// Location: ${location}
+// School Level: ${schoolLevel}
+// Student Age: ${studentAge}
+// Sub School Level: ${subSchoolLevel}
+// Subject: ${subject}
+// Subject Discipline: ${subjectDicipline}
+// Term: ${term}
+// Term Theme: ${termTheme}
+// Time Available: ${timeAvailable}
+// Week: ${week}
+// Year Class: ${yearClass}
+// Top Match Description: ${best?.Description || "N/A"}
+// Top Match Source: ${best?.source || "N/A"}
+// `;
+
+//     const stream = await OpenAIStream(fullPrompt);
+//     const decoder = new TextDecoder();
+
+//     res.setHeader("Content-Type", "text/event-stream");
+//     res.setHeader("Cache-Control", "no-cache");
+//     res.setHeader("Connection", "keep-alive");
+
+//     for await (const chunk of stream) {
+//       const content = chunk.choices?.[0]?.delta?.content;
+//       if (content) {
+//         res.write(content);
+//       }
+//     }
+
+//     res.end();
+//   } catch (error: any) {
+//     res.status(500).send("Error: " + (error.message || error));
+//   }
+// }
+async function searchKnowledgeBase(req: Request, res: Response): Promise<void> {
+  const {
+    query,
+    bloomLevel,
+    classSize,
+    classesSocioEconomic,
+    curriculum,
+    location,
+    schoolLevel,
+    studentAge,
+    subSchoolLevel,
+    subject,
+    subjectDicipline,
+    term,
+    termTheme,
+    timeAvailable,
+    week,
+    yearClass,
+  } = req.body;
+
+  // Set headers for streaming response
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+
+  try {
+    const queryEmbedding = await generateEmbedding(
+      [
+        bloomLevel,
+        classSize,
+        classesSocioEconomic,
+        curriculum,
+        location,
+        schoolLevel,
+        studentAge,
+        subSchoolLevel,
+        subject,
+        subjectDicipline,
+        term,
+        termTheme,
+        timeAvailable,
+        week,
+        yearClass,
+      ]
+        .filter(Boolean)
+        .join(" ")
+    );
+
+    const collection = await connectMongo();
+    const documents = await collection.find({}).toArray();
+
+    if (documents.length === 0) {
+      res.status(404);
+      res.write(
+        `data: ${JSON.stringify({
+          error: "No documents found in the collection",
+        })}\n\n`
+      );
+      res.end(); // Terminate the response stream
+      return;
+    }
+
+    const similarites = documents.map((doc: any) => {
+      const similarity = cosineSimilarity(queryEmbedding, doc.embedding);
+      return {
+        ...doc,
+        similarity,
+      };
+    });
+
+    similarites.sort((a: any, b: any) => b.similarity - a.similarity);
+
+    let prompt: string;
+    if (similarites.length === 0 || similarites[0].similarity < 0.5) {
+      prompt = query;
+    } else {
+      prompt = `${prompts.lessonPlanPrompts.prompt}\n
+        Discipline: ${similarites[0].Discipline},
+        subject: ${similarites[0].Subjects},
+        class: ${similarites[0].Class},
+        Description: ${similarites[0].Description},
+        source: ${similarites[0].source},`;
+    }
+
+    const stream = await OpenAIStream(prompt);
+
+    for await (const chunk of stream) {
+      // Write each streamed chunk to the response
+      res.write(chunk.choices?.[0]?.delta?.content || "");
+    }
+    res.end();
+  } catch (error: any) {
+    res.status(500);
+    res.write(
+      `data: ${JSON.stringify({
+        error:
+          "Server error during search: " + (error.message || "Unknown error"),
+      })}\n\n`
+    );
+    res.end(); // Important: Terminate the response stream on error
+  }
+}
+
+export { searchKnowledgeBase };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { OpenAIEmbeddings } from "@langchain/openai";
+import { MongoDBAtlasVectorSearch } from "@langchain/mongodb";
+import { MongoClient } from "mongodb";
+import { ChatOpenAI } from "@langchain/openai";
+import { StringOutputParser } from "@langchain/core/output_parsers";
+import { RunnableSequence } from "@langchain/core/runnables";
+import { PromptTemplate } from "@langchain/core/prompts";
+
+import { Request, Response } from "express";
+import { prompts } from "../lib/constant";
+
+async function searchKnowledgeBase(req: Request, res: Response): Promise<void> {
+  const {
+    query,
+    bloomLevel,
+    classSize,
+    classesSocioEconomic,
+    curriculum,
+    location,
+    schoolLevel,
+    studentAge,
+    subSchoolLevel,
+    subject,
+    subjectDicipline,
+    term,
+    termTheme,
+    timeAvailable,
+    week,
+    yearClass,
+  } = req.body as {
+    query?: string;
+    bloomLevel?: string;
+    classSize?: string;
+    classesSocioEconomic?: string;
+    curriculum?: string;
+    location?: string;
+    schoolLevel?: string;
+    studentAge?: string;
+    subSchoolLevel?: string;
+    subject?: string;
+    subjectDicipline?: string;
+    term?: string;
+    termTheme?: string;
+    timeAvailable?: string;
+    week?: string;
+    yearClass?: string;
+  };
+
+  // Set headers for streaming response
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+
+  try {
+    // Initialize MongoDB connection
+    const client = new MongoClient(process.env.MONGODB_URI!);
+    await client.connect();
+
+    const db = client.db(process.env.MONGODB_DATABASE);
+    const collection = db.collection(process.env.DB_NAME!);
+
+    // Create vector store
+    const vectorStore = new MongoDBAtlasVectorSearch(
+      new OpenAIEmbeddings({
+        modelName: "text-embedding-3-small", // or your preferred embedding model
+      }),
+      {
+        collection,
+        indexName: "vector_index", // your vector index name
+        textKey: "text", // the field containing the text
+        embeddingKey: "embedding", // the field containing the embedding
+      }
+    );
+
+    // Generate query from all non-empty parameters
+    const searchQuery = [
+      bloomLevel,
+      classSize,
+      classesSocioEconomic,
+      curriculum,
+      location,
+      schoolLevel,
+      studentAge,
+      subSchoolLevel,
+      subject,
+      subjectDicipline,
+      term,
+      termTheme,
+      timeAvailable,
+      week,
+      yearClass,
+    ]
+      .filter(Boolean)
+      .join(" ");
+
+    // Perform similarity search
+    const results = await vectorStore.similaritySearch(searchQuery, 3, {
+      preFilter: {
+        // Add any MongoDB filter conditions here if needed
+        // For example: schoolLevel: "High School"
+      },
+    });
+
+    if (results.length === 0) {
+      res.status(404);
+      res.write(
+        `data: ${JSON.stringify({
+          error: "No documents found in the collection",
+        })}\n\n`
+      );
+      res.end();
+      return;
+    }
+
+    // Initialize LLM with streaming enabled
+    const model = new ChatOpenAI({
+      modelName: "gpt-4", // or your preferred model
+      temperature: 0.7,
+      streaming: true,
+    });
+
+    // Create prompt template
+    const promptTemplate = PromptTemplate.fromTemplate(`
+      {prompt}
+
+      Based on the following context:
+      {context}
+
+      Generate a comprehensive response that addresses the original query: {query}
+    `);
+
+    // Prepare context from search results
+    const context = results.map((doc) =>
+      `Discipline: ${doc.metadata.Discipline},
+       Subject: ${doc.metadata.Subjects},
+       Class: ${doc.metadata.Class},
+       Description: ${doc.metadata.Description},
+       Source: ${doc.metadata.source}`
+    ).join("\n\n");
+
+    // Create the chain
+    const chain = RunnableSequence.from([
+      {
+        prompt: () => prompts.lessonPlanPrompts.prompt,
+        context: () => context,
+        query: () => query,
+      },
+      promptTemplate,
+      model,
+      new StringOutputParser(),
+    ]);
+
+    // Stream the response
+    const stream = await chain.stream({});
+
+    for await (const chunk of stream) {
+      res.write(chunk);
+    }
+
+    res.end();
+  } catch (error: any) {
+    res.status(500);
+    res.write(
+      `data: ${JSON.stringify({
+        error: "Server error during search: " + (error.message || "Unknown error"),
+      })}\n\n`
+    );
+    res.end();
+  }
+}
+export { searchKnowledgeBase };
