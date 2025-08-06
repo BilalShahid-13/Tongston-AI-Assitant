@@ -9,7 +9,7 @@ import remarkGfm from 'remark-gfm';
 import { useReactToPrint } from 'react-to-print';
 import { Button } from '@/components/ui/button';
 
-export default function Markdown({ children }: { children: string }) {
+export default function Markdown({ children, isButtonEnable = true }: { children: string; isButtonEnable?: boolean }) {
   const contentRef = useRef<HTMLDivElement>(null);
   const [isPrinting, setIsPrinting] = useState(false);
   const promiseResolveRef = useRef<(() => void) | null>(null);
@@ -62,7 +62,7 @@ export default function Markdown({ children }: { children: string }) {
       </div>
 
       {/* Print button */}
-      <Button
+      {isButtonEnable && <Button
         onClick={handlePrint}
         className="bg-yellow-400 w-full cursor-pointer mt-4"
         disabled={isPrinting}
@@ -78,7 +78,7 @@ export default function Markdown({ children }: { children: string }) {
             Generate PDF
           </>
         )}
-      </Button>
+      </Button>}
     </>
   );
 }

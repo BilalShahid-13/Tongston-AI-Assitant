@@ -22,7 +22,6 @@ export async function getFaq(req: Request, res: Response): Promise<void> {
       res.status(400).json({ error: "Missing query parameter" });
       return;
     }
-
     await faqSimilaritySearch(req, query, res, faqsInstructions);
 
     // const db = client.db();

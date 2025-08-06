@@ -26,6 +26,8 @@ export async function faqSimilaritySearch(req: Request, query: string, res: Resp
   const results = await vectorStore.similaritySearch(query, 5);
   const context = results.map((doc) => doc.pageContent).join("\n");
 
+      res.setHeader("Access-Control-Allow-Origin", process.env.ORIGIN_URL!);
+    res.setHeader("Access-Control-Allow-Credentials", "true");
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");

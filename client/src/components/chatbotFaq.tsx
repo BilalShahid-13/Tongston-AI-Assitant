@@ -193,7 +193,7 @@ export default function AIChatbot() {
                               }`}
                           >
                             {message.type === "bot" ?
-                              <Markdown>{message.content}
+                              <Markdown isButtonEnable={false}>{message.content}
                               </Markdown> :
                               <p className="text-sm leading-relaxed">{message.content}</p>
                             }
