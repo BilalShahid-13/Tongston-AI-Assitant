@@ -1,13 +1,12 @@
-import type React from "react"
-import { useState, useRef, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { MessageCircle, X, Sparkles, Send } from "lucide-react"
-import axios from "axios"
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
 import { backendApi } from "@/lib/constant"
+import { AnimatePresence, motion } from "framer-motion"
+import { MessageCircle, Send, Sparkles, X } from "lucide-react"
+import type React from "react"
+import { useEffect, useRef, useState } from "react"
 import Markdown from "./markdown"
 
 interface Message {
@@ -17,18 +16,18 @@ interface Message {
   timestamp: Date
 }
 
-interface FAQResponse {
-  answer: string
-  query: string
-}
+// interface FAQResponse {
+//   answer: string
+//   query: string
+// }
 
-const suggestedQuestions = [
-  "What's the result of this video?",
-  "What happened?",
-  "What's their training style?",
-  "How can I improve my skills?",
-  "What are the best practices?",
-]
+// const suggestedQuestions = [
+//   "What's the result of this video?",
+//   "What happened?",
+//   "What's their training style?",
+//   "How can I improve my skills?",
+//   "What are the best practices?",
+// ]
 
 export default function AIChatbot() {
   const [isOpen, setIsOpen] = useState(false)
@@ -115,10 +114,6 @@ export default function AIChatbot() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     handleSendMessage(input)
-  }
-
-  const handleSuggestedQuestion = (question: string) => {
-    handleSendMessage(question)
   }
 
   return (

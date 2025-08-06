@@ -7,7 +7,6 @@ import {
 } from "@/components/ui/accordion";
 import { welcomeScreenList } from "@/lib/constant";
 import OverviewTabs from "@/pages/aiAssistant/overviewTabs";
-function handleQuickStartGuideClick() { }
 const AiAssitstantHeader = () => {
   return (
     <div className="flex flex-col gap-2">

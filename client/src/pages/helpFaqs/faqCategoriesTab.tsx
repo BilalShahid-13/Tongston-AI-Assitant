@@ -6,7 +6,6 @@ import { useAutoOpenTour } from "@/hooks/useAutoOpenTour"
 import { faqCategories, faqList } from "@/lib/constant"
 import { cn } from "@/lib/utils"
 import { AnimatePresence, motion } from "framer-motion"
-import React from "react"
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -68,7 +67,7 @@ export default function FaqCategoriesTab() {
 
         {/* Content Area */}
         <div className="p-4 w-full">
-      <h2 className="text-3xl text-center font-semibold m-6 text-zinc-800">Questions Look Here</h2>
+          <h2 className="text-3xl text-center font-semibold m-6 text-zinc-800">Questions Look Here</h2>
           <AnimatePresence mode="wait">
             {faqList.map(({ category, faqs }, index) =>
               // tabTriggerValue === category ? (

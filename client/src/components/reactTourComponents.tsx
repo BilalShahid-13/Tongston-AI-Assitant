@@ -1,7 +1,6 @@
 import type { IWalkthroughSteps } from "@/types";
 import { TourProvider, useTour } from "@reactour/tour";
 import { CircleX } from "lucide-react";
-import { useCallback, useEffect } from "react";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 

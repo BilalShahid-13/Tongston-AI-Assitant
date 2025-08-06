@@ -9,8 +9,6 @@ import { termOptions, yearClassMappings } from "@/constants/lessonPlanConstant";
 import { useOnError } from "@/hooks/useOnError";
 import { reportGeneratorSchema, type ReportGeneratorSchema } from "@/schema/reportGenerator.schema";
 import { useProjectTaskFacilitationStore } from "@/store/projectTaskFacilitationStore";
-import { onSubmitFile } from "@/utils/onSubmitFile";
-import { resetPlanValues } from "@/utils/resetPlanValues";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useRef, useState } from "react";
 import { FormProvider, useForm, type UseFormReturn } from "react-hook-form";
@@ -29,6 +27,8 @@ export default function ReportGenerator() {
 
   useEffect(() => {
     setShowChatbot(false);
+    setStatusMessage(null);
+    setLoading(false);
   }, [])
   const { handleTerm } = useProjectTaskFacilitationStore();
   const onSubmit = async (data: ReportGeneratorSchema) => {

@@ -175,8 +175,8 @@ const handleSocioEconomic = (form: UseFormReturn<any>, yearClass: string) => {
     case "Senior Secondary 1/ SS1/Grade 11":
       form.setValue("classesSocioEconomic", "Continent");
       break;
-    case "Senior Secondary 1/ SS1/Grade 11":
-      form.setValue("classesSocioEconomic", "TESTS");
+    // case "Senior Secondary 1/ SS1/Grade 11":
+    //   form.setValue("classesSocioEconomic", "TESTS");
       break;
     case "Undergraduate Year 1":
       form.setValue("classesSocioEconomic", "Global Socio-Economic (Trade) Block");
