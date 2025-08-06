@@ -27,7 +27,8 @@ export default function ProjectTaskFacilitation() {
       sen: [],
       teachingAids: [],
       location: '',
-      state: ''
+      state: '',
+      technologyAccess: "No",
     }
   });
   const { handleCities, cities, handleYearClass, handleTerm } = useProjectTaskFacilitationStore();
