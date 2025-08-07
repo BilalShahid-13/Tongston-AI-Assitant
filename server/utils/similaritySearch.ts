@@ -43,8 +43,8 @@ export async function faqSimilaritySearch(req: Request, query: string, res: Resp
   }
 
 
-  res.setHeader("Access-Control-Allow-Origin", process.env.ORIGIN_URL!);
-  res.setHeader("Access-Control-Allow-Credentials", "true");
+  // res.setHeader("Access-Control-Allow-Origin", process.env.ORIGIN_URL!);
+  // res.setHeader("Access-Control-Allow-Credentials", "true");
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");
