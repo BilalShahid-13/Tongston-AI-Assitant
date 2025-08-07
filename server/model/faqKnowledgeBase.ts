@@ -1,7 +1,7 @@
 import { model, models, Schema } from "mongoose";
 
 
-const faqSchema = new Schema({
+const faqKnowledgeBaseSchema = new Schema({
   fileId: {
     type: String,
     required: true
@@ -22,4 +22,4 @@ const faqSchema = new Schema({
   timestamps: true
 })
 
-export const Faq = models.Faq || model("Faq", faqSchema);
+export const faqKnowledgeBase = models.Faq || model("faqKnowledgeBase", faqKnowledgeBaseSchema);

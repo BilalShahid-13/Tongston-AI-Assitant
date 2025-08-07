@@ -2,7 +2,7 @@ import axios from "axios";
 import { pdfToText } from "./pdfToText";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import openai from "./openai";
-import { Faq } from "../model/faq";
+import { faqKnowledgeBase } from "../model/faqKnowledgeBase";
 
 export const extractFileId = (link: string): string => {
   const match = link.match(/\/d\/([a-zA-Z0-9_-]+)/);
@@ -19,7 +19,6 @@ export const downloadDriveFile = async (fileId: string): Promise<Buffer> => {
   const response = await axios.get(url, { responseType: "arraybuffer" });
   return Buffer.from(response.data);
 };
-
 
 const splitter = new RecursiveCharacterTextSplitter({
   chunkSize: 512,
@@ -40,7 +39,7 @@ export async function processSinglePdf(fileId: string) {
 
     const vector = embedding.data[0].embedding;
 
-    await Faq.insertOne({
+    await faqKnowledgeBase.insertOne({
       content: chunk,
       vector,
     });

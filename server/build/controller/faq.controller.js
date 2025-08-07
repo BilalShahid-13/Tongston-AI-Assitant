@@ -9,7 +9,12 @@ const googleDriveDriver_1 = require("../lib/googleDriveDriver");
 const prompts_1 = require("../templates/prompts");
 const parseExcelFile_1 = require("../utils/parseExcelFile");
 const similaritySearch_1 = require("../utils/similaritySearch");
+const mongodb_1 = require("mongodb");
 (0, dotenv_1.config)();
+const uri = process.env.MONGODB_URI || "mongodb://localhost:27017";
+const client = new mongodb_1.MongoClient(uri);
+const db = client.db();
+const collection = db.collection("faqKnowledgeBase");
 async function getFaq(req, res) {
     try {
         // const query = req.body.query || req.query.q;
@@ -18,46 +23,8 @@ async function getFaq(req, res) {
             res.status(400).json({ error: "Missing query parameter" });
             return;
         }
+        // db.collection("UserFaq")
         await (0, similaritySearch_1.faqSimilaritySearch)(req, query, res, prompts_1.faqsInstructions);
-        // const db = client.db();
-        // const collection = db.collection("faqs");
-        // const vectorStore = new MongoDBAtlasVectorSearch(embeddings, {
-        //   collection,
-        //   indexName: "faq_index",
-        //   textKey: "content",
-        //   embeddingKey: "vector",
-        // });
-        // const results = await vectorStore.similaritySearch(query, 5);
-        // const context = results.map((doc) => doc.pageContent).join("\n");
-        // const previousMessages = req.body.history || []; // Expects [{ role: 'user' | 'assistant', content: string }]
-        // res.setHeader("Content-Type", "text/event-stream");
-        // res.setHeader("Cache-Control", "no-cache");
-        // res.setHeader("Connection", "keep-alive");
-        // const messages = [
-        //   {
-        //     role: "system",
-        //     content: faqsInstructions(context, query),
-        //   },
-        //   ...previousMessages,
-        //   {
-        //     role: "user",
-        //     content: query,
-        //   },
-        // ];
-        // const stream = await openai.chat.completions.create({
-        //   model: "gpt-4o-mini",
-        //   messages,
-        //   temperature: 0.7,
-        //   stream: true,
-        // });
-        // for await (const chunk of stream) {
-        //   const content = chunk.choices?.[0]?.delta?.content;
-        //   if (content) {
-        //     res.write(`data: ${content}\n\n`);
-        //   }
-        // }
-        // res.write(`data: [END]\n\n`);
-        // res.end();
     }
     catch (error) {
         console.error("❌ Error in getFaq:", error);
@@ -93,3 +60,40 @@ async function insertFaq(req, res) {
         res.status(500).json({ error: "Internal Server Error" });
     }
 }
+// const vectorStore = new MongoDBAtlasVectorSearch(embeddings, {
+//   collection,
+//   indexName: "faq_index",
+//   textKey: "content",
+//   embeddingKey: "vector",
+// });
+// const results = await vectorStore.similaritySearch(query, 5);
+// const context = results.map((doc) => doc.pageContent).join("\n");
+// const previousMessages = req.body.history || []; // Expects [{ role: 'user' | 'assistant', content: string }]
+// res.setHeader("Content-Type", "text/event-stream");
+// res.setHeader("Cache-Control", "no-cache");
+// res.setHeader("Connection", "keep-alive");
+// const messages = [
+//   {
+//     role: "system",
+//     content: faqsInstructions(context, query),
+//   },
+//   ...previousMessages,
+//   {
+//     role: "user",
+//     content: query,
+//   },
+// ];
+// const stream = await openai.chat.completions.create({
+//   model: "gpt-4o-mini",
+//   messages,
+//   temperature: 0.7,
+//   stream: true,
+// });
+// for await (const chunk of stream) {
+//   const content = chunk.choices?.[0]?.delta?.content;
+//   if (content) {
+//     res.write(`data: ${content}\n\n`);
+//   }
+// }
+// res.write(`data: [END]\n\n`);
+// res.end();

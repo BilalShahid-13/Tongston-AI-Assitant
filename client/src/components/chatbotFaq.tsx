@@ -6,7 +6,7 @@ import { backendApi } from "@/lib/constant"
 import { AnimatePresence, motion } from "framer-motion"
 import { MessageCircle, Send, Sparkles, X } from "lucide-react"
 import type React from "react"
-import { useEffect, useRef, useState } from "react"
+import { useLayoutEffect, useRef, useState } from "react"
 import Markdown from "./markdown"
 
 interface Message {
@@ -36,13 +36,9 @@ export default function AIChatbot() {
   const [isLoading, setIsLoading] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }
-
-  useEffect(() => {
-    scrollToBottom()
-  }, [messages])
+  useLayoutEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const handleSendMessage = async (question: string) => {
     if (!question.trim()) return;
@@ -78,12 +74,11 @@ export default function AIChatbot() {
           setIsLoading(false);
           return;
         }
-
         // Append streamed words to the bot message
         setMessages((prev) =>
           prev.map((msg) =>
             msg.id === botMessage.id
-              ? { ...msg, content: msg.content + event.data + " " }
+              ? { ...msg, content: msg.content + event.data }
               : msg
           )
         );
@@ -115,6 +110,12 @@ export default function AIChatbot() {
     e.preventDefault()
     handleSendMessage(input)
   }
+
+  const scrollToBottom = () => {
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 50); // tweak delay if needed (e.g., 30-100ms)
+  };
 
   return (
     <>
@@ -192,11 +193,11 @@ export default function AIChatbot() {
                               : "bg-white text-gray-900 border border-gray-200"
                               }`}
                           >
-                            {message.type === "bot" ?
-                              <Markdown isButtonEnable={false}>{message.content}
-                              </Markdown> :
-                              <p className="text-sm leading-relaxed">{message.content}</p>
-                            }
+                            {/* {message.type === "bot" ? */}
+                            <Markdown isButtonEnable={false}>{message.content}
+                            </Markdown>
+                            {/* <p className="text-sm leading-relaxed">{message.content}</p> */}
+                            {/* } */}
                             {/* <p className="text-sm leading-relaxed">
                               {message.content}
                               {message.type === "bot" && isLoading && message.id === messages[messages.length - 1]?.id && (

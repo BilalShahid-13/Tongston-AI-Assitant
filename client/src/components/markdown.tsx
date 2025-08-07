@@ -52,6 +52,9 @@ export default function Markdown({ children, isButtonEnable = true }: { children
               td: ({ node, ...props }) => (
                 <td className="border border-gray-300 px-4 py-2">{props.children}</td>
               ),
+              a: ({ node, ...props }) => (
+                <a {...props} className="underline text-yellow-500" />
+              ),
             }}
             remarkPlugins={[remarkGfm]}
             rehypePlugins={[rehypeHighlight, rehypeRaw]}

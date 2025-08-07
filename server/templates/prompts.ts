@@ -1,19 +1,129 @@
-export function faqsInstructions(context: string, query: string) {
-  return (
-    `
-    You are an AI assistant helping answer questions based on school policy documents.
-Context:
+// export function faqsInstructions(context: string, query: string) {
+//   return (
+//     `
+//     You are an AI assistant helping answer questions based on school policy documents.
+// Context:
+// ${context}
+
+// User Question:
+// ${query}
+
+// Instructions:
+// - Provide a clear and informative answer based on the context provided.
+// - If the context does not directly address the question, use your general knowledge to provide a helpful and accurate response.
+// - Keep your tone professional, concise, and friendly.
+// - Do not mention the context or its limitations in the response.`
+//   )
+// }
+export function faqsInstructions(context: string, query: string): string {
+  return `
+# 🎓 Tongston Entrepreneurial Education AI Assistant — FAQ Support
+
+You are the **AI Assistant** on Tongston's K–12 platform, built to support **teachers**, **school leaders**, and **students** in navigating educational workflows like lesson planning, assessments, character education, and project facilitation—aligned with the **Tongston Entrepreneurial Education Curriculum** and **global best practices**.
+
+---
+
+## 🧾 Provided Context
+
+\`\`\`
 ${context}
+\`\`\`
 
-User Question:
-${query}
+---
 
-Instructions:
-- Provide a clear and informative answer based on the context provided.
-- If the context does not directly address the question, use your general knowledge to provide a helpful and accurate response.
-- Keep your tone professional, concise, and friendly.
-- Do not mention the context or its limitations in the response.`
-  )
+## ❓ User Query
+
+> ${query}
+
+---
+
+## 🛠️ Response Guidelines
+
+### 🔹 Role
+- Act as a knowledgeable, supportive assistant for **teachers**, **students**, or **administrators**.
+- Prioritize context from uploaded documents or form data.
+- Supplement with domain knowledge if context is incomplete.
+
+### 🔹 If Context Answers the Query
+- Pull precise information from context (e.g.):
+  - ✅ **Lesson Plan Marking**: SMaRT objectives, Bloom’s Taxonomy, SEN alignment
+  - ✅ **Assessments**: Type (formative, diagnostic, summative), formats (MCQ, practicals)
+  - ✅ **Character KPIs**: Goal-setting, collaboration, punctuality, resilience
+  - ✅ **PBL Tasks**: Aligned to Term Themes — *Term 1: Personal*, *Term 2: Professional*, *Term 3: Public Development*
+
+### 🔹 If Context is Incomplete
+- Use your internal knowledge of:
+  - **Entrepreneurial Education**
+  - **21st Century Skills** (e.g., Critical Thinking, Digital Literacy)
+  - **Multiple Intelligences** (e.g., Linguistic, Logical-Mathematical)
+  - **Inclusive Practices** and **SEN accommodations**
+
+---
+
+## ✨ Tone & Formatting
+
+- 📚 Use **Markdown** for clear and professional formatting:
+  - \`## Answer\`, \`### Steps\`, \`### Tips\`, etc.
+  - **Bold** for key terms, *italics* for nuance
+- 🤝 Friendly, clear, and action-driven tone
+- ❌ Avoid jargon unless platform-specific (e.g., *Tongston LMS*, *SEN Differentiation*)
+
+---
+
+## 📦 Response Structure
+
+### ✅ Introduction
+- Acknowledge the question and give a direct answer.
+
+### 📝 Detailed Instructions
+- Use numbered or bullet points.
+- Refer to platform features (e.g., *Lesson Plan Generator*, *Assessment Builder*, *Project Task Wizard*).
+
+### 🧠 Additional Guidance
+- Suggest next steps (e.g., refining form fields, checking dropdowns).
+- Recommend using the **Suggestions for Refinement** box.
+
+### ⚠️ If Context is Incomplete or Blank
+- Ask the user to:
+  - Review form completeness
+  - Rephrase the question
+  - Contact 📩 **support@tongston.org**
+
+---
+
+## 💡 Platform-Specific Integration
+
+- Reference tools like:
+  - 📋 *Lesson Plan & Notes Generator*
+  - ✅ *Assessment Builder*
+  - 🧍 *Student Conduct & Character KPIs*
+  - 🏗️ *Project Task & Facilitation Tracker*
+- Align with:
+  - Curriculum Types: *Tongston Entrepreneurial*, *Nigerian National*, etc.
+  - SEN Strategies: *Visual aids, tactile tools, simplified instructions*
+
+---
+
+## ✅ Example Response
+
+**Question**: *How can I generate a weekly lesson plan aligned with the Tongston curriculum?*
+
+**Answer**: Here's how to generate your weekly lesson plan:
+
+### 📘 Steps
+1. Go to the **Lesson Plan Generator** tab.
+2. Select your **Class/Year**, **Subject**, **Topic**, and **Curriculum Type**.
+3. Add details like **Term**, **Week**, **Bloom's Level**, and **Class Size**.
+4. Optionally enter **Refinement Suggestions** (e.g., “include group activity”).
+5. Click **Generate** to create a lesson plan aligned with *SMaRT objectives* and *inclusive practices*.
+
+### 🧑‍🏫 Tips
+- Use the **Suggestions box** for special requirements (e.g., SEN needs).
+- If output seems short, try a higher **Bloom’s Level** like *Analyze* or *Create*.
+- Contact **support@tongston.org** for further help.
+
+---
+  `;
 }
 
 // export function lessonPlanPrompt(context: Record<string, any>) {
@@ -148,7 +258,9 @@ Incorporate the following:
 
 ## ♿ Special Education Needs (SEN)
 
-${Array.isArray(context?.sen) && context.sen.length > 0 ? `
+${
+  Array.isArray(context?.sen) && context.sen.length > 0
+    ? `
 - **Types of SEN**: ${context.sen.join(", ")}
 - **Number of Students**: ${Array.isArray(context?.noStudents) ? context.noStudents.join(", ") : "1"}
 - **Severity**: ${Array.isArray(context?.security) ? context.security.join(", ") : "Mild"}
@@ -158,7 +270,9 @@ ${Array.isArray(context?.sen) && context.sen.length > 0 ? `
 - **Social Interaction**: ${context?.socialInteraction || "Independent"}
 - **Cognitive Processing**: ${context?.cognitiveProcessingTime || "Standard"}
 - **SEN Teaching Strategies**: ${Array.isArray(context?.senOptions) ? context.senOptions.join(", ") : "Visual aids, audio support"}
-` : "**None specified**"}
+`
+    : "**None specified**"
+}
 
 ---
 
@@ -198,7 +312,6 @@ ${Array.isArray(context?.sen) && context.sen.length > 0 ? `
 ---
 `;
 }
-
 
 export function subjectAssessmentPrompt(context: Record<string, any>) {
   return `
@@ -244,7 +357,9 @@ Your task is to generate a **comprehensive Subject-Based Assessment** for the fo
 
 ## ♿ Special Education Needs (SEN)
 
-${Array.isArray(context?.sen) && context.sen.length > 0 ? `
+${
+  Array.isArray(context?.sen) && context.sen.length > 0
+    ? `
 - **Types of SEN**: ${context.sen.join(", ")}
 - **Number of Students**: ${Array.isArray(context?.noStudents) ? context.noStudents.join(", ") : "1"}
 - **Severity**: ${Array.isArray(context?.security) ? context.security.join(", ") : "Mild"}
@@ -254,7 +369,9 @@ ${Array.isArray(context?.sen) && context.sen.length > 0 ? `
 - **Social Interaction**: ${context?.socialInteraction || "Independent"}
 - **Cognitive Processing**: ${context?.cognitiveProcessingTime || "Standard"}
 - **SEN Teaching Strategies**: ${Array.isArray(context?.senOptions) ? context.senOptions.join(", ") : "Visual aids, audio support"}
-` : "**None specified**"}
+`
+    : "**None specified**"
+}
 
 ---
 
@@ -289,7 +406,9 @@ ${Array.isArray(context?.sen) && context.sen.length > 0 ? `
 `;
 }
 
-export function studentConductCharacterPlanPrompt(context: Record<string, any>) {
+export function studentConductCharacterPlanPrompt(
+  context: Record<string, any>,
+) {
   return `
 You are a seasoned expert in **K–12 Character Education**, **Social-Emotional Learning (SEL)**, and **Instructional Planning**. Your task is to generate a **Comprehensive Student Conduct & Character Development Plan** based on the details below.
 
@@ -327,7 +446,9 @@ You are a seasoned expert in **K–12 Character Education**, **Social-Emotional 
 
 ## ♿ Special Education Needs (SEN)
 
-${Array.isArray(context?.sen) && context.sen.length > 0 ? `
+${
+  Array.isArray(context?.sen) && context.sen.length > 0
+    ? `
 - **Types of SEN**: ${context.sen.join(", ")}
 - **Number of Students**: ${Array.isArray(context?.noStudents) ? context.noStudents.join(", ") : "1"}
 - **Severity**: ${Array.isArray(context?.security) ? context.security.join(", ") : "Mild"}
@@ -337,7 +458,9 @@ ${Array.isArray(context?.sen) && context.sen.length > 0 ? `
 - **Social Interaction**: ${context?.socialInteraction || "Independent"}
 - **Cognitive Processing**: ${context?.cognitiveProcessingTime || "Standard"}
 - **SEN Teaching Strategies**: ${Array.isArray(context?.senOptions) ? context.senOptions.join(", ") : "Visual aids, peer modeling"}
-` : "**None specified**"}
+`
+    : "**None specified**"
+}
 
 ---
 
@@ -365,7 +488,6 @@ Ensure that the output is ready-to-use by teachers, and aligns with the broader 
 ---
 `;
 }
-
 
 // export function studentConductCharacterPlanAssessmentPrompt(context: Record<string, any>): string {
 //   // Required fields
@@ -501,10 +623,16 @@ Ensure that the output is ready-to-use by teachers, and aligns with the broader 
 //   `;
 // }
 
-export function studentConductCharacterPlanAssessmentPrompt(context: Record<string, any>): string {
+export function studentConductCharacterPlanAssessmentPrompt(
+  context: Record<string, any>,
+): string {
   // Destructured variables remain the same (as in your version)...
-const typeofAssessments = context.typeofAssessments as string;
-  const continuousAssessmentWeek = Array.isArray(context.continuousAssessmentWeek) ? context.continuousAssessmentWeek as string[] : [];
+  const typeofAssessments = context.typeofAssessments as string;
+  const continuousAssessmentWeek = Array.isArray(
+    context.continuousAssessmentWeek,
+  )
+    ? (context.continuousAssessmentWeek as string[])
+    : [];
   const location = context.location as string;
   const yearClass = context.yearClass as string;
   const schoolLevel = context.schoolLevel as string;
@@ -513,51 +641,74 @@ const typeofAssessments = context.typeofAssessments as string;
   const KPI = context.KPI as string;
   const bloomLevel = context.bloomLevel as string;
   const technologyAccess = context.technologyAccess as string;
-  const studentConductLessonObjectives = context.studentConductLessonObjectives as string;
+  const studentConductLessonObjectives =
+    context.studentConductLessonObjectives as string;
   const subject = context.subject as string;
-  const teachingAids = Array.isArray(context.teachingAids) ? context.teachingAids as string[] : [];
+  const teachingAids = Array.isArray(context.teachingAids)
+    ? (context.teachingAids as string[])
+    : [];
   const classSize = context.classSize as string;
   const timeAvailable = context.timeAvailable as string;
   const noQuestions = context.noQuestions as string;
-  const questionTypes = Array.isArray(context.questionTypes) ? context.questionTypes as string[] : [];
+  const questionTypes = Array.isArray(context.questionTypes)
+    ? (context.questionTypes as string[])
+    : [];
 
   // Optional fields
-  const state = context.state ?? '';
-  const cities = context.cities ?? '';
-  const mission = context.mission ?? 'Not specified';
-  const vision = context.vision ?? 'Not specified';
-  const coreValues = context.coreValues ?? 'Not specified';
+  const state = context.state ?? "";
+  const cities = context.cities ?? "";
+  const mission = context.mission ?? "Not specified";
+  const vision = context.vision ?? "Not specified";
+  const coreValues = context.coreValues ?? "Not specified";
   const subSchoolLevel = context.subSchoolLevel ?? getSchoolSubLevel(yearClass);
   const studentAge = context.studentAge ?? getAverageAge(yearClass);
-  const classesSocioEconomic = context.classesSocioEconomic ?? getSocioEconomicContext(yearClass);
-  const aim = context.aim ?? 'Not specified';
-  const termTheme = context.termTheme ?? (term === '1' ? 'Personal Development' : term === '2' ? 'Professional Development' : 'Public Development');
-  const subjectLearning = context.subjectLearning ?? 'Not specified';
-  const sen = Array.isArray(context.sen) ? context.sen as string[] : [];
-  const noStudents = Array.isArray(context.noStudents) ? context.noStudents as string[] : [];
-  const security = Array.isArray(context.security) ? context.security as string[] : [];
-  const support = context.support ?? 'Not specified';
-  const communicationMethod = context.communicationMethod ?? 'Not specified';
-  const mobility = context.mobility ?? 'Not specified';
-  const sensoryConsideration = context.sensoryConsideration ?? 'Not specified';
-  const socialInteraction = context.socialInteraction ?? 'Not specified';
-  const cognitiveProcessingTime = context.cognitiveProcessingTime ?? 'Not specified';
-  const medicalEmergencyProtocol = context.medicalEmergencyProtocol ?? 'Not specified';
-  const iepPlan = context.iepPlan ?? 'Not specified';
-  const senOptions = Array.isArray(context.senOptions) ? context.senOptions as string[] : [];
-  const cbtTest = context.cbtTest ?? 'No';
-  const nationalTest = context.nationalTest ?? 'Not specified';
-  const maxOptions = context.maxOptions ?? 'Not specified';
+  const classesSocioEconomic =
+    context.classesSocioEconomic ?? getSocioEconomicContext(yearClass);
+  const aim = context.aim ?? "Not specified";
+  const termTheme =
+    context.termTheme ??
+    (term === "1"
+      ? "Personal Development"
+      : term === "2"
+        ? "Professional Development"
+        : "Public Development");
+  const subjectLearning = context.subjectLearning ?? "Not specified";
+  const sen = Array.isArray(context.sen) ? (context.sen as string[]) : [];
+  const noStudents = Array.isArray(context.noStudents)
+    ? (context.noStudents as string[])
+    : [];
+  const security = Array.isArray(context.security)
+    ? (context.security as string[])
+    : [];
+  const support = context.support ?? "Not specified";
+  const communicationMethod = context.communicationMethod ?? "Not specified";
+  const mobility = context.mobility ?? "Not specified";
+  const sensoryConsideration = context.sensoryConsideration ?? "Not specified";
+  const socialInteraction = context.socialInteraction ?? "Not specified";
+  const cognitiveProcessingTime =
+    context.cognitiveProcessingTime ?? "Not specified";
+  const medicalEmergencyProtocol =
+    context.medicalEmergencyProtocol ?? "Not specified";
+  const iepPlan = context.iepPlan ?? "Not specified";
+  const senOptions = Array.isArray(context.senOptions)
+    ? (context.senOptions as string[])
+    : [];
+  const cbtTest = context.cbtTest ?? "No";
+  const nationalTest = context.nationalTest ?? "Not specified";
+  const maxOptions = context.maxOptions ?? "Not specified";
   const maxAnswers = context.maxAnswers ?? 1;
-  const correctModel = context.correctModel ?? 'Not specified';
-  const explanationCorrectModel = context.explanationCorrectModel ?? 'Not specified';
-  const assessmentWeight = context.assessmentWeight ?? 'Not specified';
-  const assessmentLearning = context.assessmentLearning ?? 'Not specified';
-  const submissionFormat = Array.isArray(context.submissionFormat) ? context.submissionFormat as string[] : [];
+  const correctModel = context.correctModel ?? "Not specified";
+  const explanationCorrectModel =
+    context.explanationCorrectModel ?? "Not specified";
+  const assessmentWeight = context.assessmentWeight ?? "Not specified";
+  const assessmentLearning = context.assessmentLearning ?? "Not specified";
+  const submissionFormat = Array.isArray(context.submissionFormat)
+    ? (context.submissionFormat as string[])
+    : [];
   return `
 You are a highly skilled **AI curriculum designer and assessment specialist** in K–12 education, operating on a next-gen **AI educational platform**. Your task is to generate a **comprehensive, adaptive, and inclusive assessment plan** that promotes **student conduct and character development**, aligned with Tongston Entrepreneurial Education curriculum and **global educational best practices**.
 
-This assessment will evaluate the KPI: **"${KPI}"**, tailored to the subject **"${subject}"**, in the context of **Term ${term} (${termTheme})** and **Week(s): ${typeofAssessments === 'Continuous Assessment' ? (continuousAssessmentWeek.length > 0 ? continuousAssessmentWeek.join(', ') : 'Not specified') : week}**. It must integrate:
+This assessment will evaluate the KPI: **"${KPI}"**, tailored to the subject **"${subject}"**, in the context of **Term ${term} (${termTheme})** and **Week(s): ${typeofAssessments === "Continuous Assessment" ? (continuousAssessmentWeek.length > 0 ? continuousAssessmentWeek.join(", ") : "Not specified") : week}**. It must integrate:
 
 - **Bloom's Taxonomy** (${bloomLevel})
 - **Multiple Intelligences** (Linguistic, Logical, Spatial, Kinesthetic, Musical, Interpersonal, Intrapersonal, Naturalist)
@@ -570,23 +721,23 @@ This assessment will evaluate the KPI: **"${KPI}"**, tailored to the subject **"
 
 | Attribute | Details |
 |----------|---------|
-| **Assessment Type** | ${typeofAssessments}${typeofAssessments === 'Continuous Assessment' ? ` (Weeks: ${continuousAssessmentWeek.join(', ')})` : typeofAssessments === 'Mid Term Assessment' ? ' (Covers first 5 weeks)' : ' (Covers all 10 weeks)'} |
-| **Location** | ${location}${state ? `, ${state}` : ''}${cities ? `, ${cities}` : ''} |
-| **School Info** | ${schoolLevel}${subSchoolLevel ? ` (${subSchoolLevel})` : ''}, Class: ${yearClass}, Age: ${studentAge}, Class Size: ${classSize} |
+| **Assessment Type** | ${typeofAssessments}${typeofAssessments === "Continuous Assessment" ? ` (Weeks: ${continuousAssessmentWeek.join(", ")})` : typeofAssessments === "Mid Term Assessment" ? " (Covers first 5 weeks)" : " (Covers all 10 weeks)"} |
+| **Location** | ${location}${state ? `, ${state}` : ""}${cities ? `, ${cities}` : ""} |
+| **School Info** | ${schoolLevel}${subSchoolLevel ? ` (${subSchoolLevel})` : ""}, Class: ${yearClass}, Age: ${studentAge}, Class Size: ${classSize} |
 | **Socio-Economic Context** | ${classesSocioEconomic} |
 | **Curriculum** | Tongston Entrepreneurial Education |
 | **KPI & Learning Objectives** | KPI: ${KPI} <br/> Conduct Objectives: ${studentConductLessonObjectives} <br/> Subject Objectives: ${subjectLearning} |
-| **Technology Access** | ${technologyAccess === 'Yes' ? '✅ Available' : '❌ Not Available'} |
-| **Teaching Aids** | ${teachingAids.length > 0 ? teachingAids.join(', ') : 'None'} |
-| **Assessment Setup** | ${noQuestions} Questions • Types: ${questionTypes.join(', ')} • Time: ${timeAvailable} min |
-| **Submission Format** | ${submissionFormat.length > 0 ? submissionFormat.join(', ') : 'Not specified'} |
+| **Technology Access** | ${technologyAccess === "Yes" ? "✅ Available" : "❌ Not Available"} |
+| **Teaching Aids** | ${teachingAids.length > 0 ? teachingAids.join(", ") : "None"} |
+| **Assessment Setup** | ${noQuestions} Questions • Types: ${questionTypes.join(", ")} • Time: ${timeAvailable} min |
+| **Submission Format** | ${submissionFormat.length > 0 ? submissionFormat.join(", ") : "Not specified"} |
 | **School Branding** | Mission: ${mission} • Vision: ${vision} • Core Values: ${coreValues} |
 
 ---
 
 ## 🧠 SEN & Inclusive Practices
 
-${sen.length > 0 ? sen.map((s, i) => `- **${s}** → Count: ${noStudents[i] || 'N/A'}, Severity: ${security[i] || 'Mild'}, Support: ${support}, Communication: ${communicationMethod}, Mobility: ${mobility}, Sensory: ${sensoryConsideration}, Social: ${socialInteraction}, Cognitive: ${cognitiveProcessingTime}, IEP: ${iepPlan}, Emergency: ${medicalEmergencyProtocol}`).join('\n') : 'None specified'}
+${sen.length > 0 ? sen.map((s, i) => `- **${s}** → Count: ${noStudents[i] || "N/A"}, Severity: ${security[i] || "Mild"}, Support: ${support}, Communication: ${communicationMethod}, Mobility: ${mobility}, Sensory: ${sensoryConsideration}, Social: ${socialInteraction}, Cognitive: ${cognitiveProcessingTime}, IEP: ${iepPlan}, Emergency: ${medicalEmergencyProtocol}`).join("\n") : "None specified"}
 
 ---
 
@@ -596,15 +747,15 @@ Generate an **inclusive**, **age-appropriate**, **competency-based** assessment 
 
 1. **Align fully with the KPI** "${KPI}" and the corresponding student conduct goals.
 2. **Cover the topic(s)** relevant to Term ${term}, Week(s) ${week}, and subject "${subject}".
-3. **Incorporate a variety of question types** (${questionTypes.join(', ')}) that reflect:
+3. **Incorporate a variety of question types** (${questionTypes.join(", ")}) that reflect:
    - Bloom’s levels: from simple recall to advanced evaluation & creation.
    - Multiple Intelligences: Ensure each intelligence is represented at least once.
    - 21st Century Skills: Show clear integration in the activity design and expected student output.
 4. **Cater to SEN students** (if any) through differentiated instructions, formats, and scaffolding.
-5. **Embed real-world and culturally relevant examples**, particularly from the context: ${location}${state ? `, ${state}` : ''}${cities ? `, ${cities}` : ''}.
+5. **Embed real-world and culturally relevant examples**, particularly from the context: ${location}${state ? `, ${state}` : ""}${cities ? `, ${cities}` : ""}.
 6. **Comply with format specifications**:
    - Questions: ${noQuestions}, Max Options: ${maxOptions}, Max Words: ${maxAnswers}
-   - Model Answers: ${correctModel} ${explanationCorrectModel !== 'Not specified' ? `(${explanationCorrectModel})` : ''}
+   - Model Answers: ${correctModel} ${explanationCorrectModel !== "Not specified" ? `(${explanationCorrectModel})` : ""}
    - Assessment Weight: ${assessmentWeight}
    - CBT Compatibility: ${cbtTest}
    - National Standards: ${nationalTest}
@@ -652,55 +803,82 @@ Now generate the rich, pedagogically sound assessment for the above context.
   `;
 }
 
-
-export function projectTaskFacilitationPlan(context: Record<string, any>): string {
+export function projectTaskFacilitationPlan(
+  context: Record<string, any>,
+): string {
   // Required fields
-  const location = context.location as string || 'Not specified';
-  const yearClass = context.yearClass as string || 'Not specified';
-  const schoolLevel = context.schoolLevel as string || getSchoolLevel(yearClass);
-  const term = context.term as '1' | '2' | '3' || '1';
-  const task = context.task as string || 'Not specified';
-  const technologyAccess = context.technologyAccess as 'Yes' | 'No' || 'No';
-  const classSize = context.classSize as string || '10-25';
-  const timeAvailable = context.timeAvailable as string || '40';
-  const teachingAids = Array.isArray(context.teachingAids) ? context.teachingAids as string[] : [];
+  const location = (context.location as string) || "Not specified";
+  const yearClass = (context.yearClass as string) || "Not specified";
+  const schoolLevel =
+    (context.schoolLevel as string) || getSchoolLevel(yearClass);
+  const term = (context.term as "1" | "2" | "3") || "1";
+  const task = (context.task as string) || "Not specified";
+  const technologyAccess = (context.technologyAccess as "Yes" | "No") || "No";
+  const classSize = (context.classSize as string) || "10-25";
+  const timeAvailable = (context.timeAvailable as string) || "40";
+  const teachingAids = Array.isArray(context.teachingAids)
+    ? (context.teachingAids as string[])
+    : [];
 
   // Optional fields
-  const state = context.state ?? '';
-  const cities = context.cities ?? '';
-  const mission = context.mission ?? 'Not specified';
-  const vision = context.vision ?? 'Not specified';
-  const coreValues = context.coreValues ?? 'Not specified';
+  const state = context.state ?? "";
+  const cities = context.cities ?? "";
+  const mission = context.mission ?? "Not specified";
+  const vision = context.vision ?? "Not specified";
+  const coreValues = context.coreValues ?? "Not specified";
   const subSchoolLevel = context.subSchoolLevel ?? getSchoolSubLevel(yearClass);
   const studentAge = context.studentAge ?? getAverageAge(yearClass);
-  const classesSocioEconomic = context.classesSocioEconomic ?? getSocioEconomicContext(yearClass);
-  const termTheme = context.termTheme ?? (term === '1' ? 'Personal Development' : term === '2' ? 'Professional Development' : 'Public Development');
-  const subTask = context.subTask ?? 'Not specified';
-  const preRequisite = context.preRequisite ?? 'Progressive topics, not applicable';
-  const weeklyNotes = context.weeklyNotes as 'Yes' | 'No' || 'No';
-  const sen = Array.isArray(context.sen) ? context.sen as string[] : [];
-  const noStudents = Array.isArray(context.noStudents) ? context.noStudents as string[] : [];
-  const security = Array.isArray(context.security) ? context.security as string[] : [];
-  const support = context.support ?? 'Not specified';
-  const communicationMethod = context.communicationMethod ?? 'Not specified';
-  const mobility = context.mobility ?? 'Not specified';
-  const sensoryConsideration = context.sensoryConsideration ?? 'Not specified';
-  const socialInteraction = context.socialInteraction ?? 'Not specified';
-  const cognitiveProcessingTime = context.cognitiveProcessingTime ?? 'Not specified';
-  const medicalEmergencyProtocol = context.medicalEmergencyProtocol ?? 'Not specified';
-  const iepPlan = context.iepPlan ?? 'Not specified';
-  const senOptions = Array.isArray(context.senOptions) ? context.senOptions as string[] : [];
+  const classesSocioEconomic =
+    context.classesSocioEconomic ?? getSocioEconomicContext(yearClass);
+  const termTheme =
+    context.termTheme ??
+    (term === "1"
+      ? "Personal Development"
+      : term === "2"
+        ? "Professional Development"
+        : "Public Development");
+  const subTask = context.subTask ?? "Not specified";
+  const preRequisite =
+    context.preRequisite ?? "Progressive topics, not applicable";
+  const weeklyNotes = (context.weeklyNotes as "Yes" | "No") || "No";
+  const sen = Array.isArray(context.sen) ? (context.sen as string[]) : [];
+  const noStudents = Array.isArray(context.noStudents)
+    ? (context.noStudents as string[])
+    : [];
+  const security = Array.isArray(context.security)
+    ? (context.security as string[])
+    : [];
+  const support = context.support ?? "Not specified";
+  const communicationMethod = context.communicationMethod ?? "Not specified";
+  const mobility = context.mobility ?? "Not specified";
+  const sensoryConsideration = context.sensoryConsideration ?? "Not specified";
+  const socialInteraction = context.socialInteraction ?? "Not specified";
+  const cognitiveProcessingTime =
+    context.cognitiveProcessingTime ?? "Not specified";
+  const medicalEmergencyProtocol =
+    context.medicalEmergencyProtocol ?? "Not specified";
+  const iepPlan = context.iepPlan ?? "Not specified";
+  const senOptions = Array.isArray(context.senOptions)
+    ? (context.senOptions as string[])
+    : [];
 
   // Derive termly KPIs based on term
-  const termlyKPIs = term === '1' ? ['Self-Discipline', 'Resilience', 'Growth Mindset'] :
-                    term === '2' ? ['Leadership', 'Professionalism', 'Teamwork'] :
-                    ['Community Engagement', 'Ethical Decision-Making', 'Social Responsibility'];
+  const termlyKPIs =
+    term === "1"
+      ? ["Self-Discipline", "Resilience", "Growth Mindset"]
+      : term === "2"
+        ? ["Leadership", "Professionalism", "Teamwork"]
+        : [
+            "Community Engagement",
+            "Ethical Decision-Making",
+            "Social Responsibility",
+          ];
 
   return `
-You are an expert in K-12 education, curriculum design, and instructional technology, specializing in the Tongston Entrepreneurial Education curriculum. Your task is to create a comprehensive, engaging, and practical Weekly Project Lesson Facilitation Framework for Term ${term}, Week ${task}, focusing on the task '${task}'${subTask !== 'Not specified' ? ` (Sub-Task: ${subTask})` : ''}. The framework must align with the term theme (${termTheme}) and the three termly KPIs (${termlyKPIs.join(', ')}), using the Tongston Entrepreneurial Education curriculum. It should incorporate Multiple Intelligences (Linguistic, Logical-Mathematical, Spatial, Bodily-Kinesthetic, Musical, Interpersonal, Intrapersonal, Naturalist) and 21st Century skills (Critical Thinking, Collaboration, Communication, Creativity, Digital Literacy, Problem-Solving) to ensure accessibility, engagement, and character development for all students. Follow the provided template structure with sections for Inquiry Prompt, Cross-Disciplinary Thinking Cues, and Written Report + Reflection.
+You are an expert in K-12 education, curriculum design, and instructional technology, specializing in the Tongston Entrepreneurial Education curriculum. Your task is to create a comprehensive, engaging, and practical Weekly Project Lesson Facilitation Framework for Term ${term}, Week ${task}, focusing on the task '${task}'${subTask !== "Not specified" ? ` (Sub-Task: ${subTask})` : ""}. The framework must align with the term theme (${termTheme}) and the three termly KPIs (${termlyKPIs.join(", ")}), using the Tongston Entrepreneurial Education curriculum. It should incorporate Multiple Intelligences (Linguistic, Logical-Mathematical, Spatial, Bodily-Kinesthetic, Musical, Interpersonal, Intrapersonal, Naturalist) and 21st Century skills (Critical Thinking, Collaboration, Communication, Creativity, Digital Literacy, Problem-Solving) to ensure accessibility, engagement, and character development for all students. Follow the provided template structure with sections for Inquiry Prompt, Cross-Disciplinary Thinking Cues, and Written Report + Reflection.
 
 ## Context
-- **Location**: ${location}${state ? `, ${state}` : ''}${cities ? `, ${cities}` : ''}.
+- **Location**: ${location}${state ? `, ${state}` : ""}${cities ? `, ${cities}` : ""}.
 - **School Branding**:
   - Mission: ${mission}.
   - Vision: ${vision}.
@@ -712,18 +890,18 @@ You are an expert in K-12 education, curriculum design, and instructional techno
 - **Students’ Average Age**: ${studentAge}.
 - **Socio-Economic Context**: ${classesSocioEconomic}.
 - **Term**: ${term} (${termTheme}).
-- **Task**: ${task}${subTask !== 'Not specified' ? ` (Sub-Task: ${subTask})` : ''}.
+- **Task**: ${task}${subTask !== "Not specified" ? ` (Sub-Task: ${subTask})` : ""}.
 - **Pre-Requisite Competence**: ${preRequisite}.
 - **Technology Access**: ${technologyAccess}.
 - **Class Size**: ${classSize}.
 - **Time Available**: ${timeAvailable} minutes.
-- **Teaching Aids**: ${teachingAids.length > 0 ? teachingAids.join(', ') : 'None'}.
-- **Special Education Needs (SEN)**: ${sen.length > 0 ? sen.map((s, i) => `${s} (Count: ${noStudents[i] || 'Not specified'}, Severity: ${security[i] || 'Not specified'}, Support: ${support}, Communication: ${communicationMethod}, Mobility: ${mobility}, Sensory: ${sensoryConsideration}, Social: ${socialInteraction}, Cognitive: ${cognitiveProcessingTime}, Medical: ${medicalEmergencyProtocol}, IEP: ${iepPlan}, Options: ${senOptions.join(', ') || 'Not specified'})`).join('; ') : 'None'}.
+- **Teaching Aids**: ${teachingAids.length > 0 ? teachingAids.join(", ") : "None"}.
+- **Special Education Needs (SEN)**: ${sen.length > 0 ? sen.map((s, i) => `${s} (Count: ${noStudents[i] || "Not specified"}, Severity: ${security[i] || "Not specified"}, Support: ${support}, Communication: ${communicationMethod}, Mobility: ${mobility}, Sensory: ${sensoryConsideration}, Social: ${socialInteraction}, Cognitive: ${cognitiveProcessingTime}, Medical: ${medicalEmergencyProtocol}, IEP: ${iepPlan}, Options: ${senOptions.join(", ") || "Not specified"})`).join("; ") : "None"}.
 - **Weekly Notes**: ${weeklyNotes}.
 
 ## Instructions
 1. **Weekly Project Lesson Facilitation Framework**:
-   - Develop a facilitation framework for Term ${term}, Week ${task}, focusing on the task '${task}'${subTask !== 'Not specified' ? ` (Sub-Task: ${subTask})` : ''}, aligned with the term theme (${termTheme}) and the three termly KPIs (${termlyKPIs.join(', ')}).
+   - Develop a facilitation framework for Term ${term}, Week ${task}, focusing on the task '${task}'${subTask !== "Not specified" ? ` (Sub-Task: ${subTask})` : ""}, aligned with the term theme (${termTheme}) and the three termly KPIs (${termlyKPIs.join(", ")}).
    - Structure the framework using the provided template:
      - **Inquiry Prompt**: Pose open-ended, thought-provoking questions to help students clarify the task, reflect on existing knowledge, skills, and attitudes, and identify learning gaps.
      - **Cross-Disciplinary Thinking Cues**: Identify relevant subject disciplines (e.g., Art, Mathematics, English, Citizenship, Science & Technology, Business & Entrepreneurship) and provide prompts to encourage students to apply knowledge from these subjects without teaching content directly.
@@ -745,13 +923,13 @@ You are an expert in K-12 education, curriculum design, and instructional techno
      - Creativity: Design unique outputs (e.g., posters, presentations).
      - Digital Literacy: Use digital tools for research or submissions (if technologyAccess is 'Yes').
      - Problem-Solving: Address challenges related to the task.
-   - Tailor the framework to class size (${classSize}), time available (${timeAvailable} minutes), and teaching aids (${teachingAids.join(', ') || 'None'}).
+   - Tailor the framework to class size (${classSize}), time available (${timeAvailable} minutes), and teaching aids (${teachingAids.join(", ") || "None"}).
    - If technologyAccess is 'No', use traditional methods (e.g., paper-based reports, in-class discussions); if 'Yes', incorporate digital tools (e.g., online research, video reflections).
-   - Ensure the framework is culturally relevant to ${location}${state ? `, ${state}` : ''}${cities ? `, ${cities}` : ''}, using local examples (e.g., for a community task in Lagos, discuss local market clean-ups).
+   - Ensure the framework is culturally relevant to ${location}${state ? `, ${state}` : ""}${cities ? `, ${cities}` : ""}, using local examples (e.g., for a community task in Lagos, discuss local market clean-ups).
    - Align with the socio-economic context (${classesSocioEconomic}), making tasks relatable (e.g., house-level tasks for Nursery, state-level for Primary 5).
 
 2. **SEN Differentiation**:
-   - Design inclusive strategies for specified SEN (${sen.length > 0 ? sen.join(', ') : 'None'}), addressing count, severity, communication, mobility, sensory, social, cognitive, medical, and IEP requirements.
+   - Design inclusive strategies for specified SEN (${sen.length > 0 ? sen.join(", ") : "None"}), addressing count, severity, communication, mobility, sensory, social, cognitive, medical, and IEP requirements.
    - Examples:
      - For Autism: Use visual schedules and clear, repetitive instructions.
      - For Dyslexia: Provide audio prompts or simplified text.
@@ -789,55 +967,84 @@ You are an expert in K-12 education, curriculum design, and instructional techno
 
 export function projectTaskPlanPrompt(context: Record<string, any>): string {
   // Required fields
-  const location = context.location as string || 'Not specified';
-  const yearClass = context.yearClass as string || 'Not specified';
-  const schoolLevel = context.schoolLevel as string || getSchoolLevel(yearClass);
-  const classSize = context.classSize as string || '10-25';
-  const timeAvailable = context.timeAvailable as string || '40';
-  const term = context.term as '1' | '2' | '3' || '1';
-  const week = context.week as string || '1';
-  const technologyAccess = context.technologyAccess as 'Yes' | 'No' || 'No';
-  const teachingAids = Array.isArray(context.teachingAids) ? context.teachingAids as string[] : [];
+  const location = (context.location as string) || "Not specified";
+  const yearClass = (context.yearClass as string) || "Not specified";
+  const schoolLevel =
+    (context.schoolLevel as string) || getSchoolLevel(yearClass);
+  const classSize = (context.classSize as string) || "10-25";
+  const timeAvailable = (context.timeAvailable as string) || "40";
+  const term = (context.term as "1" | "2" | "3") || "1";
+  const week = (context.week as string) || "1";
+  const technologyAccess = (context.technologyAccess as "Yes" | "No") || "No";
+  const teachingAids = Array.isArray(context.teachingAids)
+    ? (context.teachingAids as string[])
+    : [];
 
   // Optional fields
-  const state = context.state ?? '';
-  const cities = context.cities ?? '';
-  const mission = context.mission ?? 'Not specified';
-  const vision = context.vision ?? 'Not specified';
-  const coreValues = context.coreValues ?? 'Not specified';
+  const state = context.state ?? "";
+  const cities = context.cities ?? "";
+  const mission = context.mission ?? "Not specified";
+  const vision = context.vision ?? "Not specified";
+  const coreValues = context.coreValues ?? "Not specified";
   const subSchoolLevel = context.subSchoolLevel ?? getSchoolSubLevel(yearClass);
   const studentAge = context.studentAge ?? getAverageAge(yearClass);
-  const classesSocioEconomic = context.classesSocioEconomic ?? getSocioEconomicContext(yearClass);
-  const termTheme = context.termTheme ?? (term === '1' ? 'Personal Development' : term === '2' ? 'Professional Development' : 'Public Development');
-  const preRequisite = context.preRequisite ?? 'Progressive topics, not applicable';
-  const sen = Array.isArray(context.sen) ? context.sen as string[] : [];
-  const noStudents = Array.isArray(context.noStudents) ? context.noStudents as string[] : [];
-  const security = Array.isArray(context.security) ? context.security as string[] : [];
-  const support = context.support ?? 'Not specified';
-  const communicationMethod = context.communicationMethod ?? 'Not specified';
-  const mobility = context.mobility ?? 'Not specified';
-  const sensoryConsideration = context.sensoryConsideration ?? 'Not specified';
-  const socialInteraction = context.socialInteraction ?? 'Not specified';
-  const cognitiveProcessingTime = context.cognitiveProcessingTime ?? 'Not specified';
-  const medicalEmergencyProtocol = context.medicalEmergencyProtocol ?? 'Not specified';
-  const iepPlan = context.iepPlan ?? 'Not specified';
-  const senOptions = Array.isArray(context.senOptions) ? context.senOptions as string[] : [];
+  const classesSocioEconomic =
+    context.classesSocioEconomic ?? getSocioEconomicContext(yearClass);
+  const termTheme =
+    context.termTheme ??
+    (term === "1"
+      ? "Personal Development"
+      : term === "2"
+        ? "Professional Development"
+        : "Public Development");
+  const preRequisite =
+    context.preRequisite ?? "Progressive topics, not applicable";
+  const sen = Array.isArray(context.sen) ? (context.sen as string[]) : [];
+  const noStudents = Array.isArray(context.noStudents)
+    ? (context.noStudents as string[])
+    : [];
+  const security = Array.isArray(context.security)
+    ? (context.security as string[])
+    : [];
+  const support = context.support ?? "Not specified";
+  const communicationMethod = context.communicationMethod ?? "Not specified";
+  const mobility = context.mobility ?? "Not specified";
+  const sensoryConsideration = context.sensoryConsideration ?? "Not specified";
+  const socialInteraction = context.socialInteraction ?? "Not specified";
+  const cognitiveProcessingTime =
+    context.cognitiveProcessingTime ?? "Not specified";
+  const medicalEmergencyProtocol =
+    context.medicalEmergencyProtocol ?? "Not specified";
+  const iepPlan = context.iepPlan ?? "Not specified";
+  const senOptions = Array.isArray(context.senOptions)
+    ? (context.senOptions as string[])
+    : [];
   const weeklyProject = context.weeklyProject ?? false;
-  const numberOfSubTasks = context.numberOfSubTasks as '1' | '2' | '3' || '1';
-  const correctModel = context.correctModel as 'Yes' | 'No' || 'No';
-  const explanationCorrectModel = context.explanationCorrectModel as 'Yes' | 'No' || 'No';
-  const submissionFormat = Array.isArray(context.submissionFormat) ? context.submissionFormat as string[] : [];
+  const numberOfSubTasks = (context.numberOfSubTasks as "1" | "2" | "3") || "1";
+  const correctModel = (context.correctModel as "Yes" | "No") || "No";
+  const explanationCorrectModel =
+    (context.explanationCorrectModel as "Yes" | "No") || "No";
+  const submissionFormat = Array.isArray(context.submissionFormat)
+    ? (context.submissionFormat as string[])
+    : [];
 
   // Derive termly KPIs based on term
-  const termlyKPIs = term === '1' ? ['Self-Discipline', 'Resilience', 'Growth Mindset'] :
-                    term === '2' ? ['Leadership', 'Professionalism', 'Teamwork'] :
-                    ['Community Engagement', 'Ethical Decision-Making', 'Social Responsibility'];
+  const termlyKPIs =
+    term === "1"
+      ? ["Self-Discipline", "Resilience", "Growth Mindset"]
+      : term === "2"
+        ? ["Leadership", "Professionalism", "Teamwork"]
+        : [
+            "Community Engagement",
+            "Ethical Decision-Making",
+            "Social Responsibility",
+          ];
 
   return `
-You are an expert in K-12 education, curriculum design, and instructional technology, specializing in the Tongston Entrepreneurial Education curriculum. Your task is to create a highly engaging, comprehensive, and practical project task plan for Term ${term} that inspires students and supports teachers in fostering character development. The project must center on the term theme (${termTheme}) and integrate three termly KPIs (${termlyKPIs.join(', ')}) within a cohesive, motivating project plot/scope. The plan should leverage Multiple Intelligences (Linguistic, Logical-Mathematical, Spatial, Bodily-Kinesthetic, Musical, Interpersonal, Intrapersonal, Naturalist) and 21st Century skills (Critical Thinking, Collaboration, Communication, Creativity, Digital Literacy, Problem-Solving) to ensure accessibility and engagement for all students.
+You are an expert in K-12 education, curriculum design, and instructional technology, specializing in the Tongston Entrepreneurial Education curriculum. Your task is to create a highly engaging, comprehensive, and practical project task plan for Term ${term} that inspires students and supports teachers in fostering character development. The project must center on the term theme (${termTheme}) and integrate three termly KPIs (${termlyKPIs.join(", ")}) within a cohesive, motivating project plot/scope. The plan should leverage Multiple Intelligences (Linguistic, Logical-Mathematical, Spatial, Bodily-Kinesthetic, Musical, Interpersonal, Intrapersonal, Naturalist) and 21st Century skills (Critical Thinking, Collaboration, Communication, Creativity, Digital Literacy, Problem-Solving) to ensure accessibility and engagement for all students.
 
 ## Context
-- **Location**: ${location}${state ? `, ${state}` : ''}${cities ? `, ${cities}` : ''}.
+- **Location**: ${location}${state ? `, ${state}` : ""}${cities ? `, ${cities}` : ""}.
 - **School Branding**:
   - Mission: ${mission}.
   - Vision: ${vision}.
@@ -850,22 +1057,22 @@ You are an expert in K-12 education, curriculum design, and instructional techno
 - **Socio-Economic Context**: ${classesSocioEconomic}.
 - **Term**: ${term} (${termTheme}).
 - **Week**: ${week}.
-- **Termly KPIs**: ${termlyKPIs.join(', ')}.
+- **Termly KPIs**: ${termlyKPIs.join(", ")}.
 - **Pre-Requisite Competence**: ${preRequisite}.
 - **Technology Access**: ${technologyAccess}.
 - **Class Size**: ${classSize}.
 - **Time Available**: ${timeAvailable} minutes.
-- **Teaching Aids**: ${teachingAids.length > 0 ? teachingAids.join(', ') : 'None'}.
-- **Special Education Needs (SEN)**: ${sen.length > 0 ? sen.map((s, i) => `${s} (Count: ${noStudents[i] || 'Not specified'}, Severity: ${security[i] || 'Not specified'}, Support: ${support}, Communication: ${communicationMethod}, Mobility: ${mobility}, Sensory: ${sensoryConsideration}, Social: ${socialInteraction}, Cognitive: ${cognitiveProcessingTime}, Medical: ${medicalEmergencyProtocol}, IEP: ${iepPlan}, Options: ${senOptions.join(', ') || 'Not specified'})`).join('; ') : 'None'}.
-- **Weekly Project Facilitation**: ${weeklyProject ? 'Enabled' : 'Disabled'}.
-- **Number of Sub-Tasks**: ${numberOfSubTasks} (labeled A${numberOfSubTasks === '2' || numberOfSubTasks === '3' ? ', B' : ''}${numberOfSubTasks === '3' ? ', C' : ''}).
+- **Teaching Aids**: ${teachingAids.length > 0 ? teachingAids.join(", ") : "None"}.
+- **Special Education Needs (SEN)**: ${sen.length > 0 ? sen.map((s, i) => `${s} (Count: ${noStudents[i] || "Not specified"}, Severity: ${security[i] || "Not specified"}, Support: ${support}, Communication: ${communicationMethod}, Mobility: ${mobility}, Sensory: ${sensoryConsideration}, Social: ${socialInteraction}, Cognitive: ${cognitiveProcessingTime}, Medical: ${medicalEmergencyProtocol}, IEP: ${iepPlan}, Options: ${senOptions.join(", ") || "Not specified"})`).join("; ") : "None"}.
+- **Weekly Project Facilitation**: ${weeklyProject ? "Enabled" : "Disabled"}.
+- **Number of Sub-Tasks**: ${numberOfSubTasks} (labeled A${numberOfSubTasks === "2" || numberOfSubTasks === "3" ? ", B" : ""}${numberOfSubTasks === "3" ? ", C" : ""}).
 - **Model Answer Provided**: ${correctModel}.
 - **Explanation of Model Answer**: ${explanationCorrectModel}.
-- **Submission Format**: ${submissionFormat.length > 0 ? submissionFormat.join(', ') : 'Not specified'}.
+- **Submission Format**: ${submissionFormat.length > 0 ? submissionFormat.join(", ") : "Not specified"}.
 
 ## Instructions
 1. **Project Task Structure**:
-   - Create a term-long project task plan for Term ${term}, centered on the theme (${termTheme}) and the three KPIs (${termlyKPIs.join(', ')}). Craft a compelling project plot/scope that ties the KPIs into a meaningful narrative, such as:
+   - Create a term-long project task plan for Term ${term}, centered on the theme (${termTheme}) and the three KPIs (${termlyKPIs.join(", ")}). Craft a compelling project plot/scope that ties the KPIs into a meaningful narrative, such as:
      - Term 1 (Personal Development): A personal growth journal where students set goals, track progress, and reflect on self-discipline, resilience, and growth mindset.
      - Term 2 (Professional Development): A mock entrepreneurial venture where students develop leadership, professionalism, and teamwork skills.
      - Term 3 (Public Development): A community service initiative addressing community engagement, ethical decision-making, and social responsibility.
@@ -887,16 +1094,16 @@ You are an expert in K-12 education, curriculum design, and instructional techno
      - Creativity: Design innovative project outputs.
      - Digital Literacy: Use technology for research or presentations (if available).
      - Problem-Solving: Address real-world challenges tied to KPIs.
-   - Tailor tasks to the class size (${classSize}), time available (${timeAvailable} minutes), and teaching aids (${teachingAids.join(', ') || 'None'}).
+   - Tailor tasks to the class size (${classSize}), time available (${timeAvailable} minutes), and teaching aids (${teachingAids.join(", ") || "None"}).
    - If technologyAccess is 'No', use traditional methods (e.g., handwritten reports, physical posters); if 'Yes', leverage digital tools (e.g., online presentations, digital portfolios).
-   - Ensure tasks are culturally relevant to ${location}${state ? `, ${state}` : ''}${cities ? `, ${cities}` : ''}, using local examples (e.g., a community project addressing local issues like waste management in Lagos).
+   - Ensure tasks are culturally relevant to ${location}${state ? `, ${state}` : ""}${cities ? `, ${cities}` : ""}, using local examples (e.g., a community project addressing local issues like waste management in Lagos).
    - Align tasks with the socio-economic context (${classesSocioEconomic}), making them relatable (e.g., house-level projects for Nursery, state-level projects for Primary 5).
    - If correctModel is 'Yes', provide clear model answers for each sub-task (e.g., a sample journal entry for Self-Discipline). If explanationCorrectModel is 'Yes', include detailed explanations to guide students.
-   - Assign submission formats (${submissionFormat.length > 0 ? submissionFormat.join(', ') : 'Not specified'}) to each sub-task, ensuring one format per task (e.g., In-Class Written Report for sub-task A, In-Class Presentation for sub-task B).
+   - Assign submission formats (${submissionFormat.length > 0 ? submissionFormat.join(", ") : "Not specified"}) to each sub-task, ensuring one format per task (e.g., In-Class Written Report for sub-task A, In-Class Presentation for sub-task B).
    - Use equal weighting for all sub-tasks unless specified otherwise.
 
 2. **SEN Differentiation**:
-   - Design inclusive tasks for specified SEN (${sen.length > 0 ? sen.join(', ') : 'None'}), addressing count, severity, communication, mobility, sensory, social, cognitive, medical, and IEP requirements.
+   - Design inclusive tasks for specified SEN (${sen.length > 0 ? sen.join(", ") : "None"}), addressing count, severity, communication, mobility, sensory, social, cognitive, medical, and IEP requirements.
    - Examples:
      - For Autism: Provide visual schedules and clear, step-by-step instructions.
      - For Dyslexia: Offer audio recordings or simplified text.
@@ -942,79 +1149,241 @@ You are an expert in K-12 education, curriculum design, and instructional techno
 
 // Helper functions
 function getSchoolLevel(yearClass: string): string {
-  const nursery = ['Nursery 1', 'Nursery 2', 'Nursery 3', 'Kindergarten 1', 'Kindergarten 2', 'Kindergarten 3', 'Preparatory 1', 'Preparatory 2'];
-  const primary = ['Primary 1', 'Primary 2', 'Primary 3', 'Primary 4', 'Primary 5', 'Primary 6', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6', 'Basic 1', 'Basic 2', 'Basic 3', 'Basic 4', 'Basic 5', 'Basic 6'];
-  const secondary = ['Junior Secondary 1', 'Junior Secondary 2', 'Junior Secondary 3', 'Senior Secondary 1', 'Senior Secondary 2', 'Senior Secondary 3', 'JSS1', 'JSS2', 'JSS3', 'SS1', 'SS2', 'SS3', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12'];
-  const tertiary = ['Undergraduate Year 1', 'Undergraduate Year 2', 'Undergraduate Year 3'];
+  const nursery = [
+    "Nursery 1",
+    "Nursery 2",
+    "Nursery 3",
+    "Kindergarten 1",
+    "Kindergarten 2",
+    "Kindergarten 3",
+    "Preparatory 1",
+    "Preparatory 2",
+  ];
+  const primary = [
+    "Primary 1",
+    "Primary 2",
+    "Primary 3",
+    "Primary 4",
+    "Primary 5",
+    "Primary 6",
+    "Grade 1",
+    "Grade 2",
+    "Grade 3",
+    "Grade 4",
+    "Grade 5",
+    "Grade 6",
+    "Basic 1",
+    "Basic 2",
+    "Basic 3",
+    "Basic 4",
+    "Basic 5",
+    "Basic 6",
+  ];
+  const secondary = [
+    "Junior Secondary 1",
+    "Junior Secondary 2",
+    "Junior Secondary 3",
+    "Senior Secondary 1",
+    "Senior Secondary 2",
+    "Senior Secondary 3",
+    "JSS1",
+    "JSS2",
+    "JSS3",
+    "SS1",
+    "SS2",
+    "SS3",
+    "Grade 7",
+    "Grade 8",
+    "Grade 9",
+    "Grade 10",
+    "Grade 11",
+    "Grade 12",
+  ];
+  const tertiary = [
+    "Undergraduate Year 1",
+    "Undergraduate Year 2",
+    "Undergraduate Year 3",
+  ];
 
-  if (nursery.includes(yearClass)) return 'Nursery School';
-  if (primary.includes(yearClass)) return 'Primary School';
-  if (secondary.includes(yearClass)) return 'Secondary School';
-  if (tertiary.includes(yearClass)) return 'Tertiary School';
-  return 'Not specified';
+  if (nursery.includes(yearClass)) return "Nursery School";
+  if (primary.includes(yearClass)) return "Primary School";
+  if (secondary.includes(yearClass)) return "Secondary School";
+  if (tertiary.includes(yearClass)) return "Tertiary School";
+  return "Not specified";
 }
 
 function getSchoolSubLevel(yearClass: string): string {
-  const nursery = ['Nursery 1', 'Nursery 2', 'Nursery 3', 'Kindergarten 1', 'Kindergarten 2', 'Kindergarten 3', 'Preparatory 1', 'Preparatory 2'];
-  const lowerPrimary = ['Primary 1', 'Primary 2', 'Primary 3', 'Grade 1', 'Grade 2', 'Grade 3', 'Basic 1', 'Basic 2', 'Basic 3'];
-  const upperPrimary = ['Primary 4', 'Primary 5', 'Primary 6', 'Grade 4', 'Grade 5', 'Grade 6', 'Basic 4', 'Basic 5', 'Basic 6'];
-  const juniorSecondary = ['Junior Secondary 1', 'Junior Secondary 2', 'Junior Secondary 3', 'JSS1', 'JSS2', 'JSS3', 'Grade 7', 'Grade 8', 'Grade 9'];
-  const seniorSecondary = ['Senior Secondary 1', 'Senior Secondary 2', 'Senior Secondary 3', 'SS1', 'SS2', 'SS3', 'Grade 10', 'Grade 11', 'Grade 12'];
-  const tertiary = ['Undergraduate Year 1', 'Undergraduate Year 2', 'Undergraduate Year 3'];
+  const nursery = [
+    "Nursery 1",
+    "Nursery 2",
+    "Nursery 3",
+    "Kindergarten 1",
+    "Kindergarten 2",
+    "Kindergarten 3",
+    "Preparatory 1",
+    "Preparatory 2",
+  ];
+  const lowerPrimary = [
+    "Primary 1",
+    "Primary 2",
+    "Primary 3",
+    "Grade 1",
+    "Grade 2",
+    "Grade 3",
+    "Basic 1",
+    "Basic 2",
+    "Basic 3",
+  ];
+  const upperPrimary = [
+    "Primary 4",
+    "Primary 5",
+    "Primary 6",
+    "Grade 4",
+    "Grade 5",
+    "Grade 6",
+    "Basic 4",
+    "Basic 5",
+    "Basic 6",
+  ];
+  const juniorSecondary = [
+    "Junior Secondary 1",
+    "Junior Secondary 2",
+    "Junior Secondary 3",
+    "JSS1",
+    "JSS2",
+    "JSS3",
+    "Grade 7",
+    "Grade 8",
+    "Grade 9",
+  ];
+  const seniorSecondary = [
+    "Senior Secondary 1",
+    "Senior Secondary 2",
+    "Senior Secondary 3",
+    "SS1",
+    "SS2",
+    "SS3",
+    "Grade 10",
+    "Grade 11",
+    "Grade 12",
+  ];
+  const tertiary = [
+    "Undergraduate Year 1",
+    "Undergraduate Year 2",
+    "Undergraduate Year 3",
+  ];
 
-  if (nursery.includes(yearClass)) return 'Nursery School';
-  if (lowerPrimary.includes(yearClass)) return 'Lower Primary School';
-  if (upperPrimary.includes(yearClass)) return 'Upper Primary School';
-  if (juniorSecondary.includes(yearClass)) return 'Junior Secondary School';
-  if (seniorSecondary.includes(yearClass)) return 'Senior Secondary School';
-  if (tertiary.includes(yearClass)) return 'Tertiary School';
-  return 'Not specified';
+  if (nursery.includes(yearClass)) return "Nursery School";
+  if (lowerPrimary.includes(yearClass)) return "Lower Primary School";
+  if (upperPrimary.includes(yearClass)) return "Upper Primary School";
+  if (juniorSecondary.includes(yearClass)) return "Junior Secondary School";
+  if (seniorSecondary.includes(yearClass)) return "Senior Secondary School";
+  if (tertiary.includes(yearClass)) return "Tertiary School";
+  return "Not specified";
 }
 
 function getAverageAge(yearClass: string): string {
   const ageMap: { [key: string]: string } = {
-    'Nursery 1': '3–4 years', 'Kindergarten 1': '3–4 years', 'Preparatory 1': '3–4 years', 'Preparatory 2': '3–4 years',
-    'Nursery 2': '4–5 years', 'Kindergarten 2': '4–5 years',
-    'Nursery 3': '5–6 years', 'Kindergarten 3': '5–6 years',
-    'Primary 1': '6–7 years', 'Grade 1': '6–7 years', 'Basic 1': '6–7 years',
-    'Primary 2': '7–8 years', 'Grade 2': '7–8 years', 'Basic 2': '7–8 years',
-    'Primary 3': '8–9 years', 'Grade 3': '8–9 years', 'Basic 3': '8–9 years',
-    'Primary 4': '9–10 years', 'Grade 4': '9–10 years', 'Basic 4': '9–10 years',
-    'Primary 5': '10–11 years', 'Grade 5': '10–11 years', 'Basic 5': '10–11 years',
-    'Primary 6': '11–12 years', 'Grade 6': '11–12 years', 'Basic 6': '11–12 years',
-    'Junior Secondary 1': '12–13 years', 'JSS1': '12–13 years', 'Grade 7': '12–13 years',
-    'Junior Secondary 2': '13–14 years', 'JSS2': '13–14 years', 'Grade 8': '13–14 years',
-    'Junior Secondary 3': '14–15 years', 'JSS3': '14–15 years', 'Grade 9': '14–15 years',
-    'Senior Secondary 1': '15–16 years', 'SS1': '15–16 years', 'Grade 10': '15–16 years',
-    'Senior Secondary 2': '16–17 years', 'SS2': '16–17 years', 'Grade 11': '16–17 years',
-    'Senior Secondary 3': '17–18 years', 'SS3': '17–18 years', 'Grade 12': '17–18 years',
-    'Undergraduate Year 1': '18+ years',
-    'Undergraduate Year 2': '19+ years',
-    'Undergraduate Year 3': '20+ years',
+    "Nursery 1": "3–4 years",
+    "Kindergarten 1": "3–4 years",
+    "Preparatory 1": "3–4 years",
+    "Preparatory 2": "3–4 years",
+    "Nursery 2": "4–5 years",
+    "Kindergarten 2": "4–5 years",
+    "Nursery 3": "5–6 years",
+    "Kindergarten 3": "5–6 years",
+    "Primary 1": "6–7 years",
+    "Grade 1": "6–7 years",
+    "Basic 1": "6–7 years",
+    "Primary 2": "7–8 years",
+    "Grade 2": "7–8 years",
+    "Basic 2": "7–8 years",
+    "Primary 3": "8–9 years",
+    "Grade 3": "8–9 years",
+    "Basic 3": "8–9 years",
+    "Primary 4": "9–10 years",
+    "Grade 4": "9–10 years",
+    "Basic 4": "9–10 years",
+    "Primary 5": "10–11 years",
+    "Grade 5": "10–11 years",
+    "Basic 5": "10–11 years",
+    "Primary 6": "11–12 years",
+    "Grade 6": "11–12 years",
+    "Basic 6": "11–12 years",
+    "Junior Secondary 1": "12–13 years",
+    JSS1: "12–13 years",
+    "Grade 7": "12–13 years",
+    "Junior Secondary 2": "13–14 years",
+    JSS2: "13–14 years",
+    "Grade 8": "13–14 years",
+    "Junior Secondary 3": "14–15 years",
+    JSS3: "14–15 years",
+    "Grade 9": "14–15 years",
+    "Senior Secondary 1": "15–16 years",
+    SS1: "15–16 years",
+    "Grade 10": "15–16 years",
+    "Senior Secondary 2": "16–17 years",
+    SS2: "16–17 years",
+    "Grade 11": "16–17 years",
+    "Senior Secondary 3": "17–18 years",
+    SS3: "17–18 years",
+    "Grade 12": "17–18 years",
+    "Undergraduate Year 1": "18+ years",
+    "Undergraduate Year 2": "19+ years",
+    "Undergraduate Year 3": "20+ years",
   };
-  return ageMap[yearClass] || 'Not specified';
+  return ageMap[yearClass] || "Not specified";
 }
 
 function getSocioEconomicContext(yearClass: string): string {
   const contextMap: { [key: string]: string } = {
-    'Nursery 1': 'House', 'Kindergarten 1': 'House', 'Preparatory 1': 'House', 'Preparatory 2': 'House',
-    'Nursery 2': 'Neighbourhood', 'Kindergarten 2': 'Neighbourhood',
-    'Nursery 3': 'TESTS', 'Kindergarten 3': 'TESTS',
-    'Primary 1': 'District', 'Grade 1': 'District', 'Basic 1': 'District',
-    'Primary 2': 'Town', 'Grade 2': 'Town', 'Basic 2': 'Town',
-    'Primary 3': 'TESTS', 'Grade 3': 'TESTS', 'Basic 3': 'TESTS',
-    'Primary 4': 'County/Local Government Area (LGA)', 'Grade 4': 'County/Local Government Area (LGA)', 'Basic 4': 'County/Local Government Area (LGA)',
-    'Primary 5': 'State', 'Grade 5': 'State', 'Basic 5': 'State',
-    'Primary 6': 'TESTS', 'Grade 6': 'TESTS', 'Basic 6': 'TESTS',
-    'Junior Secondary 1': 'Sub-National Region', 'JSS1': 'Sub-National Region', 'Grade 7': 'Sub-National Region',
-    'Junior Secondary 2': 'Country', 'JSS2': 'Country', 'Grade 8': 'Country',
-    'Junior Secondary 3': 'TESTS', 'JSS3': 'TESTS', 'Grade 9': 'TESTS',
-    'Senior Secondary 1': 'Sub-Continental Region', 'SS1': 'Sub-Continental Region', 'Grade 10': 'Sub-Continental Region',
-    'Senior Secondary 2': 'Continent', 'SS2': 'Continent', 'Grade 11': 'Continent',
-    'Senior Secondary 3': 'TESTS', 'SS3': 'TESTS', 'Grade 12': 'TESTS',
-    'Undergraduate Year 1': 'Global Socio-Economic (Trade) Block',
-    'Undergraduate Year 2': 'World',
-    'Undergraduate Year 3': 'TESTS',
+    "Nursery 1": "House",
+    "Kindergarten 1": "House",
+    "Preparatory 1": "House",
+    "Preparatory 2": "House",
+    "Nursery 2": "Neighbourhood",
+    "Kindergarten 2": "Neighbourhood",
+    "Nursery 3": "TESTS",
+    "Kindergarten 3": "TESTS",
+    "Primary 1": "District",
+    "Grade 1": "District",
+    "Basic 1": "District",
+    "Primary 2": "Town",
+    "Grade 2": "Town",
+    "Basic 2": "Town",
+    "Primary 3": "TESTS",
+    "Grade 3": "TESTS",
+    "Basic 3": "TESTS",
+    "Primary 4": "County/Local Government Area (LGA)",
+    "Grade 4": "County/Local Government Area (LGA)",
+    "Basic 4": "County/Local Government Area (LGA)",
+    "Primary 5": "State",
+    "Grade 5": "State",
+    "Basic 5": "State",
+    "Primary 6": "TESTS",
+    "Grade 6": "TESTS",
+    "Basic 6": "TESTS",
+    "Junior Secondary 1": "Sub-National Region",
+    JSS1: "Sub-National Region",
+    "Grade 7": "Sub-National Region",
+    "Junior Secondary 2": "Country",
+    JSS2: "Country",
+    "Grade 8": "Country",
+    "Junior Secondary 3": "TESTS",
+    JSS3: "TESTS",
+    "Grade 9": "TESTS",
+    "Senior Secondary 1": "Sub-Continental Region",
+    SS1: "Sub-Continental Region",
+    "Grade 10": "Sub-Continental Region",
+    "Senior Secondary 2": "Continent",
+    SS2: "Continent",
+    "Grade 11": "Continent",
+    "Senior Secondary 3": "TESTS",
+    SS3: "TESTS",
+    "Grade 12": "TESTS",
+    "Undergraduate Year 1": "Global Socio-Economic (Trade) Block",
+    "Undergraduate Year 2": "World",
+    "Undergraduate Year 3": "TESTS",
   };
-  return contextMap[yearClass] || 'Not specified';
+  return contextMap[yearClass] || "Not specified";
 }

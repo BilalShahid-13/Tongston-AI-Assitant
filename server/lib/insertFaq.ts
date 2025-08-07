@@ -5,9 +5,9 @@ import { Db, MongoClient } from "mongodb";
 import PdfParse from "pdf-parse";
 import { connectMongo } from "../lib/connectDb";
 import openai from "../lib/openai";
-import { Faq } from "../model/faq";
 import { parseExcelLink } from "../utils/parseExcelFile";
 import { listPdfFilesInFolder } from "./googleDriveDriver";
+import { faqKnowledgeBase } from "../model/faqKnowledgeBase";
 
 
 config();
@@ -78,7 +78,7 @@ async function processSinglePdf(fileId: string) {
   for (let i = 0; i < chunks.length; i++) {
     const chunk = chunks[i];
 
-    const exists = await Faq.exists({ fileId, chunkIndex: i });
+    const exists = await faqKnowledgeBase.exists({ fileId, chunkIndex: i });
     if (exists) {
       console.log(`⏩ Skipping chunk ${i} of file ${fileId} (already in DB)`);
       continue;
@@ -92,7 +92,7 @@ async function processSinglePdf(fileId: string) {
 
     const vector = embedding.data[0].embedding;
 
-    await Faq.create({
+    await faqKnowledgeBase.create({
       fileId,
       chunkIndex: i,
       content: chunk,

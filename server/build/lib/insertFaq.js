@@ -11,9 +11,9 @@ const mongodb_1 = require("mongodb");
 const pdf_parse_1 = __importDefault(require("pdf-parse"));
 const connectDb_1 = require("../lib/connectDb");
 const openai_1 = __importDefault(require("../lib/openai"));
-const faq_1 = require("../model/faq");
 const parseExcelFile_1 = require("../utils/parseExcelFile");
 const googleDriveDriver_1 = require("./googleDriveDriver");
+const faqKnowledgeBase_1 = require("../model/faqKnowledgeBase");
 (0, dotenv_1.config)();
 const splitter = new textsplitters_1.RecursiveCharacterTextSplitter({
     chunkSize: 512,
@@ -69,7 +69,7 @@ async function processSinglePdf(fileId) {
     const chunks = await splitter.splitText(content);
     for (let i = 0; i < chunks.length; i++) {
         const chunk = chunks[i];
-        const exists = await faq_1.Faq.exists({ fileId, chunkIndex: i });
+        const exists = await faqKnowledgeBase_1.faqKnowledgeBase.exists({ fileId, chunkIndex: i });
         if (exists) {
             console.log(`⏩ Skipping chunk ${i} of file ${fileId} (already in DB)`);
             continue;
@@ -80,7 +80,7 @@ async function processSinglePdf(fileId) {
             encoding_format: "float",
         });
         const vector = embedding.data[0].embedding;
-        await faq_1.Faq.create({
+        await faqKnowledgeBase_1.faqKnowledgeBase.create({
             fileId,
             chunkIndex: i,
             content: chunk,

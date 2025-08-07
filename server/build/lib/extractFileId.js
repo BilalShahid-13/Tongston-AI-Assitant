@@ -9,7 +9,7 @@ const axios_1 = __importDefault(require("axios"));
 const pdfToText_1 = require("./pdfToText");
 const textsplitters_1 = require("@langchain/textsplitters");
 const openai_1 = __importDefault(require("./openai"));
-const faq_1 = require("../model/faq");
+const faqKnowledgeBase_1 = require("../model/faqKnowledgeBase");
 const extractFileId = (link) => {
     const match = link.match(/\/d\/([a-zA-Z0-9_-]+)/);
     return match ? match[1] : "";
@@ -41,7 +41,7 @@ async function processSinglePdf(fileId) {
             encoding_format: "float",
         });
         const vector = embedding.data[0].embedding;
-        await faq_1.Faq.insertOne({
+        await faqKnowledgeBase_1.faqKnowledgeBase.insertOne({
             content: chunk,
             vector,
         });
