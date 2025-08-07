@@ -33,7 +33,7 @@ export async function faqSimilaritySearch(req: Request, query: string, res: Resp
     "http://localhost:3000", // for local dev
   ];
 
-  const origin = req.headers.get("origin") || "";
+  const origin = req.headers.origin || "";
 
   if (allowedOrigins.includes(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
