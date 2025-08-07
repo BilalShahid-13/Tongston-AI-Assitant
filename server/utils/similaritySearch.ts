@@ -27,6 +27,22 @@ export async function faqSimilaritySearch(req: Request, query: string, res: Resp
   const results = await vectorStore.similaritySearch(query, 10);
   const context = results.map((doc) => doc.pageContent).join("\n");
 
+  const allowedOrigins = [
+    "https://tongston-ai-assistant.vercel.app",
+    "https://tongston-ai-assitant.vercel.app",
+    "http://localhost:3000", // for local dev
+  ];
+
+  const origin = req.headers.get("origin") || "";
+
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Vary", "Origin"); // good practice
+  } else {
+    res.setHeader("Access-Control-Allow-Origin", "null");
+  }
+
+
   res.setHeader("Access-Control-Allow-Origin", process.env.ORIGIN_URL!);
   res.setHeader("Access-Control-Allow-Credentials", "true");
   res.setHeader("Content-Type", "text/event-stream");
