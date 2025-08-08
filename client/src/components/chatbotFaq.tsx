@@ -35,7 +35,7 @@ export default function AIChatbot() {
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  const [log, setLog] = useState("");
+  const [log] = useState("");
   useLayoutEffect(() => {
     scrollToBottom();
   }, [messages]);

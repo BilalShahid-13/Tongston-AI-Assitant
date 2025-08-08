@@ -1,4 +1,4 @@
-import { DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import type { Dispatch, SetStateAction } from "react";
 import Markdown from "./markdown";
 import { Button } from "./ui/button";
