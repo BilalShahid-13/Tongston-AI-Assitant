@@ -6,6 +6,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.connectMongo = void 0;
+const mongoose_1 = __importDefault(require("mongoose"));
 // dotenv.config();
 // const URI = process.env.MONGODB_URI as string;
 // const DB_NAME = process.env.DB_NAME as string;
@@ -48,12 +49,16 @@ exports.connectMongo = void 0;
 //     console.log("🛑 MongoDB connection closed");
 //   }
 // }
-const mongoose_1 = __importDefault(require("mongoose"));
-const dotenv_1 = __importDefault(require("dotenv"));
-dotenv_1.default.config();
 const connectMongo = async () => {
+    console.log("📡 connectMongo() called...");
+    console.log("🔍 Current readyState:", mongoose_1.default.connection.readyState);
     if (mongoose_1.default.connection.readyState >= 1) {
+        console.log("⚠️ Already connected to MongoDB");
         return;
+    }
+    if (!process.env.MONGODB_URI) {
+        console.error("❌ MONGODB_URI is not defined");
+        throw new Error("MONGODB_URI is not defined");
     }
     try {
         await mongoose_1.default.connect(process.env.MONGODB_URI);

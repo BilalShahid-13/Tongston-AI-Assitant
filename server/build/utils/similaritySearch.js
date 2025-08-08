@@ -9,7 +9,10 @@ const mongodb_1 = require("@langchain/mongodb");
 const openai_1 = require("@langchain/openai");
 const dotenv_1 = require("dotenv");
 const mongodb_2 = require("mongodb");
+const mongoose_1 = __importDefault(require("mongoose"));
+const connectDb_1 = require("../lib/connectDb");
 const openai_2 = __importDefault(require("../lib/openai"));
+const userHistorySchema_1 = require("../model/userHistorySchema");
 const globalChatHistory_1 = require("./globalChatHistory");
 (0, dotenv_1.config)();
 const uri = process.env.MONGODB_URI || "mongodb://localhost:27017";
@@ -65,11 +68,12 @@ async function faqSimilaritySearch(req, query, res, instructionFn) {
     globalChatHistory_1.chatHistory.push({ role: "assistant", content: fullResponse });
 }
 // other plans like assessment plan
-async function planSimilaritySearch(req, query, res, instructionFn // should return string
-) {
+async function planSimilaritySearch(req, query, res, instructionFn, // should return string
+planName, metaData) {
     try {
         const results = await vectorStore.similaritySearch(JSON.stringify(query), 10);
         const context = results.map((doc) => doc.pageContent).join("\n");
+        let fullResponse = "";
         const stream = await openai_2.default.chat.completions.create({
             model: "gpt-4o-mini",
             messages: [
@@ -85,14 +89,35 @@ async function planSimilaritySearch(req, query, res, instructionFn // should ret
             temperature: 0.7,
             stream: true,
         });
-        // ✅ Set headers for streaming
-        // res.setHeader("Content-Type", "text/plain; charset=utf-8");
-        // res.setHeader("Transfer-Encoding", "chunked");
         for await (const chunk of stream) {
             const content = chunk.choices?.[0]?.delta?.content;
             if (content) {
-                res.write(content); // ✅ No prefix, just raw content
+                fullResponse += content;
+                res.write(content);
             }
+        }
+        try {
+            await (0, connectDb_1.connectMongo)();
+            const history = await userHistorySchema_1.History.create({
+                userId: new mongoose_1.default.Types.ObjectId("689452b9af9c2c6ff5e178e9"),
+                fields: Array.isArray(query) ? query : Object.values(query).map(String),
+                answer: fullResponse,
+                plan: planName,
+                metaData: metaData
+            });
+            if (history?.id) {
+                // res.write(
+                //   `\n[MONGO_DB_INSERT][FINAL_RESPONSE_START]${JSON.stringify({
+                //     final: fullResponse,
+                //     id: history.id,
+                //   })}[FINAL_RESPONSE_END]\n`
+                // );
+            }
+            else {
+            }
+        }
+        catch (err) {
+            console.error("❌ Error saving history:", err);
         }
         res.end();
     }

@@ -30,7 +30,7 @@ async function getReportGenerator(req, res) {
         res.setHeader("Content-Type", "text/event-stream");
         res.setHeader("Cache-Control", "no-cache");
         res.setHeader("Connection", "keep-alive");
-        await (0, similaritySearch_1.planSimilaritySearch)(req, body, res, prompts_1.projectTaskFacilitationPlan);
+        await (0, similaritySearch_1.planSimilaritySearch)(req, body, res, prompts_1.projectTaskFacilitationPlan, "reportGenerator", "Lesson Plan Marking & Report Generator");
     }
     catch (error) {
         console.error("❌ Error in getSubjectLessonPlan:", error);

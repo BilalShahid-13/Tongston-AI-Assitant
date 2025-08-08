@@ -14,7 +14,7 @@ const mongodb_1 = require("mongodb");
 const uri = process.env.MONGODB_URI || "mongodb://localhost:27017";
 const client = new mongodb_1.MongoClient(uri);
 const db = client.db();
-const collection = db.collection("faqKnowledgeBase");
+// const collection = db.collection("faqKnowledgeBase");
 async function getFaq(req, res) {
     try {
         // const query = req.body.query || req.query.q;

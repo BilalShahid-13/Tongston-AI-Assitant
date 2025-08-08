@@ -49,7 +49,7 @@ async function getAssessmentPlan(req, res) {
         res.setHeader("Cache-Control", "no-cache");
         res.setHeader("Connection", "keep-alive");
         // ✅ Stream the generated assessment plan
-        await (0, similaritySearch_1.planSimilaritySearch)(req, body, res, prompts_1.subjectAssessmentPrompt);
+        await (0, similaritySearch_1.planSimilaritySearch)(req, body, res, prompts_1.subjectAssessmentPrompt, "subjectAssessmentPlan", "Subject Assessment Plan");
     }
     catch (error) {
         console.error("❌ Error in getSubjectLessonPlan:", error);

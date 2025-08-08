@@ -35,7 +35,7 @@ async function getProjectTaskPlan(req, res) {
         res.setHeader("Content-Type", "text/event-stream");
         res.setHeader("Cache-Control", "no-cache");
         res.setHeader("Connection", "keep-alive");
-        await (0, similaritySearch_1.planSimilaritySearch)(req, body, res, prompts_1.projectTaskPlanPrompt);
+        await (0, similaritySearch_1.planSimilaritySearch)(req, body, res, prompts_1.projectTaskPlanPrompt, "projectTaskPlan", "Project Task Plan");
     }
     catch (error) {
         console.error("❌ Error in getSubjectLessonPlan:", error);

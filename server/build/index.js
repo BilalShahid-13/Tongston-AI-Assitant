@@ -9,6 +9,7 @@ const faqs_route_1 = __importDefault(require("./routes/faqs.route"));
 const projectTask_route_1 = __importDefault(require("./routes/projectTask.route"));
 const studentPlan_route_1 = __importDefault(require("./routes/studentPlan.route"));
 const subjectLessonPlan_route_1 = __importDefault(require("./routes/subjectLessonPlan.route"));
+const user_route_1 = __importDefault(require("./routes/user.route"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cors_1.default)({ origin: "*" }));
@@ -19,6 +20,7 @@ app.get("/", (req, res) => {
 // parseExcelFile()
 // app.use("/api", searchRouter);
 // app.use("/api", feedbackRouter);
+app.use("/api", user_route_1.default);
 app.use("/api", faqs_route_1.default);
 app.use("/api", subjectLessonPlan_route_1.default);
 app.use("/api", studentPlan_route_1.default);

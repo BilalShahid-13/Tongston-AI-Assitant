@@ -39,7 +39,7 @@ async function getStudentConductCharacterPlan(req, res) {
         res.setHeader("Content-Type", "text/event-stream");
         res.setHeader("Cache-Control", "no-cache");
         res.setHeader("Connection", "keep-alive");
-        await (0, similaritySearch_1.planSimilaritySearch)(req, body, res, prompts_1.studentConductCharacterPlanPrompt);
+        await (0, similaritySearch_1.planSimilaritySearch)(req, body, res, prompts_1.studentConductCharacterPlanPrompt, "studentConductCharacterPlan", "Student Conduct Character Plan");
     }
     catch (error) {
         console.error("❌ Error in getSubjectLessonPlan:", error);

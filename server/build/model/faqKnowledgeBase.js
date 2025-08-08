@@ -22,4 +22,4 @@ const faqKnowledgeBaseSchema = new mongoose_1.Schema({
 }, {
     timestamps: true
 });
-exports.faqKnowledgeBase = mongoose_1.models.Faq || (0, mongoose_1.model)("faqKnowledgeBase", faqKnowledgeBaseSchema);
+exports.faqKnowledgeBase = mongoose_1.models.faqKnowledgeBase || (0, mongoose_1.model)("faqKnowledgeBase", faqKnowledgeBaseSchema);

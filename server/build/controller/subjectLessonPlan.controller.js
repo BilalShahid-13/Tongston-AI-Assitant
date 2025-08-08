@@ -18,13 +18,14 @@ async function getSubjectLessonPlan(req, res) {
             "week",
             "topic",
             "subject",
-            "subjectDicipline",
+            "subjectDiscipline",
             "bloomLevel",
             "classSize",
             "timeAvailable",
             "technologyAccess",
             "teachingAids"
         ];
+        console.log('lessonPlan', body);
         // ✅ Check missing fields BEFORE sending headers
         const missingFields = compulsoryFields.filter(field => {
             const value = body[field];
@@ -43,8 +44,9 @@ async function getSubjectLessonPlan(req, res) {
         res.setHeader("Content-Type", "text/event-stream");
         res.setHeader("Cache-Control", "no-cache");
         res.setHeader("Connection", "keep-alive");
+        // await connectMongo();
         // ✅ Now start streaming
-        await (0, similaritySearch_1.planSimilaritySearch)(req, body, res, prompts_1.lessonPlanPrompt);
+        await (0, similaritySearch_1.planSimilaritySearch)(req, body, res, prompts_1.lessonPlanPrompt, "subjectLessonPlan", "Subject Lesson Plan");
     }
     catch (error) {
         console.error("❌ Error in getSubjectLessonPlan:", error);
