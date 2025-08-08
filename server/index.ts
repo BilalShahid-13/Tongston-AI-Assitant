@@ -4,6 +4,7 @@ import faqRouter from "./routes/faqs.route";
 import projectTaskRouter from "./routes/projectTask.route";
 import studentConductRouter from "./routes/studentPlan.route";
 import subjectLessonRouter from "./routes/subjectLessonPlan.route";
+import userRouter from "./routes/user.route";
 const app = express();
 
 app.use(express.json());
@@ -19,6 +20,7 @@ app.get("/", (req: Request, res: Response) => {
 
 // app.use("/api", searchRouter);
 // app.use("/api", feedbackRouter);
+app.use("/api", userRouter);
 app.use("/api", faqRouter);
 app.use("/api", subjectLessonRouter);
 app.use("/api", studentConductRouter);

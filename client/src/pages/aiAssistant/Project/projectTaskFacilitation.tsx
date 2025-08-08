@@ -7,6 +7,7 @@ import CustomTextArea from "@/components/CustomFields/CustomTextArea";
 import { Container, ContainerPlan, Grid, Heading, Row, SubmitButton } from "@/components/GenralComponents";
 import PlanCard from "@/components/planCard";
 import ScrollAnimate from "@/components/scrollAnimate";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { allCities, allCountryNames, classSizes, cognitiveProcessingTime, communicationMethod, iepPlan, medicalEmergencyProtocol, mobility, securityLevel, senDifferentiation, sensoryConsideration, socialInteraction, supportProvided, teachingAids, termOptions, timeOptions, yearClasses } from "@/constants/lessonPlanConstant";
 import { useOnError } from "@/hooks/useOnError";
 import { projectTaskFacilitationFormSchema, type IProjectTaskFacilitationFormSchema } from "@/schema/projectTaskFacilitation.schema";
@@ -63,10 +64,11 @@ export default function ProjectTaskFacilitation() {
       <ContainerPlan
         showPanel={showChatbot}
       >
-        <PlanCard title="Project Task Facilitation"
-          ref={scrollRef}
-          className="h-[90vh] overflow-y-scroll relative">
-          <div className="h-[500px] relative overflow-y-scroll">
+
+               <PlanCard title="Student Conduct and Character Lesson Plan"
+                 ref={scrollRef}
+                 className="relative h-[90vh] overflow-y-scroll">
+                 <ScrollArea>
             <FormProvider {...form}>
               <form onSubmit={form.handleSubmit(onSubmit, useOnError())}
                 className="flex flex-col gap-8 mx-3">
@@ -348,7 +350,7 @@ export default function ProjectTaskFacilitation() {
                 />
               </form>
             </FormProvider>
-          </div>
+          </ScrollArea>
         </PlanCard>
         <PlanCard
           ref={chatbotRef}

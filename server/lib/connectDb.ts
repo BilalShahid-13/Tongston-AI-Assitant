@@ -1,6 +1,8 @@
 // import { Db, MongoClient, Collection } from "mongodb";
 // import dotenv from "dotenv";
 
+import mongoose from "mongoose";
+
 // dotenv.config();
 
 // const URI = process.env.MONGODB_URI as string;
@@ -56,18 +58,23 @@
 //   }
 // }
 
-import mongoose from "mongoose";
-import dotenv from "dotenv";
-
-dotenv.config();
-
 export const connectMongo = async () => {
+  console.log("📡 connectMongo() called...");
+
+  console.log("🔍 Current readyState:", mongoose.connection.readyState);
+
   if (mongoose.connection.readyState >= 1) {
+    console.log("⚠️ Already connected to MongoDB");
     return;
   }
 
+  if (!process.env.MONGODB_URI) {
+    console.error("❌ MONGODB_URI is not defined");
+    throw new Error("MONGODB_URI is not defined");
+  }
+
   try {
-    await mongoose.connect(process.env.MONGODB_URI!);
+    await mongoose.connect(process.env.MONGODB_URI);
     console.log("✅ MongoDB connected");
   } catch (error) {
     console.error("❌ MongoDB connection error:", error);

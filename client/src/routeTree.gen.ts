@@ -9,11 +9,41 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as RecentStudentConductRouteImport } from './routes/recentStudentConduct'
+import { Route as RecentLessonsRouteImport } from './routes/recentLessons'
+import { Route as RecentAssessmentRouteImport } from './routes/recentAssessment'
+import { Route as MyFilesRouteImport } from './routes/myFiles'
 import { Route as HelpFaqsRouteImport } from './routes/help-faqs'
 import { Route as FeedbackRouteImport } from './routes/feedback'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecentStudentConductRoute = RecentStudentConductRouteImport.update({
+  id: '/recentStudentConduct',
+  path: '/recentStudentConduct',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecentLessonsRoute = RecentLessonsRouteImport.update({
+  id: '/recentLessons',
+  path: '/recentLessons',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecentAssessmentRoute = RecentAssessmentRouteImport.update({
+  id: '/recentAssessment',
+  path: '/recentAssessment',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyFilesRoute = MyFilesRouteImport.update({
+  id: '/myFiles',
+  path: '/myFiles',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HelpFaqsRoute = HelpFaqsRouteImport.update({
   id: '/help-faqs',
   path: '/help-faqs',
@@ -40,12 +70,22 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/feedback': typeof FeedbackRoute
   '/help-faqs': typeof HelpFaqsRoute
+  '/myFiles': typeof MyFilesRoute
+  '/recentAssessment': typeof RecentAssessmentRoute
+  '/recentLessons': typeof RecentLessonsRoute
+  '/recentStudentConduct': typeof RecentStudentConductRoute
+  '/settings': typeof SettingsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/feedback': typeof FeedbackRoute
   '/help-faqs': typeof HelpFaqsRoute
+  '/myFiles': typeof MyFilesRoute
+  '/recentAssessment': typeof RecentAssessmentRoute
+  '/recentLessons': typeof RecentLessonsRoute
+  '/recentStudentConduct': typeof RecentStudentConductRoute
+  '/settings': typeof SettingsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +93,46 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/feedback': typeof FeedbackRoute
   '/help-faqs': typeof HelpFaqsRoute
+  '/myFiles': typeof MyFilesRoute
+  '/recentAssessment': typeof RecentAssessmentRoute
+  '/recentLessons': typeof RecentLessonsRoute
+  '/recentStudentConduct': typeof RecentStudentConductRoute
+  '/settings': typeof SettingsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/feedback' | '/help-faqs'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/feedback'
+    | '/help-faqs'
+    | '/myFiles'
+    | '/recentAssessment'
+    | '/recentLessons'
+    | '/recentStudentConduct'
+    | '/settings'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/feedback' | '/help-faqs'
-  id: '__root__' | '/' | '/about' | '/feedback' | '/help-faqs'
+  to:
+    | '/'
+    | '/about'
+    | '/feedback'
+    | '/help-faqs'
+    | '/myFiles'
+    | '/recentAssessment'
+    | '/recentLessons'
+    | '/recentStudentConduct'
+    | '/settings'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/feedback'
+    | '/help-faqs'
+    | '/myFiles'
+    | '/recentAssessment'
+    | '/recentLessons'
+    | '/recentStudentConduct'
+    | '/settings'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,10 +140,50 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   FeedbackRoute: typeof FeedbackRoute
   HelpFaqsRoute: typeof HelpFaqsRoute
+  MyFilesRoute: typeof MyFilesRoute
+  RecentAssessmentRoute: typeof RecentAssessmentRoute
+  RecentLessonsRoute: typeof RecentLessonsRoute
+  RecentStudentConductRoute: typeof RecentStudentConductRoute
+  SettingsRoute: typeof SettingsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recentStudentConduct': {
+      id: '/recentStudentConduct'
+      path: '/recentStudentConduct'
+      fullPath: '/recentStudentConduct'
+      preLoaderRoute: typeof RecentStudentConductRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recentLessons': {
+      id: '/recentLessons'
+      path: '/recentLessons'
+      fullPath: '/recentLessons'
+      preLoaderRoute: typeof RecentLessonsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recentAssessment': {
+      id: '/recentAssessment'
+      path: '/recentAssessment'
+      fullPath: '/recentAssessment'
+      preLoaderRoute: typeof RecentAssessmentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/myFiles': {
+      id: '/myFiles'
+      path: '/myFiles'
+      fullPath: '/myFiles'
+      preLoaderRoute: typeof MyFilesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/help-faqs': {
       id: '/help-faqs'
       path: '/help-faqs'
@@ -107,6 +220,11 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   FeedbackRoute: FeedbackRoute,
   HelpFaqsRoute: HelpFaqsRoute,
+  MyFilesRoute: MyFilesRoute,
+  RecentAssessmentRoute: RecentAssessmentRoute,
+  RecentLessonsRoute: RecentLessonsRoute,
+  RecentStudentConductRoute: RecentStudentConductRoute,
+  SettingsRoute: SettingsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

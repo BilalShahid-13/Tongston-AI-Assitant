@@ -76,7 +76,7 @@ export const sidebarItems = [
     name: "My Files",
     id: "my-files",
     icon: Folder,
-    route: "/my-files",
+    route: "/myFiles",
   },
   {
     name: "Analytics",
@@ -97,19 +97,19 @@ export const sidebarQuickAccess = [
     name: "Recent Lessons",
     icon: FileText,
     color: "blue",
-    route: "/recent-lessons",
+    route: "/recentLessons",
   },
   {
     name: "Assessments",
     icon: ClipboardCheck,
     color: "green",
-    route: "/assessments",
+    route: "/recentAssessment",
   },
   {
     name: "Student Conduct",
     icon: Users,
     color: "yellow",
-    route: "/student-conduct",
+    route: "/recentStudentConduct",
   },
 ];
 
@@ -527,6 +527,24 @@ export const helpWalkthroughSteps: IWalkthroughSteps[] = [
     content: "To generate a Subject Lesson Plan, visit the “Subject Lesson Plan & Notes Generator,” choose class, subject, topic, duration, and Bloom’s level, then click Generate. For Subject Assessments, use the “Continuous Assessment / End of Term Generator,” select similar fields, pick the number of questions, and generate the output. To create Student Conduct and Character Lesson Plans, go to the respective generator, select class and KPI topic, then click Generate for a structured behavior-focused lesson. For Project Tasks, open the Project Generator, choose class and subject, define the topic, and generate an interdisciplinary project ready for use.",
     selector: `#${faqCategories[4].id}`
   },
+]
+
+export const latestPlanList = [
+  "projectTaskFacilitationPlan",
+  "projectTaskPlan",
+  "reportGenerator",
+]
+
+export const latestLesson = "subjectLessonPlan"
+
+export const latestAssessmentPlan = [
+  "subjectAssessmentPlan",
+  "studentConductCharacterAssessmentPlan",
+]
+
+export const latestStudentConductPlan = [
+  "studentConductCharacterPlan",
+  "studentConductCharacterAssessmentPlan"
 ]
 
 

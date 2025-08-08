@@ -1,13 +1,4 @@
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Menu } from "lucide-react"; // Import hamburger menu icon
-import { navbarItems } from "../../lib/constant";
-import { Button } from "../ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
 import UserProfile from "./userProfile";
 
 const Navbar = () => {
@@ -16,7 +7,7 @@ const Navbar = () => {
   console.log("breakpoints", isMobile);
 
   return (
-    <nav className="w-full top-0 flex flex-row shadow-sm p-3 z-50 bg-white">
+    <nav className="w-full top-0 flex flex-row shadow-sm p-3 z-50">
       <div
         className={`flex flex-row w-full mx-3 justify-start items-center
         ${isMobile ? "gap-0" : "gap-0"}`}
@@ -27,7 +18,7 @@ const Navbar = () => {
           </h2>
 
           {/* Hamburger Button for Mobile/Tablets */}
-          <div>
+          {/* <div>
             {isMobile && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -51,11 +42,11 @@ const Navbar = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
-          </div>
+          </div> */}
         </div>
 
         {/* Desktop Navbar Items */}
-        <div>
+        {/* <div>
           {!isMobile && (
             <div className="flex flex-row justify-center items-center gap-12 w-full">
               {navbarItems.map((items, index) => (
@@ -68,7 +59,7 @@ const Navbar = () => {
               ))}
             </div>
           )}
-        </div>
+        </div> */}
       </div>
 
       <UserProfile />

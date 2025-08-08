@@ -17,7 +17,7 @@ config();
 const uri = process.env.MONGODB_URI || "mongodb://localhost:27017";
 const client = new MongoClient(uri);
 const db = client.db();
-const collection = db.collection("faqKnowledgeBase");
+// const collection = db.collection("faqKnowledgeBase");
 export async function getFaq(req: Request, res: Response): Promise<void> {
   try {
     // const query = req.body.query || req.query.q;

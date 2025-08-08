@@ -7,6 +7,7 @@ import CustomTextArea from "@/components/CustomFields/CustomTextArea";
 import { Container, ContainerPlan, Grid, Heading, Row, SubmitButton } from "@/components/GenralComponents";
 import PlanCard from "@/components/planCard";
 import ScrollAnimate from "@/components/scrollAnimate";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { allCities, allCountryNames, assesmentWeightLists, bloomTaxonomyLevel, classSizes, cognitiveProcessingTime, communicationMethod, curriculumTypes, iepPlan, mcqsQuestions, medicalEmergencyProtocol, mobility, securityLevel, senDifferentiation, sensoryConsideration, settings, socialInteraction, studentConduct_KPI, submissionFormatLists, supportProvided, teachingAids, termOptions, timeOptions, totalNumberofQuestionsAsString, typesofQuestions, weekList, yearClasses } from "@/constants/lessonPlanConstant";
 import { KPIList } from "@/constants/studentConductCharacterPlanConstant";
 import { useOnError } from "@/hooks/useOnError";
@@ -66,7 +67,7 @@ export default function StudentConductCharacterPlan() {
         <PlanCard title="Student Conduct and Character Lesson Plan"
           ref={scrollRef}
           className="relative h-[90vh] overflow-y-scroll">
-          <div className="h-[500px] relative overflow-y-scroll">
+          <ScrollArea>
             <FormProvider {...form}>
               <form onSubmit={form.handleSubmit(onSubmit, useOnError())}
                 className="flex flex-col gap-8 mx-3">
@@ -479,7 +480,7 @@ export default function StudentConductCharacterPlan() {
                 />
               </form>
             </FormProvider>
-          </div>
+          </ScrollArea>
         </PlanCard>
         <PlanCard
           ref={chatbotRef}

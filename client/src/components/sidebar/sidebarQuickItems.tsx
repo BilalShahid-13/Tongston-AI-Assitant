@@ -22,7 +22,7 @@ const SidebarQuickAccess = () => {
                 to={item.route}
                 className={`relative tabStyle ${isActive
                   ? 'text-zinc-800 font-semibold'
-                  : 'text-slate-700 hover:bg-yellow-300'
+                  : 'text-slate-700 dark:text-slate-300 hover:bg-yellow-300 dark:hover:bg-yellow-400 dark:hover:text-zinc-700'
                   } transition-all duration-300 z-10 flex items-center justify-start gap-2 px-3 py-2 rounded-lg`}
               >
                 {item.icon && <item.icon className="h-4 w-4" />}

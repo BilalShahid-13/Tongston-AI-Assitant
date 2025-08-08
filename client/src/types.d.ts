@@ -77,3 +77,13 @@ export interface IWalkthroughSteps {
   // content: (props: { setCurrentStep: (step: number) => void }) => ReactNode;
   selector: string
 }
+
+export interface IHistory {
+  userId?: string;
+  fields?: string[];
+  answer?: string;
+  plan: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  metaData?: string
+}

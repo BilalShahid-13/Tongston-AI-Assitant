@@ -5,6 +5,7 @@ import { FileUploader } from "@/components/fileUploader";
 import { Container, ContainerPlan, Grid, Row, SubmitButton } from "@/components/GenralComponents";
 import PlanCard from "@/components/planCard";
 import ScrollAnimate from "@/components/scrollAnimate";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { termOptions, yearClassMappings } from "@/constants/lessonPlanConstant";
 import { useOnError } from "@/hooks/useOnError";
 import { reportGeneratorSchema, type ReportGeneratorSchema } from "@/schema/reportGenerator.schema";
@@ -66,8 +67,10 @@ export default function ReportGenerator() {
       <ContainerPlan
         showPanel={showChatbot}
       >
-        <PlanCard title="Assessment Report" ref={scrollRef}>
-          <div className="h-[500px] relative overflow-y-scroll">
+        <PlanCard title="Student Conduct and Character Lesson Plan"
+          ref={scrollRef}
+          className="relative h-[90vh] overflow-y-scroll">
+          <ScrollArea>
             <FormProvider {...form}>
               <form onSubmit={form.handleSubmit(onSubmit, useOnError())}
                 className="flex flex-col gap-8 mx-3">
@@ -129,7 +132,7 @@ export default function ReportGenerator() {
                 />
               </form>
             </FormProvider>
-          </div>
+          </ScrollArea>
         </PlanCard>
         <PlanCard
           ref={chatbotRef}

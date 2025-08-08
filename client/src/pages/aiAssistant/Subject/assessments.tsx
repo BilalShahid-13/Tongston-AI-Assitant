@@ -6,6 +6,8 @@ import CustomSelectField from "@/components/CustomFields/CustomSelectField";
 import CustomTextArea from "@/components/CustomFields/CustomTextArea";
 import { Container, ContainerPlan, Grid, Heading, Row, SubmitButton } from "@/components/GenralComponents";
 import PlanCard from "@/components/planCard";
+import ScrollAnimate from "@/components/scrollAnimate";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { continousAssessmentWeekList, numberofQuestionLists, submisisonList, typeofAssesments } from "@/constants/assesmentPlanConstant";
 import { allCities, allCountryNames, assesmentWeightLists, bloomTaxonomyLevel, cognitiveProcessingTime, communicationMethod, curriculumTypes, iepPlan, medicalEmergencyProtocol, mobility, nationalTestList, securityLevel, senDifferentiation, sensoryConsideration, socialInteraction, subjectLists, supportProvided, termOptions, timeOptions, typesofQuestions, yearClasses } from "@/constants/lessonPlanConstant";
 import { useOnError } from "@/hooks/useOnError";
@@ -26,7 +28,7 @@ const Assessments = () => {
       technologyAccess: "No",
     }
   });
-
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [showAssessmentPlan, setShowAssessmentPlan] = useState(false);
@@ -113,11 +115,12 @@ const Assessments = () => {
 
   return (
     <>
+      <ScrollAnimate scrollRef={scrollRef} />
       <ContainerPlan
         showPanel={showAssessmentPlan}
       >
         <PlanCard title="Subject Assessment Plan">
-          <div className="h-[500px] relative overflow-y-scroll">
+          <ScrollArea className="h-[500px] relative overflow-y-scroll">
             <FormProvider {...form}>
               <form onSubmit={form.handleSubmit(onSubmit, useOnError())}
                 className="flex flex-col gap-8 mx-3">
@@ -568,7 +571,7 @@ const Assessments = () => {
                 />
               </form>
             </FormProvider>
-          </div>
+          </ScrollArea>
         </PlanCard>
         <PlanCard
           ref={chatbotRef}

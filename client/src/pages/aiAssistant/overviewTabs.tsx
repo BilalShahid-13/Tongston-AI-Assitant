@@ -16,14 +16,13 @@ const OverviewTabs = () => {
       <Tabs
         value={tabValue}
         onValueChange={addTabValue}
-        // onLoad={() => setIsOpen(true)}
         defaultValue={"Lesson Plans"}
         className="max-sm:justify-start max-sm:items-center
        flex flex-col relative"
       >
         <TabsList
           className={`grid ${isOpen ? "grid-cols-4" : "grid-cols-3"}
-          gap-5 w-full mx-auto h-auto bg-neutral-50
+          gap-5 w-full mx-auto h-auto bg-neutral-50 dark:bg-neutral-800
           max-md:grid-cols-2`}
         >
 
@@ -51,20 +50,21 @@ const OverviewTabs = () => {
                 id={tab.id}
                 value={tab.name}
                 className={`relative flex items-center gap-2 px-4 py-2.5
-        text-sm font-medium transition-all duration-300 rounded-xl
-        bg-neutral-100 hover:bg-neutral-200/70
+        text-sm font-medium transition-all duration-300 rounded-xl dark:text-neutral-400
+        bg-neutral-100 hover:bg-neutral-200/70 dark:bg-neutral-700
         flex-none cursor-pointer overflow-hidden w-full ${colSpanClass}`}
               >
                 {tabValue === tab.name && (
                   <motion.div
                     layoutId="gradientTab"
-                    className="absolute inset-0 rounded-xl bg-gradient-to-r from-yellow-300 to-yellow-500"
+                    className="absolute inset-0 rounded-xl
+                    bg-gradient-to-r from-yellow-300 to-yellow-500"
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   />
                 )}
                 <div className="relative z-10 flex items-center gap-2">
                   <tab.icon className="w-4 h-4" />
-                  <span className="truncate">{tab.name}</span>
+                  <span className="truncate ">{tab.name}</span>
                 </div>
               </TabsTrigger>
             );

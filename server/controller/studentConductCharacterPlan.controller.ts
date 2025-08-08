@@ -42,7 +42,7 @@ export async function getStudentConductCharacterPlan(
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Connection", "keep-alive");
 
-    await planSimilaritySearch(req, body, res, studentConductCharacterPlanPrompt);
+    await planSimilaritySearch(req, body, res, studentConductCharacterPlanPrompt, "studentConductCharacterPlan", "Student Conduct Character Plan");
 
   } catch (error: any) {
     console.error("❌ Error in getSubjectLessonPlan:", error);

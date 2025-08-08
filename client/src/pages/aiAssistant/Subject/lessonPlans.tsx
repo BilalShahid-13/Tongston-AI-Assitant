@@ -7,13 +7,13 @@ import CustomTextArea from "@/components/CustomFields/CustomTextArea";
 import { Container, ContainerPlan, Grid, Heading, Row, SubmitButton } from "@/components/GenralComponents";
 import PlanCard from "@/components/planCard";
 import ScrollAnimate from "@/components/scrollAnimate";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { allCities, allCountryNames, assesmentWeightLists, bloomTaxonomyLevel, classSizes, cognitiveProcessingTime, communicationMethod, curriculumTypes, iepPlan, mcqsQuestions, medicalEmergencyProtocol, mobility, nationalTestList, securityLevel, senDifferentiation, sensoryConsideration, settings, socialInteraction, studentConduct_KPI, subjectLists, supportProvided, teachingAids, termOptions, timeOptions, totalNumberofQuestionsAsString, typesofQuestions, weekList, yearClasses } from "@/constants/lessonPlanConstant";
 import { useOnError } from "@/hooks/useOnError";
 import { lessonPlanForm, type lessonPlanFormSchema } from "@/schema/schema.schema";
 import { useCurriculumStore } from "@/store/curriculumStore";
 import { useProjectTaskFacilitationStore } from "@/store/projectTaskFacilitationStore";
 import { onSubmitFn } from "@/utils/onSubmit";
-import { resetPlanValues } from "@/utils/resetPlanValues";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useRef, useState } from "react";
 import type { UseFormReturn } from 'react-hook-form';
@@ -58,34 +58,14 @@ export default function LessonPlan() {
 
   const onSubmit = async (data: lessonPlanFormSchema) => {
     setData("");
-    const payload = {
-      bloomLevel: data.bloomLevel,
-      classSize: data.classSize,
-      classesSocioEconomic: data.classesSocioEconomic,
-      curriculum: data.curriculum,
-      location: data.location,
-      schoolLevel: data.schoolLevel,
-      studentAge: data.studentAge,
-      subSchoolLevel: data.subSchoolLevel,
-      subject: data.subject,
-      subjectDicipline: data.subjectDicipline,
-      term: data.term,
-      termTheme: data.termTheme,
-      timeAvailable: data.timeAvailable,
-      week: data.week,
-      yearClass: data.yearClass,
-      topic: data.topic || "finance", // or whatever default
-      technologyAccess: data.technologyAccess || "Yes",
-      teachingAids: data.teachingAids || ["Textbooks and Workbooks"]
-    }
     await onSubmitFn({
-      payload,
+      payload: data,
       api: "subject/lessonPlan",
       setStatusMessage,
       setShowPlan: setShowLessonPlan,
       setData, setLoading
     })
-    form.reset(resetPlanValues(lessonPlanForm))
+    // form.reset(resetPlanValues(lessonPlanForm))
   };
 
   return (
@@ -93,12 +73,11 @@ export default function LessonPlan() {
       <ScrollAnimate scrollRef={scrollRef} />
       <ContainerPlan
         showPanel={showLessonPlan}
-
       >
-        <PlanCard title="Subject Lesson Plan & Notes Generator"
-          ref={scrollRef} className="mt-4"
-        >
-          <div className="h-[500px] relative overflow-y-scroll">
+        <PlanCard title="Student Conduct and Character Lesson Plan"
+          ref={scrollRef}
+          className="relative h-[90vh] overflow-y-scroll">
+          <ScrollArea>
             <FormProvider {...form}>
               <form onSubmit={form.handleSubmit(onSubmit, useOnError())}
                 className="flex flex-col gap-8 mx-3">
@@ -256,7 +235,7 @@ export default function LessonPlan() {
                       {form.watch("subject") &&
                         <CustomInputField
                           form={form}
-                          name="subjectDicipline"
+                          name="subjectDiscipline"
                           isRequired
                           placeholder="Select a Subject Dicipline"
                           fieldName="Subject Dicipline"
@@ -561,7 +540,7 @@ export default function LessonPlan() {
                 />
               </form>
             </FormProvider>
-          </div>
+          </ScrollArea>
         </PlanCard >
         <PlanCard
           ref={chatbotRef}

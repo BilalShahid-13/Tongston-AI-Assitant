@@ -22,4 +22,4 @@ const faqKnowledgeBaseSchema = new Schema({
   timestamps: true
 })
 
-export const faqKnowledgeBase = models.Faq || model("faqKnowledgeBase", faqKnowledgeBaseSchema);
+export const faqKnowledgeBase = models.faqKnowledgeBase || model("faqKnowledgeBase", faqKnowledgeBaseSchema);

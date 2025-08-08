@@ -11,10 +11,11 @@ const AiAssitstantHeader = () => {
   return (
     <div className="flex flex-col gap-2">
       <div
-        className="bg-yellow-400 flex flex-col gap-2 max-sm:gap-4 text-zinc-800 p-6
+        className="bg-yellow-400 flex flex-col gap-2
+        max-sm:gap-4 text-zinc-800 p-6
         justify-start items-start max-sm:max-w-full"
       >
-        <BreadCrumb section="AI Assistant" />
+        <BreadCrumb section="AI Assistant" className="dark:text-zinc-700" />
         <h2
           className="text-3xl font-inter font-semibold
          max-sm:text-center

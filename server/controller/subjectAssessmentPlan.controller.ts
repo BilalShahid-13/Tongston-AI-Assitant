@@ -52,7 +52,7 @@ export async function getAssessmentPlan(req: Request, res: Response): Promise<vo
     res.setHeader("Connection", "keep-alive");
 
     // ✅ Stream the generated assessment plan
-    await planSimilaritySearch(req, body, res, subjectAssessmentPrompt);
+    await planSimilaritySearch(req, body, res, subjectAssessmentPrompt, "subjectAssessmentPlan","Subject Assessment Plan");
 
   } catch (error: any) {
     console.error("❌ Error in getSubjectLessonPlan:", error);

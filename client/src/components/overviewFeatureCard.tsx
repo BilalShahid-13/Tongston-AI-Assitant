@@ -46,7 +46,7 @@ const OverviewFeatureCard = ({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="font-inter text-sm text-gray-600">{description}</p>
+            <p className="font-inter text-sm text-gray-600 dark:text-gray-200">{description}</p>
           </CardContent>
           <CardFooter>
             <InteractiveHoverButton

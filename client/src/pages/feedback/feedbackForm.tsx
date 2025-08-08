@@ -7,6 +7,7 @@ import PlanCard from "@/components/planCard";
 import ScrollAnimate from "@/components/scrollAnimate";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useOnError } from "@/hooks/useOnError";
 import { backendApi, type ApiType } from "@/lib/constant";
 import { feedbackSchema, type IFeedbackSchema } from "@/schema/feedback.shema";
@@ -94,7 +95,7 @@ export default function FeedbackForm() {
         showPanel={showChatbot}
       >
         <PlanCard title="Feedback Form" className="mt-6">
-          <div className="h-[500px] relative overflow-y-scroll" ref={scrollRef}>
+          <ScrollArea className="h-[500px]" ref={scrollRef}>
             <FormProvider {...form}>
               <form onSubmit={form.handleSubmit(onSubmit, useOnError())}
                 className="flex flex-col gap-8 mx-3">
@@ -164,7 +165,7 @@ export default function FeedbackForm() {
                 </Button>
               </form>
             </FormProvider>
-          </div>
+          </ScrollArea>
         </PlanCard >
       </ContainerPlan >
     </>

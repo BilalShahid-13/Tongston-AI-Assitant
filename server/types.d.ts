@@ -109,3 +109,12 @@ export interface KnowledgeBaseDocument {
     objectives?: string[];
   };
 }
+
+// new types
+
+interface IHistory {
+  userId: mongoose.Types.ObjectId | string,
+  fields: string[],
+  answer: string,
+  plan: string
+}

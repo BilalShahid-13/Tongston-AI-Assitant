@@ -3,7 +3,10 @@ import { OpenAIEmbeddings } from "@langchain/openai";
 import { config } from "dotenv";
 import { Request, Response } from "express";
 import { MongoClient } from "mongodb";
+import mongoose from "mongoose";
+import { connectMongo } from "../lib/connectDb";
 import openai from "../lib/openai";
+import { History } from "../model/userHistorySchema";
 import { chatHistory } from "./globalChatHistory";
 
 config();
@@ -68,16 +71,20 @@ export async function faqSimilaritySearch(req: Request, query: string, res: Resp
   chatHistory.push({ role: "assistant", content: fullResponse });
 }
 
+
 // other plans like assessment plan
 export async function planSimilaritySearch(
   req: Request,
   query: Record<string, any>,
   res: Response,
-  instructionFn: (context: Record<string, any>) => string // should return string
+  instructionFn: (context: Record<string, any>) => string, // should return string
+  planName: string,
+  metaData: string,
 ): Promise<void> {
   try {
     const results = await vectorStore.similaritySearch(JSON.stringify(query), 10);
     const context = results.map((doc) => doc.pageContent).join("\n");
+    let fullResponse = "";
     const stream = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
@@ -93,16 +100,33 @@ export async function planSimilaritySearch(
       temperature: 0.7,
       stream: true,
     });
-
-    // ✅ Set headers for streaming
-    // res.setHeader("Content-Type", "text/plain; charset=utf-8");
-    // res.setHeader("Transfer-Encoding", "chunked");
-
     for await (const chunk of stream) {
       const content = chunk.choices?.[0]?.delta?.content;
       if (content) {
-        res.write(content); // ✅ No prefix, just raw content
+        fullResponse += content;
+        res.write(content);
       }
+    }
+    try {
+      await connectMongo();
+      const history = await History.create({
+        userId: new mongoose.Types.ObjectId("689452b9af9c2c6ff5e178e9"),
+        fields: Array.isArray(query) ? query : Object.values(query).map(String),
+        answer: fullResponse,
+        plan: planName,
+        metaData: metaData
+      });
+      if (history?.id) {
+        // res.write(
+        //   `\n[MONGO_DB_INSERT][FINAL_RESPONSE_START]${JSON.stringify({
+        //     final: fullResponse,
+        //     id: history.id,
+        //   })}[FINAL_RESPONSE_END]\n`
+        // );
+      } else {
+      }
+    } catch (err) {
+      console.error("❌ Error saving history:", err);
     }
     res.end();
   } catch (error: any) {

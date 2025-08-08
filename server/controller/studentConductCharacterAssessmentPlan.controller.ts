@@ -46,7 +46,7 @@ export async function getStudentConductCharacterAssessmentPlan(
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Connection", "keep-alive");
 
-    await planSimilaritySearch(req, body, res, studentConductCharacterPlanAssessmentPrompt);
+    await planSimilaritySearch(req, body, res, studentConductCharacterPlanAssessmentPrompt,"studentConductCharacterAssessmentPlan","Student Conduct Character Assessment Plan");
 
   } catch (error: any) {
     console.error("❌ Error in getSubjectLessonPlan:", error);

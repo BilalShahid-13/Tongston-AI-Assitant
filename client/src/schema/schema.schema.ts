@@ -24,7 +24,7 @@ export const lessonPlanForm = z
     topic: z.string().nonempty("Topic is required"),
     subTopic: z.string().optional(),
     subject: z.string().nonempty("Subject is required"),
-    subjectDicipline: z.string().nonempty("Subject is required"),
+    subjectDiscipline: z.string().nonempty("Subject is required"),
     preRequisite: z.string().optional(),
     aim: z.string().optional(),
     bloomLevel: z.string().nonempty("Bloom’s level is required"),

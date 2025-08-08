@@ -31,7 +31,7 @@ export async function getReportGenerator(req: Request, res: Response): Promise<v
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Connection", "keep-alive");
 
-    await planSimilaritySearch(req, body, res, projectTaskFacilitationPlan);
+    await planSimilaritySearch(req, body, res, projectTaskFacilitationPlan,"reportGenerator","Lesson Plan Marking & Report Generator");
 
   } catch (error: any) {
     console.error("❌ Error in getSubjectLessonPlan:", error);

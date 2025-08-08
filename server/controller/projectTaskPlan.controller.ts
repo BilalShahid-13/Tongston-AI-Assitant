@@ -38,7 +38,7 @@ export async function getProjectTaskPlan(
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Connection", "keep-alive");
 
-    await planSimilaritySearch(req, body, res, projectTaskPlanPrompt);
+    await planSimilaritySearch(req, body, res, projectTaskPlanPrompt, "projectTaskPlan","Project Task Plan");
 
   } catch (error: any) {
     console.error("❌ Error in getSubjectLessonPlan:", error);
