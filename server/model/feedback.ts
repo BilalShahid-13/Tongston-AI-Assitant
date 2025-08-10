@@ -1,38 +1,68 @@
-import { Schema, model, models } from "mongoose";
+import mongoose, { Schema } from "mongoose";
+import { IFeedbackDocument, IFileMeta } from "../types";
 
-const feedbackSchema = new Schema(
+const FileMetaSchema = new Schema<IFileMeta>(
   {
-    category: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    fileUrls: {
-      type: [String], // Store uploaded file URLs or paths
-      default: [],
-    },
-    message: {
-      type: String,
-      required: true,
-      minlength: 10,
-      trim: true,
-    },
-    rating: {
-      type: Number,
-      required: true,
-      min: 1,
-      max: 5,
-    },
-    otherCategoryDetail: {
-      type: String,
-      trim: true,
-    },
-    image: { type: Buffer },
+    filename: { type: String, required: true },
+    url: { type: String },
+    mimetype: { type: String },
+    size: { type: Number },
   },
-  {
-    timestamps: true, // adds createdAt and updatedAt
-  },
+  { _id: false }
 );
 
-// Prevent model overwrite in dev
-export const Feedback = models.Feedback || model("Feedback", feedbackSchema);
+const FeedbackSchema = new Schema<IFeedbackDocument>(
+  {
+    // Step 1
+    subject: { type: String, required: true, trim: true },
+    yearClassLevel: { type: String, required: true, trim: true },
+    role: { type: String, required: true, trim: true },
+    country: { type: String, required: true, trim: true },
+    followUp: { type: Boolean, default: false },
+    email: { type: String, trim: true, lowercase: true, sparse: true, index: true },
+
+    // Step 2
+    sectionReferringTo: { type: String, required: true },
+    otherSectionDetail: { type: String },
+
+    // Step 3
+    feedbackCategory: {
+      type: String,
+      enum: ["positive", "issue", "suggestion"],
+      required: true,
+    },
+    positiveMessage: { type: String },
+
+    // Issue specific
+    issueDescription: { type: String },
+    issueScreenshot: { type: [FileMetaSchema], default: [] },
+    problemOccurredAt: { type: String },
+    otherProblemOccurredAtDetail: { type: String },
+    issueCheckboxes: { type: [String], default: [] },
+    issueDetails: { type: String },
+
+    // Suggestion specific
+    suggestionType: { type: String },
+    otherSuggestionTypeDetail: { type: String },
+    suggestionMessage: { type: String },
+    suggestionAppearance: { type: String },
+    suggestionScreenshot: { type: [FileMetaSchema], default: [] },
+
+    // optional metadata
+    meta: {
+      ip: { type: String },
+      userAgent: { type: String },
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+// Useful indexes
+FeedbackSchema.index({ email: 1 });
+FeedbackSchema.index({ feedbackCategory: 1, createdAt: -1 });
+
+const FeedbackModel = mongoose.model<IFeedbackDocument>("Feedback", FeedbackSchema);
+
+export default FeedbackModel;

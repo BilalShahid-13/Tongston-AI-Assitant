@@ -1,11 +1,10 @@
-import { Loader } from "@/components/Loader";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { CustomError, Error, Loader } from "@/components/Loader";
 import { backendApi } from "@/lib/constant";
+import type { LessonPlanData } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { Terminal } from "lucide-react";
 import BreadCrumb from "./breadcrumb";
-import MyFilesCard from "./myFilesCard";
+import { MyFilesCard } from "./myFilesCard";
 
 async function fetchPlanFile(planName: string) {
   const { data } = await axios.post(`${backendApi}/api/getLatestProjectTaskPlan`, { planName });
@@ -34,13 +33,7 @@ export default function RecentPlan({ planNames }: RecentPlanProps) {
   if (isLoading) return <Loader />;
 
   if (error instanceof Error) return (
-    <Alert variant="destructive">
-      <Terminal />
-      <AlertTitle>Heads up!</AlertTitle>
-      <AlertDescription>
-        Something went wrong, please try again
-      </AlertDescription>
-    </Alert>
+    <Error />
   );
 
   // Helper to check if plan data has content
@@ -57,12 +50,7 @@ export default function RecentPlan({ planNames }: RecentPlanProps) {
     const filteredPlans = data.filter(hasValidData);
     if (filteredPlans.length === 0) {
       return (
-        <Alert variant="default">
-          <AlertTitle>No recent lesson plans found</AlertTitle>
-          <AlertDescription>
-            There are currently no lesson plans available.
-          </AlertDescription>
-        </Alert>
+        <CustomError planNames={planNames} />
       );
     }
     return (
@@ -73,9 +61,19 @@ export default function RecentPlan({ planNames }: RecentPlanProps) {
             <BreadCrumb section="Recent Lessons" className="text-zinc-600 z-20" />
           </div>
           <div className="flex flex-col gap-3 mt-3">
-            {filteredPlans.map(({ data }: any, index: number) => (
-              <MyFilesCard key={index} text={data?.metaData} des={data?.answer} />
-            ))}
+            {filteredPlans.map(({ data }: any, index: number) => {
+              const transformed: LessonPlanData = {
+                answer: data.answer ?? "",
+                metaData: Array.isArray(data.metaData)
+                  ? data.metaData
+                  : data.metaData
+                    ? [data.metaData]
+                    : [],
+                createdAt: data.createdAt?.toString(),
+              };
+
+              return <MyFilesCard data={transformed} key={index} />;
+            })}
           </div>
         </div>
       </>
@@ -93,7 +91,11 @@ export default function RecentPlan({ planNames }: RecentPlanProps) {
             <BreadCrumb section="Recent Lessons" className="text-zinc-600 z-20" />
           </div>
           <div className="flex flex-col gap-3 mt-3">
-            <MyFilesCard text={data?.data?.metaData} des={data?.data?.answer} />
+            {data && (
+              <MyFilesCard
+                data={data?.data}
+              />
+            )}
           </div>
         </div>
       </>

@@ -1,3 +1,5 @@
+import { Document } from "mongoose";
+
 export interface KnowledgeBaseEntry {
   Discipline: string;
   DisciplineDescription: string;
@@ -112,9 +114,63 @@ export interface KnowledgeBaseDocument {
 
 // new types
 
-interface IHistory {
+export interface IHistory {
   userId: mongoose.Types.ObjectId | string,
   fields: string[],
   answer: string,
   plan: string
+}
+
+export interface Message {
+  messages: {
+    role: "system" | "user" | "assistant";
+    content: string;
+    timestamp: Date;
+  }[];
+}
+
+
+export interface IFileMeta {
+  filename: string;
+  url?: string; // URL or path where the file is stored (S3/Cloudinary/local)
+  mimetype?: string;
+  size?: number;
+}
+export interface IFeedbackDocument extends Document {
+  subject: string;
+  yearClassLevel: string;
+  role: string;
+  country: string;
+  followUp: boolean;
+  email?: string | null;
+
+  sectionReferringTo: string;
+  otherSectionDetail?: string;
+
+  feedbackCategory: "positive" | "issue" | "suggestion";
+  positiveMessage?: string | null;
+
+  // issue fields
+  issueDescription?: string | null;
+  issueScreenshot?: IFileMeta[];
+  problemOccurredAt?: string | null;
+  otherProblemOccurredAtDetail?: string | null;
+  issueCheckboxes?: string[];
+  issueDetails?: string | null;
+
+  // suggestion fields
+  suggestionType?: string | null;
+  otherSuggestionTypeDetail?: string | null;
+  suggestionMessage?: string | null;
+  suggestionAppearance?: string | null;
+  suggestionScreenshot?: IFileMeta[];
+
+  // optional metadata
+  meta?: {
+    ip?: string;
+    userAgent?: string;
+  };
+
+  createdAt?: Date;
+  updatedAt?: Date;
 }

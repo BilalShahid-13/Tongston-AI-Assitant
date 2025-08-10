@@ -12,8 +12,8 @@ const mongodb_2 = require("mongodb");
 const mongoose_1 = __importDefault(require("mongoose"));
 const connectDb_1 = require("../lib/connectDb");
 const openai_2 = __importDefault(require("../lib/openai"));
+const faqHistory_1 = require("../model/faqHistory");
 const userHistorySchema_1 = require("../model/userHistorySchema");
-const globalChatHistory_1 = require("./globalChatHistory");
 (0, dotenv_1.config)();
 const uri = process.env.MONGODB_URI || "mongodb://localhost:27017";
 const client = new mongodb_2.MongoClient(uri);
@@ -27,31 +27,26 @@ const vectorStore = new mongodb_1.MongoDBAtlasVectorSearch(embeddings, {
     embeddingKey: "vector",
 });
 async function faqSimilaritySearch(req, query, res, instructionFn) {
+    await (0, connectDb_1.connectMongo)();
     const results = await vectorStore.similaritySearch(query, 10);
     const context = results.map((doc) => doc.pageContent).join("\n");
+    let chatHistory = await faqHistory_1.faqHistory.find({});
+    const roleAndContentOnly = chatHistory.flatMap(doc => doc.messages.map((msg) => ({
+        role: msg.role,
+        content: msg.content
+    })));
     res.setHeader("Access-Control-Allow-Origin", "*");
     // res.setHeader("Access-Control-Allow-Origin", process.env.ORIGIN_URL!);
     res.setHeader("Access-Control-Allow-Credentials", "false");
     res.setHeader("Content-Type", "text/event-stream");
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Connection", "keep-alive");
-    globalChatHistory_1.chatHistory.push({ role: "user", content: query });
     let fullResponse = "";
     const stream = await openai_2.default.chat.completions.create({
         model: "gpt-4o-mini",
-        // messages: [
-        //   {
-        //     role: "system",
-        //     content: instructionFn(context, query),
-        //   },
-        //   {
-        //     role: "user",
-        //     content: query,
-        //   },
-        // ],
         messages: [
             { role: "system", content: instructionFn(context, query) },
-            ...globalChatHistory_1.chatHistory,
+            ...roleAndContentOnly,
         ],
         temperature: 0.7,
         stream: true,
@@ -65,7 +60,12 @@ async function faqSimilaritySearch(req, query, res, instructionFn) {
     }
     res.write(`data: [END]\n\n`);
     res.end();
-    globalChatHistory_1.chatHistory.push({ role: "assistant", content: fullResponse });
+    await faqHistory_1.faqHistory.create({
+        messages: [
+            { role: "assistant", content: fullResponse },
+            { role: "user", content: query },
+        ]
+    });
 }
 // other plans like assessment plan
 async function planSimilaritySearch(req, query, res, instructionFn, // should return string

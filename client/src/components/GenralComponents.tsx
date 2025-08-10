@@ -119,6 +119,7 @@ export const ContainerPlan = ({
 export const Grid = ({ children, columns = 2 }: { children: React.ReactNode, columns?: 2 | 3 | 4 }) => {
   return (
     <div className={`grid grid-cols-${columns} gap-x-4 gap-y-6
+      max-md:grid-cols-1
      transition-all duration-150`}>{children}</div>)
 }
 

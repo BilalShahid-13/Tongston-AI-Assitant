@@ -6,7 +6,6 @@ import StudentConductCharacterAssessment from "@/pages/aiAssistant/StudentConduc
 import StudentConductCharacterPlan from "@/pages/aiAssistant/StudentConduct/studentConductCharacterPlan";
 import Assessments from "@/pages/aiAssistant/Subject/assessments";
 import LessonPlans from "@/pages/aiAssistant/Subject/lessonPlans";
-import Overview from "@/pages/aiAssistant/tabs/overview";
 import type { IWalkthroughSteps } from "@/types";
 import {
   BookOpenText,
@@ -19,7 +18,6 @@ import {
   FileText,
   Folder,
   Hammer,
-  LayoutDashboard,
   MessageCircle,
   Presentation,
   Projector,
@@ -30,8 +28,8 @@ import {
   Users
 } from "lucide-react";
 
-export const backendApi = 'https://tongston-ai-assitant-rt92.vercel.app';
-// export const backendApi = 'http://localhost:5000';
+// export const backendApi = 'https://tongston-ai-assitant-rt92.vercel.app';
+export const backendApi = 'http://localhost:5000';
 
 export const navbarItems = [
   {
@@ -126,7 +124,7 @@ export const sidebarTabsContentData = [
 ] as const;
 
 export const aiAssistantTabs = [
-  { name: "Overview", id: "overview", component: Overview, icon: LayoutDashboard },
+  // { name: "Overview", id: "overview", component: Overview, icon: LayoutDashboard },
   { name: "Subject Lesson Plan", id: "subject-lesson-plan", component: LessonPlans, icon: BookOpenText },
   { name: "Subject Assessments", id: "subject-assessments", component: Assessments, icon: ClipboardList },
   { name: "Student Conduct and Character Lesson Plan", id: "student-conduct-and-character-lesson-plan", component: StudentConductCharacterPlan, icon: ScrollText },
@@ -194,7 +192,7 @@ export const aiAssistantOverviewFeatures = [
       "Mark lesson plans and generate comprehensive performance reports",
     icon: CircleCheckBig,
     CTA: "Start Marking",
-    tabValue: aiAssistantTabs[7].name,
+    tabValue: aiAssistantTabs[6].name,
     color: {
       highlighted: "bg-red-500/40",
       default: "text-red-700",
@@ -449,10 +447,10 @@ export const faqList = [
 ]
 
 export const homePageWalkthroughSteps: IWalkthroughSteps[] = [
-  {
-    content: "Create subject-specific lesson plans and teaching notes aligned with Tongston’s entrepreneurial education scheme of work, and other schemes.",
-    selector: `#welcome-accordion`,
-  },
+  // {
+  //   content: "Create subject-specific lesson plans and teaching notes aligned with Tongston’s entrepreneurial education scheme of work, and other schemes.",
+  //   selector: `#welcome-accordion`,
+  // },
   {
     content:
       "Need guidance? Click here to explore Help & FAQs. This section answers common questions like how to generate lesson plans, assessments, and access reports.",
@@ -464,38 +462,38 @@ export const homePageWalkthroughSteps: IWalkthroughSteps[] = [
   },
   {
     content: `Welcome to the AI Teaching Assistant! This tool helps you quickly create lesson plans, student assessments, project tasks, and conduct reports using AI. Whether you're planning a subject lesson, marking work, or tracking student behavior, everything you need is available in one place. Simply choose a section from the sidebar to begin.`,
-    selector: `#${aiAssistantTabs[0].id}`
+    selector: `#subject-lesson-plan`
   },
   {
     content: `To create a subject lesson plan, go to the “Lesson Plan & Notes” section. Select the class, subject, topic, and curriculum type from the dropdowns. You’ll also be asked to choose the lesson duration and class size. Once you fill in the fields, click the generate button and your full lesson plan will be created. You can then download or save it for classroom use.`,
-    selector: `#${aiAssistantTabs[1].id}`
+    selector: `#subject-assessments`
   },
   {
     content: `To generate subject assessments, open the “Assessments” section. After selecting your class, subject, and topic, choose how many questions you want in the test. Click generate, and the AI will create a quiz with answers. You can edit or approve the questions, then save them to your question bank for future use.`,
-    selector: `#${aiAssistantTabs[2].id}`
+    selector: `#student-conduct-and-character-lesson-plan`
   },
-  {
-    content: `🧑‍🎓In the “Character Lesson Plan” section, you can create lesson plans that help build student behavior and character. Choose the class level and topic, such as leadership or honesty, and set the lesson duration. After clicking generate, the AI will create structured activities and strategies. You can review and save the plan as needed.`,
-    selector: `#${aiAssistantTabs[3].id}`
-  },
-  {
-    content: `To assess student behavior, go to the “Character Assessments” section. Select the class and behavioral topic (KPI), then let the AI generate appropriate questions. You can make edits if necessary, and then save the questions into your custom question bank for use during evaluations.`,
-    selector: `#${aiAssistantTabs[4].id}`
-  },
+  // {
+  //   content: `🧑‍🎓In the “Character Lesson Plan” section, you can create lesson plans that help build student behavior and character. Choose the class level and topic, such as leadership or honesty, and set the lesson duration. After clicking generate, the AI will create structured activities and strategies. You can review and save the plan as needed.`,
+  //   selector: `#student-conduct-and-character-lesson-plan`
+  // },
+  // {
+  //   content: `To assess student behavior, go to the “Character Assessments” section. Select the class and behavioral topic (KPI), then let the AI generate appropriate questions. You can make edits if necessary, and then save the questions into your custom question bank for use during evaluations.`,
+  //   selector: `#student-conduct-and-character-lesson-plan`
+  // },
   {
     content: `If you want to assign project-based learning, visit the “Project Tasks” section. Select the class and subject, then enter a real-world topic like environmental safety or innovation. Click generate and the AI will produce a hands-on project task. Save the task and assign it to groups or individual students based on your schedule.
 `,
-    selector: `#${aiAssistantTabs[5].id}`
+    selector: `#project-tasks`
   },
-  {
-    content: `To plan weekly lessons for projects, head to the “Project Weekly Plan” section. After selecting how many weeks your project will run, fill in basic details like class and topic. The AI will automatically generate weekly breakdowns, reflection prompts, and cross-disciplinary teaching cues. You can review and adjust the content, then save the facilitation plan for teaching use.
-`,
-    selector: `#${aiAssistantTabs[6].id}`
-  },
-  {
-    content: `To evaluate your own lesson plan, open the “Marking & Report” section. Upload your completed lesson plan and select the marking criteria. Click generate, and the AI will rate your lesson across 10 teaching standards, giving you a score and detailed feedback. Save the report and use it to improve future lesson delivery.`,
-    selector: `#${aiAssistantTabs[7].id}`
-  }
+//   {
+//     content: `To plan weekly lessons for projects, head to the “Project Weekly Plan” section. After selecting how many weeks your project will run, fill in basic details like class and topic. The AI will automatically generate weekly breakdowns, reflection prompts, and cross-disciplinary teaching cues. You can review and adjust the content, then save the facilitation plan for teaching use.
+// `,
+//     selector: `#${aiAssistantTabs[6].id}`
+//   },
+  // {
+  //   content: `To evaluate your own lesson plan, open the “Marking & Report” section. Upload your completed lesson plan and select the marking criteria. Click generate, and the AI will rate your lesson across 10 teaching standards, giving you a score and detailed feedback. Save the report and use it to improve future lesson delivery.`,
+  //   selector: `#${aiAssistantTabs[6].id}`
+  // }
 ]
 
 export const helpWalkthroughSteps: IWalkthroughSteps[] = [

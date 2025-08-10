@@ -6,7 +6,7 @@ import { backendApi } from "@/lib/constant"
 import { AnimatePresence, motion } from "framer-motion"
 import { MessageCircle, Send, Sparkles, X } from "lucide-react"
 import type React from "react"
-import { useLayoutEffect, useRef, useState } from "react"
+import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import Markdown from "./markdown"
 
 interface Message {
@@ -36,75 +36,23 @@ export default function AIChatbot() {
   const [isLoading, setIsLoading] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const [log] = useState("");
+
   useLayoutEffect(() => {
     scrollToBottom();
   }, [messages]);
 
-  // const handleSendMessage = async (question: string) => {
-  //   if (!question.trim()) return;
+  useEffect(() => {
+    if(isOpen){
+      scrollToBottom();
+    }
+  }, [isOpen])
 
-  //   const userMessage: Message = {
-  //     id: Date.now().toString(),
-  //     type: "user",
-  //     content: question,
-  //     timestamp: new Date(),
-  //   };
-
-  //   setMessages((prev) => [...prev, userMessage]);
-  //   setInput("");
-  //   setIsLoading(true);
-
-  //   const botMessage: Message = {
-  //     id: (Date.now() + 1).toString(),
-  //     type: "bot",
-  //     content: "",
-  //     timestamp: new Date(),
-  //   };
-
-  //   setMessages((prev) => [...prev, botMessage]);
-
-  //   try {
-  //     const eventSource = new EventSource(
-  //       `${backendApi}/api/getFaq?q=${encodeURIComponent(question)}`
-  //     );
-
-  //     eventSource.onmessage = (event) => {
-  //       if (event.data === "[END]") {
-  //         eventSource.close();
-  //         setIsLoading(false);
-  //         return;
-  //       }
-  //       // Append streamed words to the bot message
-  //       setMessages((prev) =>
-  //         prev.map((msg) =>
-  //           msg.id === botMessage.id
-  //             ? { ...msg, content: msg.content + event.data }
-  //             : msg
-  //         )
-  //       );
-  //     };
-
-  //     eventSource.onerror = (err) => {
-  //       console.error("❌ Stream error:", err);
-  //       eventSource.close();
-  //       setIsLoading(false);
-  //       setMessages((prev) =>
-  //         prev.map((msg) =>
-  //           msg.id === botMessage.id
-  //             ? {
-  //               ...msg,
-  //               content:
-  //                 "I'm sorry, I'm having trouble connecting right now. Please try again later.",
-  //             }
-  //             : msg
-  //         )
-  //       );
-  //     };
-  //   } catch (error) {
-  //     console.error("Error initializing stream:", error);
-  //     setIsLoading(false);
-  //   }
-  // };
+  useEffect(() => {
+    const storedMessages = localStorage.getItem("faqChat");
+    if (storedMessages) {
+      setMessages(JSON.parse(storedMessages));
+    }
+  }, []);
 
   const handleSendMessage = async (question: string) => {
     if (!question.trim()) return;
@@ -140,6 +88,11 @@ export default function AIChatbot() {
         if (data === "[END]") {
           eventSource.close();
           setIsLoading(false);
+          const lastestMessage = messages[messages.length - 1];
+          if (lastestMessage.type === "bot") {
+            lastestMessage.content = "I'm sorry, I'm having trouble connecting right now. Please try again later."
+          }
+          localStorage.setItem("faqChat", JSON.stringify(messages));
           return;
         }
 
@@ -187,7 +140,7 @@ export default function AIChatbot() {
   const scrollToBottom = () => {
     setTimeout(() => {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, 50); // tweak delay if needed (e.g., 30-100ms)
+    }, 100); // tweak delay if needed (e.g., 30-100ms)
   };
 
   return (

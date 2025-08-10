@@ -8,7 +8,6 @@ function App() {
   const { loadExcel } = useCurriculumStore();
   useEffect(() => {
     loadExcel();
-    // setIsOpen(true)
   }, []);
 
   return (

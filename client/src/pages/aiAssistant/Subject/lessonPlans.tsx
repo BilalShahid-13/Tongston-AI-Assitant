@@ -551,13 +551,7 @@ export default function LessonPlan() {
             }`}>
           <Chatbot chats={data}
           />
-          {/* <Button onClick={downloadPDF}
-          className="bg-yellow-400 w-full cursor-pointer"
-            disabled={!form.formState.isSubmitted}
-          >
-            <FaRegFilePdf />
-            Generate PDF
-          </Button> */}
+
         </PlanCard>
       </ContainerPlan >
     </>

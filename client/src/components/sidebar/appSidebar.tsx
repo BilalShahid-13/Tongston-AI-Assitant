@@ -27,9 +27,9 @@ export function AppSidebar() {
           <SidebarQuickAccess />
         </SidebarGroup>
       </SidebarContent>
-      {!isOpen ? <SidebarFooter>
-        <SidebarTrigger className="relative  cursor-pointer" />
-      </SidebarFooter> : null}
+      {!isOpen ?
+        <SidebarTrigger className="cursor-pointer sticky bottom-0 right-0" />
+       : null}
     </Sidebar>
   );
 }

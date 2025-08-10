@@ -69,10 +69,6 @@ export async function insertFaq(req: Request, res: Response) {
     res.status(500).json({ error: "Internal Server Error" });
   }
 }
-
-
-
-// const vectorStore = new MongoDBAtlasVectorSearch(embeddings, {
 //   collection,
 //   indexName: "faq_index",
 //   textKey: "content",

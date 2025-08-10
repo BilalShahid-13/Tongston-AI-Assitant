@@ -52,7 +52,7 @@ export default function SettingsSwitches() {
       {/* 🧭 Tour Toggle */}
       <div className="flex items-center justify-between p-4 border rounded-md">
         <div>
-          <Label htmlFor="tour" className="font-semibold cursor-pointer">Tour</Label>
+          <Label htmlFor="tour" className="font-semibold cursor-pointer">Step by Step Walkthrough</Label>
           <p className="cursor-alias text-sm text-muted-foreground">
             Enable onboarding tour to guide new users.
           </p>

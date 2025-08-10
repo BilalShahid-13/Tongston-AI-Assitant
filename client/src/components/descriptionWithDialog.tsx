@@ -31,8 +31,10 @@ export default function DescriptionWithDialog({ des, setIsOpen }: Props) {
 
 
       <DialogContent className="max-w-lg max-h-[70vh] overflow-auto">
-        <DialogHeader>
+        <DialogHeader >
           <DialogTitle className="sticky top-0">Description</DialogTitle>
+          <div
+            className="dark:border-zinc-900 border-[1px] w-full"></div>
         </DialogHeader>
         <DialogDescription>
           <span className="whitespace-pre-wrap"><Markdown>{des}</Markdown></span>

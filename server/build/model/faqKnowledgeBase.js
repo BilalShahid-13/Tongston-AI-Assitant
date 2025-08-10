@@ -20,6 +20,7 @@ const faqKnowledgeBaseSchema = new mongoose_1.Schema({
         required: true,
     },
 }, {
-    timestamps: true
+    timestamps: true,
+    collection: "faqKnowledgeBase"
 });
 exports.faqKnowledgeBase = mongoose_1.models.faqKnowledgeBase || (0, mongoose_1.model)("faqKnowledgeBase", faqKnowledgeBaseSchema);

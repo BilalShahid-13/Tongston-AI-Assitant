@@ -85,5 +85,12 @@ export interface IHistory {
   plan: string;
   createdAt?: Date;
   updatedAt?: Date;
-  metaData?: string
+  metaData?: string | string[]
+}
+
+export interface LessonPlanData {
+  answer: string;
+  metaData: string[];
+  createdAt?: string;
+  isFavorite?: boolean;
 }

@@ -1,24 +1,59 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.insertFeedback = insertFeedback;
-const feedback_1 = require("../model/feedback");
+const feedback_1 = __importDefault(require("../model/feedback"));
 const connectDb_1 = require("../lib/connectDb");
 async function insertFeedback(req, res) {
     try {
         await (0, connectDb_1.connectMongo)();
-        const { category, message, rating, otherCategoryDetail } = req.body;
-        const fileBuffer = req.file?.buffer;
-        const feedback = await feedback_1.Feedback.create({
-            category,
-            message,
-            rating,
-            otherCategoryDetail,
-            image: fileBuffer,
+        const { subject, yearClassLevel, role, country, followUp, email, sectionReferringTo, otherSectionDetail, feedbackCategory, positiveMessage, issueDescription, problemOccurredAt, otherProblemOccurredAtDetail, issueCheckboxes, issueDetails, suggestionType, otherSuggestionTypeDetail, suggestionMessage, suggestionAppearance, } = req.body;
+        const issueScreenshot = req.files?.issueScreenshot?.map((file) => ({
+            filename: file.originalname || file.original_filename || "", // ensure always set
+            url: file.path || file.secure_url,
+            mimetype: file.mimetype,
+            size: file.size,
+        })) || [];
+        const suggestionScreenshot = req.files?.suggestionScreenshot?.map((file) => ({
+            filename: file.originalname || file.original_filename || "",
+            url: file.path || file.secure_url,
+            mimetype: file.mimetype,
+            size: file.size,
+        })) || [];
+        const feedback = await feedback_1.default.create({
+            subject,
+            yearClassLevel,
+            role,
+            country,
+            followUp: followUp === "true" || followUp === true,
+            email: email || null,
+            sectionReferringTo,
+            otherSectionDetail,
+            feedbackCategory,
+            positiveMessage,
+            issueDescription,
+            issueScreenshot,
+            problemOccurredAt,
+            otherProblemOccurredAtDetail,
+            issueCheckboxes,
+            issueDetails,
+            suggestionType,
+            otherSuggestionTypeDetail,
+            suggestionMessage,
+            suggestionAppearance,
+            suggestionScreenshot,
+            meta: {
+                ip: req.ip,
+                userAgent: req.headers["user-agent"],
+            },
         });
-        // ✅ Don't return this, just call it
-        res
-            .status(201)
-            .json({ success: true, message: "Feedback submitted", data: feedback });
+        res.status(201).json({
+            success: true,
+            message: "Feedback submitted successfully",
+            data: feedback,
+        });
     }
     catch (error) {
         console.error("Error inserting feedback:", error);

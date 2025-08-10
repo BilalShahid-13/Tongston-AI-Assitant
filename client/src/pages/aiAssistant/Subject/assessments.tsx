@@ -120,7 +120,8 @@ const Assessments = () => {
         showPanel={showAssessmentPlan}
       >
         <PlanCard title="Subject Assessment Plan">
-          <ScrollArea className="h-[500px] relative overflow-y-scroll">
+          <ScrollArea className="h-[500px] relative overflow-y-scroll"
+          ref={scrollRef}>
             <FormProvider {...form}>
               <form onSubmit={form.handleSubmit(onSubmit, useOnError())}
                 className="flex flex-col gap-8 mx-3">

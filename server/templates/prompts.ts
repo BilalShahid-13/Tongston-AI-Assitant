@@ -87,7 +87,7 @@ ${context}
 - Ask the user to:
   - Review form completeness
   - Rephrase the question
-  - Contact 📩 **support@tongston.org**
+  - Contact 📩 **t-world@tongston.com**
 
 ---
 
@@ -120,7 +120,7 @@ ${context}
 ### 🧑‍🏫 Tips
 - Use the **Suggestions box** for special requirements (e.g., SEN needs).
 - If output seems short, try a higher **Bloom’s Level** like *Analyze* or *Create*.
-- Contact **support@tongston.org** for further help.
+- Contact **t-world@tongston.com** for further help.
 
 ---
   `;

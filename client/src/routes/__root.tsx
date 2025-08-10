@@ -1,7 +1,7 @@
 import App from '@/App'
+import AdminLayout from '@/components/admin/adminLayout'
 import ChatbotFaq from '@/components/chatbotFaq'
-import { createRootRoute } from '@tanstack/react-router'
-import * as React from 'react'
+import { createRootRoute, useRouterState } from '@tanstack/react-router'
 
 export const Route = createRootRoute({
   component: RootComponent,
@@ -9,11 +9,15 @@ export const Route = createRootRoute({
 })
 
 function RootComponent() {
-  return (
-    <React.Fragment>
+  const currentPath = useRouterState().location.pathname
+  const isAdmin = currentPath.startsWith("/admin")
+  return isAdmin ? (
+    <AdminLayout />
+  ) : (
+    <>
       <ChatbotFaq />
       <App />
-    </React.Fragment>
+    </>
   )
 }
 

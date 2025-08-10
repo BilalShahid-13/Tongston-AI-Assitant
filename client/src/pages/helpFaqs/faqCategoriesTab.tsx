@@ -25,9 +25,10 @@ export default function FaqCategoriesTab() {
   useAutoOpenTour();
   return (
     <>
-      <div className="w-full h-12 bg-linear-65 px-4 rounded-b-md sticky top-0
-       from-yellow-400 to-yellow-500 flex justify-start items-center">
-        <BreadCrumb section="Help & Faqs" className="text-zinc-600 z-20" />
+      <div className="w-full h-12 bg-gradient-to-r
+       from-[#ffb900] to-[#fe9a00] px-4 rounded-b-md
+       sticky top-0 flex justify-start items-center shadow-md">
+        <BreadCrumb section="Help & FAQs" className="text-white z-20" />
       </div>
       <Tabs
         // onValueChange={setTabTriggerValue}
@@ -36,7 +37,7 @@ export default function FaqCategoriesTab() {
       >
         {/* Sidebar */}
         <div className="flex flex-col justify-start items-center gap-5 mt-5 ml-5 h-full">
-          <h4 className="text-lg font-semibold">Table of Contents</h4>
+          {/* <h4 className="text-lg font-semibold">Table of Contents</h4> */}
           <TabsList
             className="flex flex-col justify-start items-start w-full p-4
           bg-transparent border-0 rounded-xl shadow-sm
@@ -49,8 +50,8 @@ export default function FaqCategoriesTab() {
                 id={category.id}
                 value={category.label}
                 className={cn(
-                  " cursor-pointer w-full justify-start text-left font-medium text-muted-foreground px-3 py-2 rounded-md transition-all",
-                  "data-[state=active]:text-yellow-500 data-[state=active]:font-semibold"
+                  "cursor-pointer w-full justify-start text-left font-medium text-gray-700 px-4 py-2 rounded-md transition-all hover:bg-gray-100",
+                  "data-[state=active]:bg-[#ffb900] data-[state=active]:text-white data-[state=active]:font-semibold data-[state=active]:shadow-sm",
                 )}
               >
                 {category.label}
@@ -67,7 +68,7 @@ export default function FaqCategoriesTab() {
 
         {/* Content Area */}
         <div className="p-4 w-full">
-          <h2 className="text-3xl text-center font-semibold m-6 text-zinc-800">Questions Look Here</h2>
+          {/* <h2 className="text-3xl text-center font-semibold m-6 text-zinc-800">Questions Look Here</h2> */}
           <AnimatePresence mode="wait">
             {faqList.map(({ category, faqs }, index) =>
               // tabTriggerValue === category ? (

@@ -19,7 +19,8 @@ const faqKnowledgeBaseSchema = new Schema({
     required: true,
   },
 }, {
-  timestamps: true
+  timestamps: true,
+  collection: "faqKnowledgeBase"
 })
 
 export const faqKnowledgeBase = models.faqKnowledgeBase || model("faqKnowledgeBase", faqKnowledgeBaseSchema);

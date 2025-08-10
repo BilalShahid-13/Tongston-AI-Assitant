@@ -10,6 +10,8 @@ const projectTask_route_1 = __importDefault(require("./routes/projectTask.route"
 const studentPlan_route_1 = __importDefault(require("./routes/studentPlan.route"));
 const subjectLessonPlan_route_1 = __importDefault(require("./routes/subjectLessonPlan.route"));
 const user_route_1 = __importDefault(require("./routes/user.route"));
+const feedback_route_1 = __importDefault(require("./routes/feedback.route"));
+const insertKnowledgeBase_route_1 = __importDefault(require("./routes/insertKnowledgeBase.route"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cors_1.default)({ origin: "*" }));
@@ -20,8 +22,10 @@ app.get("/", (req, res) => {
 // parseExcelFile()
 // app.use("/api", searchRouter);
 // app.use("/api", feedbackRouter);
+app.use("/api", insertKnowledgeBase_route_1.default);
 app.use("/api", user_route_1.default);
 app.use("/api", faqs_route_1.default);
+app.use("/api", feedback_route_1.default);
 app.use("/api", subjectLessonPlan_route_1.default);
 app.use("/api", studentPlan_route_1.default);
 app.use("/api", projectTask_route_1.default);
