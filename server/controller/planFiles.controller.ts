@@ -7,14 +7,11 @@ export async function getUserPlans(req: Request, res: Response): Promise<void> {
   try {
     await connectMongo();
 
-    const plans = await History.find({})
-      // .select("plan createdAt updatedAt userId")  // include only needed fields
-      .populate({
-        path: "userId",
-        model: User,
-        // select: "username subject role",
-      })
-      // .sort({ createdAt: -1 });
+    const plans = await History.find({}).sort({ createdAt: -1 }).populate({
+      path: "userId",
+      model: User,
+      // select: "username subject role",
+    });
 
     if (plans.length > 0) {
       res.status(200).json({

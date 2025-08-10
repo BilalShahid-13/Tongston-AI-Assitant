@@ -128,7 +128,14 @@ export function MyFilesCard({ data, onView }: LessonPlanCardProps) {
                 <Calendar className="h-4 w-4" />
                 <span>
                   Created: {data.createdAt
-                    ? new Date(data.createdAt).toISOString().replace('T', ' ').replace('Z', ' UTC')
+                    ? new Date(data.createdAt).toLocaleString(undefined, {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      second: '2-digit',
+                    })
                     : 'Today'}
                 </span>
               </div>

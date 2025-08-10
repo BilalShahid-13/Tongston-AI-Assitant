@@ -7,6 +7,10 @@ import type { IHistory, LessonPlanData } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Terminal } from "lucide-react";
+import { useMemo, useState } from "react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { ArrowDownWideNarrow, ArrowUpWideNarrow } from "lucide-react"
+import { Button } from "@/components/ui/button";
 async function fetchPlanFiles() {
   const { data } = await axios.get(`${backendApi}/api/getPlanFiles`);
   return data;
@@ -16,6 +20,23 @@ export default function ShowAllPlan() {
     queryKey: ['planFiles'],
     queryFn: fetchPlanFiles,
   });
+
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc") // Default to newest first
+
+  const sortedLessonPlans = useMemo(() => {
+    if (!data.data) return []
+    const sorted = [...data?.data].sort((a, b) => {
+      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0
+      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0
+
+      if (sortOrder === "desc") {
+        return dateB - dateA // Newest first
+      } else {
+        return dateA - dateB // Oldest first
+      }
+    })
+    return sorted
+  }, [data?.data, sortOrder])
 
   console.log('my files', data)
 
@@ -31,34 +52,52 @@ export default function ShowAllPlan() {
   );
   console.log(data.data)
   return (
-    <div className="">
+    <div className="flex flex-col gap-3">
       <div className="w-full h-12 bg-linear-65 px-4 rounded-b-md
        from-yellow-400 to-yellow-500 flex justify-start items-center">
         <BreadCrumb section="My Files" className="text-zinc-600 z-20" />
       </div>
+      <div className="flex justify-end mb-6 mr-6">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="flex items-center gap-2 bg-transparent">
+              Sort by Date
+              {sortOrder === "desc" ? (
+                <ArrowDownWideNarrow className="h-4 w-4" />
+              ) : (
+                <ArrowUpWideNarrow className="h-4 w-4" />
+              )}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => setSortOrder("desc")}>
+              <ArrowDownWideNarrow className="h-4 w-4 mr-2" />
+              Newest First
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setSortOrder("asc")}>
+              <ArrowUpWideNarrow className="h-4 w-4 mr-2" />
+              Oldest First
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
       <div className="flex flex-col gap-3 mt-3">
-        {/* <div className="flex flex-row justify-start items-center gap-3 mx-3">
-          <ClipboardList className="w-8 h-8 text-gray-500" />
-          <h3 className="text-4xl font-bold bg-zinc-700
-         bg-clip-text text-transparent text-left">
-            My Learning Plans
-          </h3>
-        </div> */}
         <div className="flex flex-col gap-y-2 mx-2">
-          {data?.data?.map((plan: IHistory, index: number) => {
+          {sortedLessonPlans.map((plan: IHistory, index: number) => {
             const transformed: LessonPlanData = {
               answer: plan.answer ?? "",
               metaData: Array.isArray(plan.metaData)
-                ? plan.metaData // already string[]
+                ? plan.metaData
                 : plan.metaData
-                  ? [plan.metaData] // wrap single string
-                  : [], // fallback empty array
+                  ? [plan.metaData]
+                  : [],
               createdAt: plan.createdAt?.toString(),
             };
 
             return <MyFilesCard data={transformed} key={index} />;
           })}
         </div>
+
       </div>
     </div>
   );
