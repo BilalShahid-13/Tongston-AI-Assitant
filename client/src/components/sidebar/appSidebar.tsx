@@ -1,14 +1,13 @@
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupLabel,
-  SidebarTrigger,
+  SidebarTrigger
 } from "@/components/ui/sidebar";
+import { useSidebarStore } from "@/store/sidebarStore";
 import { SidebarItemList } from "./sidebarItemList";
 import SidebarQuickAccess from "./sidebarQuickItems";
-import { useSidebarStore } from "@/store/sidebarStore";
 
 export function AppSidebar() {
   const { isOpen } = useSidebarStore();
@@ -29,7 +28,7 @@ export function AppSidebar() {
       </SidebarContent>
       {!isOpen ?
         <SidebarTrigger className="cursor-pointer sticky bottom-0 right-0" />
-       : null}
+        : null}
     </Sidebar>
   );
 }

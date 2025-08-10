@@ -5,8 +5,8 @@ import { aiAssistantTabs } from "@/lib/constant"
 import { useAiAssistantTabStore } from "@/store/aiAssistantTabStore"
 import { useSidebarStore } from "@/store/sidebarStore"
 import { AnimatePresence, motion } from "framer-motion"
-import { Suspense, useRef, useEffect } from "react"
 import { Sparkles } from "lucide-react"
+import { Suspense, useRef } from "react"
 
 const OverviewTabs = () => {
   const { tabValue, addTabValue } = useAiAssistantTabStore()
@@ -153,7 +153,7 @@ const OverviewTabs = () => {
                   className="relative"
                 >
                   <TabsContent
-                  key={index}
+                    key={index}
                     ref={(el) => { tabRefs.current[tab.name] = el }}
                     value={tab.name}
                     className="mt-0 focus-visible:outline-none focus-visible:ring-0">

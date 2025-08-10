@@ -28,8 +28,8 @@ import {
   Users
 } from "lucide-react";
 
-// export const backendApi = 'https://tongston-ai-assitant-rt92.vercel.app';
-export const backendApi = 'http://localhost:5000';
+export const backendApi = 'https://tongston-ai-assitant-rt92.vercel.app';
+// export const backendApi = 'http://localhost:5000';
 
 export const navbarItems = [
   {
