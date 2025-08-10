@@ -24,19 +24,16 @@ export default function ShowAllPlan() {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc") // Default to newest first
 
   const sortedLessonPlans = useMemo(() => {
-    if (!data.data) return []
-    const sorted = [...data?.data].sort((a, b) => {
-      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0
-      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0
+    if (!data || !data.data) return [];
+    const sorted = [...data.data].sort((a, b) => {
+      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
 
-      if (sortOrder === "desc") {
-        return dateB - dateA // Newest first
-      } else {
-        return dateA - dateB // Oldest first
-      }
-    })
-    return sorted
-  }, [data?.data, sortOrder])
+      return sortOrder === "desc" ? dateB - dateA : dateA - dateB;
+    });
+    return sorted;
+  }, [data, sortOrder]);
+
 
   console.log('my files', data)
 
@@ -61,7 +58,7 @@ export default function ShowAllPlan() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="flex items-center gap-2 bg-transparent">
-              Sort by Date
+              {sortOrder === "desc" ? "Newest First" : "Oldest First"}
               {sortOrder === "desc" ? (
                 <ArrowDownWideNarrow className="h-4 w-4" />
               ) : (
