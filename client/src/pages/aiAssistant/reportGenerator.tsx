@@ -67,7 +67,7 @@ export default function ReportGenerator() {
       <ContainerPlan
         showPanel={showChatbot}
       >
-        <PlanCard title="Student Conduct and Character Lesson Plan"
+        <PlanCard title="Lesson Plan Marking & Reports"
           ref={scrollRef}
           className="relative h-[90vh] overflow-y-scroll">
           <ScrollArea>

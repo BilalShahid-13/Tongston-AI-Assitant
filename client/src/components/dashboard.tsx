@@ -108,7 +108,7 @@ export default function AnalyticsDashboard() {
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium">Total Lesson Plans</CardTitle>
+                  <CardTitle className="text-sm font-medium">Total Subject Lesson Plans</CardTitle>
                   <Package className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
@@ -152,7 +152,7 @@ export default function AnalyticsDashboard() {
               </Card>
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium">Avg. Class Size</CardTitle>
+                  <CardTitle className="text-sm font-medium">Total Number of Teachers Year to Date</CardTitle>
                   <Users className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>

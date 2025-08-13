@@ -63,7 +63,7 @@ export default function ProjectTask() {
         showPanel={showChatbot}
       >
 
-        <PlanCard title="Student Conduct and Character Lesson Plan"
+        <PlanCard title="Project (Tasks)"
           ref={scrollRef}
           className="relative h-[90vh] overflow-y-scroll">
           <ScrollArea>

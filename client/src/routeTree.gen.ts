@@ -16,7 +16,9 @@ import { Route as RecentAssessmentRouteImport } from './routes/recentAssessment'
 import { Route as MyFilesRouteImport } from './routes/myFiles'
 import { Route as HelpFaqsRouteImport } from './routes/help-faqs'
 import { Route as FeedbackRouteImport } from './routes/feedback'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
+import { Route as AiAssistantRouteImport } from './routes/ai-assistant'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -55,9 +57,19 @@ const FeedbackRoute = FeedbackRouteImport.update({
   path: '/feedback',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AnalyticsRoute = AnalyticsRouteImport.update({
   id: '/analytics',
   path: '/analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiAssistantRoute = AiAssistantRouteImport.update({
+  id: '/ai-assistant',
+  path: '/ai-assistant',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -74,7 +86,9 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/ai-assistant': typeof AiAssistantRoute
   '/analytics': typeof AnalyticsRoute
+  '/dashboard': typeof DashboardRoute
   '/feedback': typeof FeedbackRoute
   '/help-faqs': typeof HelpFaqsRoute
   '/myFiles': typeof MyFilesRoute
@@ -86,7 +100,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/ai-assistant': typeof AiAssistantRoute
   '/analytics': typeof AnalyticsRoute
+  '/dashboard': typeof DashboardRoute
   '/feedback': typeof FeedbackRoute
   '/help-faqs': typeof HelpFaqsRoute
   '/myFiles': typeof MyFilesRoute
@@ -99,7 +115,9 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/ai-assistant': typeof AiAssistantRoute
   '/analytics': typeof AnalyticsRoute
+  '/dashboard': typeof DashboardRoute
   '/feedback': typeof FeedbackRoute
   '/help-faqs': typeof HelpFaqsRoute
   '/myFiles': typeof MyFilesRoute
@@ -113,7 +131,9 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/ai-assistant'
     | '/analytics'
+    | '/dashboard'
     | '/feedback'
     | '/help-faqs'
     | '/myFiles'
@@ -125,7 +145,9 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/ai-assistant'
     | '/analytics'
+    | '/dashboard'
     | '/feedback'
     | '/help-faqs'
     | '/myFiles'
@@ -137,7 +159,9 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/ai-assistant'
     | '/analytics'
+    | '/dashboard'
     | '/feedback'
     | '/help-faqs'
     | '/myFiles'
@@ -150,7 +174,9 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AiAssistantRoute: typeof AiAssistantRoute
   AnalyticsRoute: typeof AnalyticsRoute
+  DashboardRoute: typeof DashboardRoute
   FeedbackRoute: typeof FeedbackRoute
   HelpFaqsRoute: typeof HelpFaqsRoute
   MyFilesRoute: typeof MyFilesRoute
@@ -211,11 +237,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FeedbackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/analytics': {
       id: '/analytics'
       path: '/analytics'
       fullPath: '/analytics'
       preLoaderRoute: typeof AnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-assistant': {
+      id: '/ai-assistant'
+      path: '/ai-assistant'
+      fullPath: '/ai-assistant'
+      preLoaderRoute: typeof AiAssistantRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -238,7 +278,9 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AiAssistantRoute: AiAssistantRoute,
   AnalyticsRoute: AnalyticsRoute,
+  DashboardRoute: DashboardRoute,
   FeedbackRoute: FeedbackRoute,
   HelpFaqsRoute: HelpFaqsRoute,
   MyFilesRoute: MyFilesRoute,

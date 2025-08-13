@@ -65,7 +65,7 @@ export default function ProjectTaskFacilitation() {
         showPanel={showChatbot}
       >
 
-               <PlanCard title="Student Conduct and Character Lesson Plan"
+               <PlanCard title="Project (Tasks) Lesson Facilitation Plan"
                  ref={scrollRef}
                  className="relative h-[90vh] overflow-y-scroll">
                  <ScrollArea>

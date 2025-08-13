@@ -74,7 +74,7 @@ export default function LessonPlan() {
       <ContainerPlan
         showPanel={showLessonPlan}
       >
-        <PlanCard title="Student Conduct and Character Lesson Plan"
+        <PlanCard title="Subject Lesson Plan"
           ref={scrollRef}
           className="relative h-[90vh] overflow-y-scroll">
           <ScrollArea>

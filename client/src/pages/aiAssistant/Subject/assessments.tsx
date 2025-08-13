@@ -119,7 +119,7 @@ const Assessments = () => {
       <ContainerPlan
         showPanel={showAssessmentPlan}
       >
-        <PlanCard title="Subject Assessment Plan">
+        <PlanCard title="Subject Assessments">
           <ScrollArea className="h-[500px] relative overflow-y-scroll"
           ref={scrollRef}>
             <FormProvider {...form}>

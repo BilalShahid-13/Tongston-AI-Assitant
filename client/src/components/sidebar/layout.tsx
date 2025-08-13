@@ -33,7 +33,7 @@ export function Layout() {
         size="lg"
       />
       <AnimatePresence mode="wait">
-        <SidebarContent className="w-full ">
+        <SidebarContent className="w-full">
           {isPending ? <Loader /> : <motion.div
             key={currentPath}
             initial={{ opacity: 0, scale: 0.98 }}

@@ -18,6 +18,7 @@ import {
   FileText,
   Folder,
   Hammer,
+  LayoutDashboard,
   MessageCircle,
   Presentation,
   Projector,
@@ -52,10 +53,17 @@ export const navbarItems = [
 
 export const sidebarItems = [
   {
+    name: "Dashboard",
+    id: "dashboard",
+    icon: LayoutDashboard,
+    route: "/"
+    // route: "/ai-assistant"
+  },
+  {
     name: "AI Assistant",
     id: "ai-assistant",
     icon: Bot,
-    route: "/"
+    route: "/ai-assistant"
     // route: "/ai-assistant"
   },
   {

@@ -69,7 +69,7 @@ export default function StudentConductCharacterAssessment() {
         showPanel={showChatbot}
       >
 
-        <PlanCard title="Student Conduct and Character Lesson Plan"
+        <PlanCard title="Student Conduct & Character Assessments"
           ref={scrollRef}
           className="relative h-[90vh] overflow-y-scroll">
           <ScrollArea>
