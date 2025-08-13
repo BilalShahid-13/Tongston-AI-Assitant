@@ -1,21 +1,23 @@
 import { DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import type { Dispatch, SetStateAction } from "react";
-import Markdown from "./markdown";
+import DownloadMarkdown from "./downloadMarkdown";
 import { Button } from "./ui/button";
 interface Props {
   des: string;
   setIsOpen: Dispatch<SetStateAction<boolean>> // expects a boolean or a function;
+  fileName: string
 }
 
-export default function DescriptionWithDialog({ des, setIsOpen }: Props) {
+export default function DescriptionWithDialog({ des, setIsOpen, fileName }: Props) {
   // Truncate text to ~150 chars for preview
   const truncated = des.length > 150 ? des.slice(0, 150) + "..." : des;
-
+  console.log('fileName', fileName)
   return (
     <div className="flex-1 p-6 flex flex-col justify-center">
       <div className="transition-all duration-300">
         <span className="text-muted-foreground leading-relaxed">
-          <Markdown isButtonEnable={false}>{truncated}</Markdown>
+          <DownloadMarkdown >{truncated}</DownloadMarkdown>
+          {/* <Markdown isButtonEnable={false}>{truncated}</Markdown> */}
           {des.length > 150 && (
             <>
               <Button variant={"link"}
@@ -37,7 +39,8 @@ export default function DescriptionWithDialog({ des, setIsOpen }: Props) {
             className="dark:border-zinc-900 border-[1px] w-full"></div>
         </DialogHeader>
         <DialogDescription>
-          <span className="whitespace-pre-wrap"><Markdown>{des}</Markdown></span>
+          <DownloadMarkdown fileName={fileName}>{des}</DownloadMarkdown>
+          {/* </span> */}
         </DialogDescription>
       </DialogContent>
     </div>

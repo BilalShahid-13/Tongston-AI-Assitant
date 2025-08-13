@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import Markdown from "./markdown";
+import DownloadMarkdown from "./downloadMarkdown";
 
 export default function AIAssistant({ chats }: { chats: string | null }) {
   const chatRef = useRef<HTMLDivElement>(null);
@@ -16,7 +16,9 @@ export default function AIAssistant({ chats }: { chats: string | null }) {
       className="flex flex-col border rounded-lg bg-card shadow-sm
       max-h-[75vh] overflow-y-scroll p-4">
       {/* <p>{chats}</p> */}
-      <Markdown>{String(chats)}</Markdown>
+      {/* <Markdown>{String(chats)}</Markdown> */}
+      <DownloadMarkdown>{String(chats)}</DownloadMarkdown>
+
 
     </div>
   )
