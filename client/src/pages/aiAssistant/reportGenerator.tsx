@@ -8,9 +8,11 @@ import ScrollAnimate from "@/components/scrollAnimate";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { termOptions, yearClassMappings } from "@/constants/lessonPlanConstant";
 import { useOnError } from "@/hooks/useOnError";
+import { backendApi } from "@/lib/constant";
 import { reportGeneratorSchema, type ReportGeneratorSchema } from "@/schema/reportGenerator.schema";
 import { useProjectTaskFacilitationStore } from "@/store/projectTaskFacilitationStore";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { FormProvider, useForm, type UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
@@ -34,8 +36,9 @@ export default function ReportGenerator() {
   const { handleTerm } = useProjectTaskFacilitationStore();
   const onSubmit = async (data: ReportGeneratorSchema) => {
     setData("");
+    setLoading(true);
     const formData = new FormData();
-    formData.append("lessonPlanFile", data.lessonPlanFile[0]); // It's an array
+    formData.append("lessonPlanFile", data.lessonPlanFile[0]); // ✅ File
     formData.append("submittedOnTime", data.submittedOnTime || "");
     formData.append("submittedViaCorrectChannel", data.submittedViaCorrectChannel || "");
     formData.append("directedToCorrectAuthority", data.directedToCorrectAuthority || "");
@@ -44,22 +47,32 @@ export default function ReportGenerator() {
     formData.append("termTheme", data.termTheme || "");
     formData.append("associatedPBLTask", data.associatedPBLTask || "");
     formData.append("teacherNameOrID", data.teacherNameOrID || "");
-    toast.success("Not ready");
-    // const res = await onSubmitFile({
-    //   api: "getReport", // 👈 use the correct API slug
-    //   payload: formData,
-    //   setStatusMessage,
-    //   setShowPlan: setShowChatbot,
-    //   setData,
-    //   setLoading
-    // });
-    // if (res?.error) {
-    //   console.error("🔥 API Error:", `${res.error}${res.status}`);
-    //   toast.error(`${res.error}-"${res.status}"`);
-    //   return;
-    // }
-    // form.reset(resetPlanValues(reportGeneratorSchema))
-  };
+    try {
+      const res = await axios.post(`${backendApi}/api/getReport`, formData, {
+        headers: {
+          // ❌ DO NOT set Content-Type manually — Axios handles it for FormData
+        },
+      });
+
+      if (res.data?.error) {
+        console.error("🔥 API Error:", `${res.data.error}-${res.status}`);
+        toast.error(`${res.data.error} - "${res.status}"`);
+        return;
+      }
+      // ✅ Success — handle response
+      setData(res.data);
+      setShowChatbot(true);
+      setStatusMessage("Report generated successfully");
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const uniqueClassTypes = Array.from(
+    new Set(yearClassMappings.flatMap((yearClass) => yearClass.normalized))
+  );
 
   return (
     <>
@@ -90,7 +103,7 @@ export default function ReportGenerator() {
                       isRequired
                       fieldName="Class Type"
                       className="w-full"
-                      list={yearClassMappings.flatMap((yearClass) => yearClass.normalized)}
+                      list={uniqueClassTypes}
                       placeholder="Select a class type"
                     />
                     <Grid>
@@ -111,6 +124,8 @@ export default function ReportGenerator() {
                       <CustomInputField
                         name="associatedPBLTask"
                         form={form}
+                        // isRequired
+                        isDisabled={false}
                         fieldName="Associated Project-Based Learning (PBL) Task"
                         placeholder="Enter the project-based learning task"
                       />

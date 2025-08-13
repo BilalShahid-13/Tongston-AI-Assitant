@@ -16,19 +16,6 @@ interface Message {
   timestamp: Date
 }
 
-// interface FAQResponse {
-//   answer: string
-//   query: string
-// }
-
-// const suggestedQuestions = [
-//   "What's the result of this video?",
-//   "What happened?",
-//   "What's their training style?",
-//   "How can I improve my skills?",
-//   "What are the best practices?",
-// ]
-
 export default function AIChatbot() {
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([])
@@ -42,17 +29,17 @@ export default function AIChatbot() {
   }, [messages]);
 
   useEffect(() => {
-    if(isOpen){
+    if (isOpen) {
       scrollToBottom();
     }
   }, [isOpen])
 
-  useEffect(() => {
-    const storedMessages = localStorage.getItem("faqChat");
-    if (storedMessages) {
-      setMessages(JSON.parse(storedMessages));
-    }
-  }, []);
+  // useEffect(() => {
+  //   const storedMessages = localStorage.getItem("faqChat");
+  //   if (storedMessages) {
+  //     setMessages(JSON.parse(storedMessages));
+  //   }
+  // }, []);
 
   const handleSendMessage = async (question: string) => {
     if (!question.trim()) return;
@@ -164,7 +151,7 @@ export default function AIChatbot() {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: "100%", opacity: 0 }}
             transition={{ type: "spring", duration: 0.4, bounce: 0.1 }}
-            className="fixed top-0 right-0 h-full w-96 z-50 shadow-2xl"
+            className="fixed top-0 right-0 h-full w-1/3 z-50 shadow-2xl"
           >
             <Card className="h-full flex flex-col  border-l">
               {/* Header */}
@@ -204,7 +191,7 @@ export default function AIChatbot() {
                         className={`flex ${message.type === "user" ? "justify-end" : "justify-start"}`}
                       >
                         <div
-                          className={`flex items-start gap-2 max-w-[85%] ${message.type === "user" ? "flex-row-reverse" : ""}`}
+                          className={`flex items-start gap-2 max-w-10/12 ${message.type === "user" ? "flex-row-reverse" : ""}`}
                         >
                           <Avatar className="w-8 h-8 flex-shrink-0">
                             <AvatarFallback
@@ -219,8 +206,10 @@ export default function AIChatbot() {
                               : "bg-white dark:bg-zinc-800 text-gray-900 dark:text-neutral-200 border border-gray-200 dark:border-zinc-600"
                               }`}
                           >
-                            <Markdown isButtonEnable={false}>{message.content}
-                            </Markdown>
+                            {message.type === "user" ? <p>{message.content}</p> :
+                              <Markdown>{message.content}
+                              </Markdown>
+                            }
 
                           </div>
                         </div>

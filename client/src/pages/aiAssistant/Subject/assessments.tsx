@@ -17,6 +17,7 @@ import { useProjectTaskFacilitationStore } from "@/store/projectTaskFacilitation
 import { onSubmitFn } from "@/utils/onSubmit";
 import { resetPlanValues } from "@/utils/resetPlanValues";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { FormProvider, useForm, type UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
@@ -36,6 +37,7 @@ const Assessments = () => {
   const chatbotRef = useRef<HTMLDivElement>(null);
   const { handleCities, cities, handleYearClass, handleTerm, handleCurriculum, resetContinousAssessment, setCurriculumEntry, handleSubjectDicipline } = useProjectTaskFacilitationStore();
   const { isLoaded, data: excelData } = useCurriculumStore();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isLoaded) {
@@ -103,6 +105,7 @@ const Assessments = () => {
       setStatusMessage,
       setShowPlan: setShowAssessmentPlan,
       setData,
+      navigate,
       setLoading
     })
     if (res?.error) {
@@ -119,9 +122,11 @@ const Assessments = () => {
       <ContainerPlan
         showPanel={showAssessmentPlan}
       >
-        <PlanCard title="Subject Assessments">
-          <ScrollArea className="h-[500px] relative overflow-y-scroll"
-          ref={scrollRef}>
+        <PlanCard title="Subject Assessments"
+          ref={scrollRef}
+          className="relative h-[90vh] overflow-y-scroll">
+          <ScrollArea
+          >
             <FormProvider {...form}>
               <form onSubmit={form.handleSubmit(onSubmit, useOnError())}
                 className="flex flex-col gap-8 mx-3">

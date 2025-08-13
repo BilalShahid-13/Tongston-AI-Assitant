@@ -1,4 +1,5 @@
-import { backendApi, type ApiType } from "@/lib/constant";
+import { backendApi, feedbackGeneratorCount, type ApiType } from "@/lib/constant";
+import { useNavigate } from "@tanstack/react-router";
 import { animateStatusMessages } from "./showFieldError";
 
 interface IOnSubmit {
@@ -8,12 +9,14 @@ interface IOnSubmit {
   setShowPlan: (show: boolean) => void,
   setData: React.Dispatch<React.SetStateAction<string | null>>;
   setLoading: (show: boolean) => void,
+  navigate: ReturnType<typeof useNavigate>; // 👈 add here
 }
 
-export const onSubmitFn = async ({ payload, api,
+export const onSubmitFn = async ({ payload, api, navigate,
   setStatusMessage, setShowPlan, setData, setLoading }:
   IOnSubmit) => {
-
+  let feedbackCountStr = localStorage.getItem('feedbackCount');
+  let feedbackCount = feedbackCountStr ? parseInt(feedbackCountStr, 10) : 0;
   try {
     setLoading(true);
     const response = await fetch(`${backendApi}/api/${api}`, {
@@ -48,6 +51,14 @@ export const onSubmitFn = async ({ payload, api,
         lessonPlan += chunk;
         setData(prev => prev + chunk);
       }
+    }
+    feedbackCount += 1;
+    localStorage.setItem("feedbackCount", feedbackCount.toString());
+
+    // If user has generated 3 plans, show feedback section
+    if (feedbackCount >= feedbackGeneratorCount) {
+      localStorage.setItem("feedbackCount", "0"); // ✅ reset count
+      navigate({ to: "/feedback" });
     }
 
   } catch (error) {

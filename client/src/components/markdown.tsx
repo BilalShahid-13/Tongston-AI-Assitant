@@ -1,87 +1,54 @@
-import { Button } from '@/components/ui/button';
-import 'highlight.js/styles/github.css';
-import { useEffect, useRef, useState } from 'react';
-import { AiOutlineLoading } from 'react-icons/ai';
-import { FaRegFilePdf } from 'react-icons/fa';
-import ReactMarkdown from 'react-markdown';
-import { useReactToPrint } from 'react-to-print';
-import rehypeHighlight from 'rehype-highlight';
-import rehypeRaw from 'rehype-raw';
-import remarkGfm from 'remark-gfm';
+import "highlight.js/styles/github.css"
+import ReactMarkdown from "react-markdown"
+import rehypeHighlight from "rehype-highlight"
+import rehypeRaw from "rehype-raw"
+import remarkGfm from "remark-gfm"
 
-export default function Markdown({ children, isButtonEnable = true }: { children: string; isButtonEnable?: boolean }) {
-  const contentRef = useRef<HTMLDivElement>(null);
-  const [isPrinting, setIsPrinting] = useState(false);
-  const promiseResolveRef = useRef<(() => void) | null>(null);
+export default function Markdown({ children }: { children: string }) {
+  const sanitizeMarkdown = (text: string) => {
+    let fixed = text;
 
-  useEffect(() => {
-    if (isPrinting && promiseResolveRef.current) {
-      promiseResolveRef.current();
-    }
-  }, [isPrinting]);
+    // Space after ###
+    fixed = fixed.replace(/(#{1,6})([^\s#])/g, "$1 $2");
 
-  const handlePrint = useReactToPrint({
-    contentRef, // ✅ v3 uses contentRef directly
-    onBeforePrint: () =>
-      new Promise<void>((resolve) => {
-        promiseResolveRef.current = resolve;
-        setIsPrinting(true);
-      }),
-    onAfterPrint: () => {
-      promiseResolveRef.current = null;
-      setIsPrinting(false);
-    },
-    documentTitle: 'Lesson Plan',
-    // removeAfterPrint: true,
-  });
+    // Newline before headings
+    fixed = fixed.replace(/([^\n])\s*(#{1,6}\s)/g, "$1\n$2");
+
+    // Newline before numbered list (e.g., 1. Item)
+    fixed = fixed.replace(/([^\n])(\d+\.\s)/g, "$1\n$2");
+
+    // Newline before bullet list (- Item)
+    fixed = fixed.replace(/([^\n])(-\s)/g, "$1\n$2");
+
+    return fixed;
+  };
+
 
   return (
-    <>
-      {/* Printable content */}
-      <div ref={contentRef}>
-        <div id="print-root" className="prose max-w-none prose-headings:mt-4 prose-p:mt-2">
-          <ReactMarkdown
-            components={{
-              strong: ({ children }) => <strong className="font-bold">{children}</strong>,
-              table: ({ node, ...props }) => (
-                <table className="table-auto border border-gray-400">{props.children}</table>
-              ),
-              th: ({ node, ...props }) => (
-                <th className="border border-gray-400 bg-gray-200 px-4 py-2 font-semibold">{props.children}</th>
-              ),
-              td: ({ node, ...props }) => (
-                <td className="border border-gray-300 px-4 py-2">{props.children}</td>
-              ),
-              a: ({ node, ...props }) => (
-                <a {...props} className="underline text-yellow-500" />
-              ),
-            }}
-            remarkPlugins={[remarkGfm]}
-            rehypePlugins={[rehypeHighlight, rehypeRaw]}
-          >
-            {children}
-          </ReactMarkdown>
-        </div>
-      </div>
-
-      {/* Print button */}
-      {isButtonEnable && <Button
-        onClick={handlePrint}
-        className="bg-yellow-400 w-full cursor-pointer mt-4"
-        disabled={isPrinting}
+    <div className="prose max-w-none prose-headings:mt-4 prose-p:mt-2">
+      <ReactMarkdown
+        components={{
+          strong: ({ children }) => <strong className="font-bold">{children}</strong>,
+          table: ({ node, ...props }) => (
+            <table className="table-auto border border-gray-400">{props.children}</table>
+          ),
+          th: ({ node, ...props }) => (
+            <th className="border border-gray-400 bg-gray-200 px-4 py-2 font-semibold">
+              {props.children}
+            </th>
+          ),
+          td: ({ node, ...props }) => (
+            <td className="border border-gray-300 px-4 py-2">{props.children}</td>
+          ),
+          a: ({ node, ...props }) => (
+            <a {...props} className="underline text-yellow-500" />
+          ),
+        }}
+        remarkPlugins={[remarkGfm]}
+        rehypePlugins={[rehypeHighlight, rehypeRaw]}
       >
-        {isPrinting ? (
-          <>
-            <AiOutlineLoading className="mr-2 h-4 w-4 animate-spin" />
-            Preparing PDF...
-          </>
-        ) : (
-          <>
-            <FaRegFilePdf className="mr-2" />
-            Generate PDF
-          </>
-        )}
-      </Button>}
-    </>
+        {sanitizeMarkdown(children)}
+      </ReactMarkdown>
+    </div>
   );
 }

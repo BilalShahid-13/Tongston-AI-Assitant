@@ -31,6 +31,7 @@ import {
 
 export const backendApi = 'https://tongston-ai-assitant-rt92.vercel.app';
 // export const backendApi = 'http://localhost:5000';
+export const feedbackGeneratorCount = 3;
 
 export const navbarItems = [
   {
@@ -139,7 +140,7 @@ export const aiAssistantTabs = [
   { name: "Student Conduct and Character Assessments", id: "student-conduct-and-character-assessments", component: StudentConductCharacterAssessment, icon: UserCog },
   { name: "Project tasks", component: ProjectTask, id: "project-tasks", icon: Hammer },
   { name: "Project Tasks Lesson Facilitation Plan", id: "project-tasks-lesson-facilitation-plan", component: ProjectTaskFacilitation, icon: Hammer },
-  { name: "Lesson Plan Marking & Report Generator ", id: "lesson-plan-marking", component: ReportGenerator, icon: FileText },
+  { name: "Lesson Plan Marking & Report Generator", id: "lesson-plan-marking", component: ReportGenerator, icon: FileText },
 
   // { name: "Marking", component: Marking, icon: PencilRuler },
   // { name: "Help", component: Help, icon: LifeBuoy },

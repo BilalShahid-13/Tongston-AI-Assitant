@@ -17,6 +17,7 @@ import { useProjectTaskFacilitationStore } from "@/store/projectTaskFacilitation
 import { onSubmitFn } from "@/utils/onSubmit";
 import { resetPlanValues } from "@/utils/resetPlanValues";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { FormProvider, useForm, type UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
@@ -39,6 +40,8 @@ export default function StudentConductCharacterAssessment() {
   const [loading, setLoading] = useState(false);
   const chatbotRef = useRef<HTMLDivElement>(null);
   const [data, setData] = useState<string | null>("");
+    const navigate = useNavigate();
+
   const onSubmit = async (data: IStudentConductCharacterAssessmentsForm) => {
     console.log("Form Data:", data);
     setData("");
@@ -48,6 +51,7 @@ export default function StudentConductCharacterAssessment() {
       setStatusMessage,
       setShowPlan: setShowChatbot,
       setData,
+      navigate,
       setLoading
     })
     if (res?.error) {

@@ -7,9 +7,11 @@ import subjectLessonRouter from "./routes/subjectLessonPlan.route";
 import userRouter from "./routes/user.route";
 import feedbackRouter from "./routes/feedback.route";
 import KnowledgeBaseRouter from "./routes/insertKnowledgeBase.route";
+import reportRouter from "./routes/reportGenerator.route";
 const app = express();
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: "*" }));
 
 
@@ -22,13 +24,14 @@ app.get("/", (req: Request, res: Response) => {
 
 // app.use("/api", searchRouter);
 // app.use("/api", feedbackRouter);
-app.use("/api",KnowledgeBaseRouter)
+app.use("/api", KnowledgeBaseRouter)
 app.use("/api", userRouter);
 app.use("/api", faqRouter);
 app.use("/api", feedbackRouter);
 app.use("/api", subjectLessonRouter);
 app.use("/api", studentConductRouter);
 app.use("/api", projectTaskRouter)
+app.use("/api", reportRouter)
 // insertFaq();
 // console.log(parseExcelLink('./public/AI Chatbot (K12) Knowledge base sort sheet.xlsx'))
 

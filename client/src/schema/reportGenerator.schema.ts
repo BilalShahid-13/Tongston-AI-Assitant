@@ -5,14 +5,18 @@ export const reportGeneratorSchema = z.object({
   lessonPlanFile: z
     .any()
     .refine(
-      (file) =>
-        file instanceof File &&
-        ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain"].includes(file.type),
+      (files) => {
+        return (
+          Array.isArray(files) &&
+          files.length > 0 &&
+          files[0] instanceof File &&
+          ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain"].includes(files[0].type)
+        );
+      },
       {
         message: "Only PDF, DOCX, or TXT files are accepted.",
       }
     ),
-
   // 2. Contextual Information
   submittedOnTime: z.enum(["Yes", "No"]).optional(),
   submittedViaCorrectChannel: z.enum(["Yes", "No"]).optional(),
@@ -22,13 +26,7 @@ export const reportGeneratorSchema = z.object({
     .string()
     .min(1, "Class type is required (e.g., Primary 3, JSS2).").nonempty(),
 
-  // curriculumType: z
-  //   .string()
-  //   .min(1, "Curriculum type is required (e.g., Nigerian National, IB)."),
-
-  term: z.enum({
-    required_error: "Associated term is required.",
-  }),
+  term: z.string({error:"Associated term is required."}),
   termTheme: z.string().optional(),
 
   associatedPBLTask: z.string().optional(), // optional free text or dropdown

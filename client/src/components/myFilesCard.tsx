@@ -19,8 +19,20 @@ interface LessonPlanCardProps {
   onView?: () => void;
 }
 
+const badges = [
+  "Subject Lesson Plan",
+  "Subject Assessment Plan",
+  "Student Conduct Character Assessment Plan",
+  "Project Task Plan",
+  "Project Facilitation Plan",
+  "Student Conduct Character Plan",
+  "Report Generator Plan"
+];
+
+
 export function MyFilesCard({ data, onView }: LessonPlanCardProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+const [selectedBadge, setSelectedBadge] = useState<string | null>(null);
 
   // Extract key information from the markdown content
   const extractInfo = (content: string) => {

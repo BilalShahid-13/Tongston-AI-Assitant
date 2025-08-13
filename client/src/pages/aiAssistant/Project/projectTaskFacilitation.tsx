@@ -15,6 +15,7 @@ import { useProjectTaskFacilitationStore } from "@/store/projectTaskFacilitation
 import { onSubmitFn } from "@/utils/onSubmit";
 import { resetPlanValues } from "@/utils/resetPlanValues";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { FormProvider, useForm, type UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
@@ -39,6 +40,7 @@ export default function ProjectTaskFacilitation() {
   const [loading, setLoading] = useState(false);
   const chatbotRef = useRef<HTMLDivElement>(null);
   const [data, setData] = useState<string | null>("");
+  const navigate = useNavigate();
 
   const onSubmit = async (data: IProjectTaskFacilitationFormSchema) => {
     setData("");
@@ -46,6 +48,7 @@ export default function ProjectTaskFacilitation() {
       payload: data,
       api: "project/Facilitation",
       setStatusMessage,
+      navigate,
       setShowPlan: setShowChatbot,
       setData,
       setLoading

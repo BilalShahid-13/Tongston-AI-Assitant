@@ -57,6 +57,7 @@
     "rehype-highlight": "^7.0.2",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
+    "remove-markdown": "^0.6.2",
     "shepherd.js": "^14.5.1",
     "sonner": "^2.0.6",
     "tailwind-merge": "^3.3.1",

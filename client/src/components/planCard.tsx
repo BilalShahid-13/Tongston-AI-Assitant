@@ -25,7 +25,8 @@ export default function PlanCard({ children, title = "Subject Lesson Plan & Note
       <Card ref={ref} className={className}>
         <CardHeader>
           {/* <CardTitle className="text-xl font-semibold font-inter">{title}</CardTitle> */}
-          <CardHeader className={cn("bg-[#ffb900] text-white rounded-t-xl p-6", cardHeaderClassName)}>
+          <CardHeader className={cn("bg-gradient-to-l from-[#dc2626] to-[#f75d5d] text-white rounded-t-xl p-6", cardHeaderClassName)}>
+          {/* <CardHeader className={cn("bg-[#ffb900] text-white rounded-t-xl p-6", cardHeaderClassName)}> */}
             <CardTitle className="text-2xl font-bold">{title}</CardTitle>
             <p className="text-sm opacity-90">{des}</p>
           </CardHeader>

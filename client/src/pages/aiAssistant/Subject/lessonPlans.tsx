@@ -15,6 +15,7 @@ import { useCurriculumStore } from "@/store/curriculumStore";
 import { useProjectTaskFacilitationStore } from "@/store/projectTaskFacilitationStore";
 import { onSubmitFn } from "@/utils/onSubmit";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import type { UseFormReturn } from 'react-hook-form';
 import { FormProvider, useForm } from "react-hook-form";
@@ -43,7 +44,7 @@ export default function LessonPlan() {
   const { handleCities, cities, handleYearClass, handleTerm, handleCurriculum,
     setCurriculumEntry, handleSubjectDicipline } = useProjectTaskFacilitationStore();
   // const { downloadPDF } = useMarkdownStore()
-
+  const navigate = useNavigate()
   useEffect(() => {
     if (isLoaded) {
       setCurriculumEntry(excelData, isLoaded);
@@ -62,6 +63,7 @@ export default function LessonPlan() {
       payload: data,
       api: "subject/lessonPlan",
       setStatusMessage,
+      navigate,
       setShowPlan: setShowLessonPlan,
       setData, setLoading
     })

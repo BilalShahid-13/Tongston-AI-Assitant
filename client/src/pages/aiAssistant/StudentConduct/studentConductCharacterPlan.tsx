@@ -16,6 +16,7 @@ import { useProjectTaskFacilitationStore } from "@/store/projectTaskFacilitation
 import { onSubmitFn } from "@/utils/onSubmit";
 import { resetPlanValues } from "@/utils/resetPlanValues";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { FormProvider, useForm, type UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
@@ -38,6 +39,7 @@ export default function StudentConductCharacterPlan() {
     }
   });
   const { handleCities, cities, handleYearClass, handleTerm } = useProjectTaskFacilitationStore();
+  const navigate = useNavigate();
 
   const onSubmit = async (data: IStudentConductCharacterPlan) => {
     console.log("Form Data:IStudentConductCharacterPlan", data);
@@ -48,6 +50,7 @@ export default function StudentConductCharacterPlan() {
       setStatusMessage,
       setShowPlan: setShowChatbot,
       setData,
+      navigate,
       setLoading
     })
     if (res?.error) {

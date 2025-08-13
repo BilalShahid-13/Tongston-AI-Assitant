@@ -15,6 +15,7 @@ import { useProjectTaskFacilitationStore } from "@/store/projectTaskFacilitation
 import { onSubmitFn } from "@/utils/onSubmit";
 import { resetPlanValues } from "@/utils/resetPlanValues";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { FormProvider, useForm, type UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
@@ -38,12 +39,15 @@ export default function ProjectTask() {
   const [data, setData] = useState<string | null>("");
 
   const { handleCities, cities, handleYearClass, handleTerm } = useProjectTaskFacilitationStore();
+    const navigate = useNavigate();
+
   const onSubmit = async (data: IProjectTaskSchema) => {
     setData("");
     const res = await onSubmitFn({
       payload: data,
       api: "projectTask",
       setStatusMessage,
+      navigate,
       setShowPlan: setShowChatbot,
       setData,
       setLoading
