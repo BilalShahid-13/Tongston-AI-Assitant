@@ -1,14 +1,11 @@
 import { DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import type { Dispatch, SetStateAction } from "react";
 import DownloadMarkdown from "./downloadMarkdown";
-import { Button } from "./ui/button";
 interface Props {
   des: string;
-  setIsOpen: Dispatch<SetStateAction<boolean>> // expects a boolean or a function;
   fileName: string
 }
 
-export default function DescriptionWithDialog({ des, setIsOpen, fileName }: Props) {
+export default function DescriptionWithDialog({ des, fileName }: Props) {
   // Truncate text to ~150 chars for preview
   const truncated = des.length > 150 ? des.slice(0, 150) + "..." : des;
   console.log('fileName', fileName)

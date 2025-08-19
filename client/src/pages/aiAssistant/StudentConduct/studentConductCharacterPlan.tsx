@@ -38,7 +38,7 @@ export default function StudentConductCharacterPlan() {
       technologyAccess: "No",
     }
   });
-  const { handleCities, cities, handleYearClass, handleTerm, handleSubjectDicipline,setOtherTeachingAids } = useProjectTaskFacilitationStore();
+  const { handleCities, cities, handleYearClass, handleTerm, setOtherTeachingAids } = useProjectTaskFacilitationStore();
   const navigate = useNavigate();
 
   const onSubmit = async (data: IStudentConductCharacterPlan) => {
