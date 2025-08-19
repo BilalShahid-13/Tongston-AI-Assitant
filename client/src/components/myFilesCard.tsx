@@ -209,7 +209,6 @@ export function MyFilesCard({ data, onView }: LessonPlanCardProps) {
             <DescriptionWithDialog
               des={data.answer}
               fileName={lessonInfo?.topic}
-              setIsOpen={setIsDialogOpen}
             />
           </Dialog>
         </CardContent>
