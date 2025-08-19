@@ -5,7 +5,7 @@ import { backendApi } from "@/lib/constant"
 import { zodResolver } from "@hookform/resolvers/zod"
 import axios from "axios"
 import { motion } from "framer-motion"
-import { Loader2 } from "lucide-react"
+import { CloudUpload, Loader2, Upload, Zap } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
@@ -72,18 +72,36 @@ export function AdminForm({ onUploadSuccess }: AdminFormProps) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="w-full max-w-4xl mx-auto p-4 md:p-6"
+      transition={{ duration: 0.6, delay: 0.4 }}
+      className="w-full max-w-4xl mx-auto"
     >
-      <Card className="bg-white dark:bg-[#2C2C2C]">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-[#1F2937] dark:text-[#F9FAFB]">
-            Admin Panel: Knowledge Base
+      <Card className="relative overflow-hidden bg-gradient-to-br from-white via-amber-50/30 to-orange-50/30 dark:from-gray-800 dark:via-gray-700 dark:to-gray-600 border-0 shadow-2xl">
+        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#ffb900] to-[#fe9a00]"></div>
+
+        <CardHeader className="text-center pb-8 pt-12">
+          <motion.div
+            initial={{ scale: 0, rotate: -180 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ delay: 0.6, type: "spring", stiffness: 200 }}
+            className="mx-auto w-20 h-20 bg-gradient-to-br from-[#ffb900] to-[#fe9a00] rounded-2xl flex items-center justify-center mb-6 shadow-xl"
+          >
+            <CloudUpload className="w-10 h-10 text-white" />
+          </motion.div>
+          <CardTitle className="text-3xl font-bold bg-gradient-to-r from-[#ffb900] to-[#fe9a00] bg-clip-text text-transparent mb-3">
+            Upload Documents
           </CardTitle>
+          <p className="text-muted-foreground text-lg max-w-md mx-auto leading-relaxed">
+            Drag and drop your files or click to browse. Expand your knowledge base instantly.
+          </p>
+          <div className="flex items-center justify-center gap-2 mt-4 text-sm text-muted-foreground">
+            <Zap className="w-4 h-4 text-[#ffb900]" />
+            <span>Supports PDF, DOC, DOCX, TXT files</span>
+          </div>
         </CardHeader>
-        <CardContent>
+
+        <CardContent className="px-8 pb-8">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <FormField
                 control={form.control}
                 name="files"
@@ -92,7 +110,7 @@ export function AdminForm({ onUploadSuccess }: AdminFormProps) {
                     <FileUploader
                       form={form}
                       name={field.name}
-                      label="Upload Knowledge Files"
+                      label="Select Files to Upload"
                       multiple
                       accept=".pdf,.doc,.docx,.txt"
                     />
@@ -101,20 +119,25 @@ export function AdminForm({ onUploadSuccess }: AdminFormProps) {
                 )}
               />
 
-              <Button
-                type="submit"
-                className="w-full bg-[#ffb900] hover:bg-[#fe9a00] text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200"
-                disabled={form.formState.isSubmitting}
-              >
-                {form.formState.isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Submitting...
-                  </>
-                ) : (
-                  "Submit Knowledge Base"
-                )}
-              </Button>
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="pt-4">
+                <Button
+                  type="submit"
+                  className="w-full h-14 bg-gradient-to-r from-[#ffb900] to-[#fe9a00] hover:from-[#e6a600] hover:to-[#e58900] text-white font-semibold text-lg transition-all duration-300 shadow-xl hover:shadow-2xl rounded-xl"
+                  disabled={form.formState.isSubmitting}
+                >
+                  {form.formState.isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-3 h-6 w-6 animate-spin" />
+                      Processing Upload...
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="mr-3 h-6 w-6" />
+                      Upload to Knowledge Base
+                    </>
+                  )}
+                </Button>
+              </motion.div>
             </form>
           </Form>
         </CardContent>

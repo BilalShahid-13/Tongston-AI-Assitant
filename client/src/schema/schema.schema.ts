@@ -64,6 +64,7 @@ export const lessonPlanForm = z
     teachingAids: z
       .array(z.string())
       .min(1, "Select at least one teaching aid"),
+    otherTeachingAids: z.string().optional(),
     assessmentType: z.string().optional(),
   })
   .superRefine((data, ctx) => {

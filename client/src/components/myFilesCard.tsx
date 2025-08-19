@@ -142,10 +142,11 @@ export function MyFilesCard({ data, onView }: LessonPlanCardProps) {
               </div>
               {onView && (
                 <Button
-                  onClick={onView}
+                  // onClick={onView}
+                  onClick={() => setIsDialogOpen(true)}
                   size="sm"
                   variant="ghost"
-                  className="text-white hover:bg-white/20 border border-white/30 backdrop-blur-sm"
+                  className="text-white cursor-pointer hover:bg-white/20 border border-white/30 backdrop-blur-sm"
                 >
                   <BookOpen className="h-4 w-4 mr-2" />
                   Open Full View

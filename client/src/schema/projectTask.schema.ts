@@ -24,6 +24,7 @@ export const projectTaskSchema = z.object({
   teachingAids: z
     .array(z.string())
     .min(1, "Select at least one teaching aid"),
+  otherTeachingAids: z.string().optional(),
   // sen
   sen: z.array(z.string()).optional(),
   noStudents: z.array(z.string()).optional(),

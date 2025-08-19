@@ -7,14 +7,11 @@ const userHistorySchema_1 = require("../model/userHistorySchema");
 async function getUserPlans(req, res) {
     try {
         await (0, connectDb_1.connectMongo)();
-        const plans = await userHistorySchema_1.History.find({})
-            // .select("plan createdAt updatedAt userId")  // include only needed fields
-            .populate({
+        const plans = await userHistorySchema_1.History.find({}).sort({ createdAt: -1 }).populate({
             path: "userId",
             model: user_1.User,
             // select: "username subject role",
         });
-        // .sort({ createdAt: -1 });
         if (plans.length > 0) {
             res.status(200).json({
                 success: true,

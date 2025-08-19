@@ -6,15 +6,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const cors_1 = __importDefault(require("cors"));
 const express_1 = __importDefault(require("express"));
 const faqs_route_1 = __importDefault(require("./routes/faqs.route"));
+const feedback_route_1 = __importDefault(require("./routes/feedback.route"));
+const insertKnowledgeBase_route_1 = __importDefault(require("./routes/insertKnowledgeBase.route"));
+const otp_route_1 = __importDefault(require("./routes/otp.route"));
 const projectTask_route_1 = __importDefault(require("./routes/projectTask.route"));
+const reportGenerator_route_1 = __importDefault(require("./routes/reportGenerator.route"));
 const studentPlan_route_1 = __importDefault(require("./routes/studentPlan.route"));
 const subjectLessonPlan_route_1 = __importDefault(require("./routes/subjectLessonPlan.route"));
 const user_route_1 = __importDefault(require("./routes/user.route"));
-const feedback_route_1 = __importDefault(require("./routes/feedback.route"));
-const insertKnowledgeBase_route_1 = __importDefault(require("./routes/insertKnowledgeBase.route"));
+const body_parser_1 = __importDefault(require("body-parser"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
+app.use(express_1.default.urlencoded({ extended: true }));
 app.use((0, cors_1.default)({ origin: "*" }));
+app.use(body_parser_1.default.json());
 app.get("/", (req, res) => {
     res.send("hello world!");
 });
@@ -29,6 +34,8 @@ app.use("/api", feedback_route_1.default);
 app.use("/api", subjectLessonPlan_route_1.default);
 app.use("/api", studentPlan_route_1.default);
 app.use("/api", projectTask_route_1.default);
+app.use("/api", reportGenerator_route_1.default);
+app.use("/api", otp_route_1.default);
 // insertFaq();
 // console.log(parseExcelLink('./public/AI Chatbot (K12) Knowledge base sort sheet.xlsx'))
 // connectMongo().then(() => {

@@ -33,14 +33,15 @@ export default function StudentConductCharacterAssessment() {
       technologyAccess: "No",
     }
   });
-  const { handleCities, cities, handleTerm, resetContinousAssessment, handleSubjectLearning, handleSubjectDicipline, handleYearClass } = useProjectTaskFacilitationStore();
+  const { handleCities, cities, handleTerm, resetContinousAssessment, handleSubjectLearning,
+    handleSubjectDicipline, handleYearClass, setOtherTeachingAids } = useProjectTaskFacilitationStore();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showChatbot, setShowChatbot] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const chatbotRef = useRef<HTMLDivElement>(null);
   const [data, setData] = useState<string | null>("");
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const onSubmit = async (data: IStudentConductCharacterAssessmentsForm) => {
     console.log("Form Data:", data);
@@ -65,6 +66,10 @@ export default function StudentConductCharacterAssessment() {
   useEffect(() => {
     resetContinousAssessment(form);
   }, [form.watch("typeofAssessments")])
+
+  useEffect(() => {
+    setOtherTeachingAids(form);
+  }, [form.watch("teachingAids")])
 
   return (
     <>
@@ -330,6 +335,15 @@ export default function StudentConductCharacterAssessment() {
                           name="teachingAids"
                           fieldName="Availability of Teaching Aids / Learning Resources / Instructional Materials"
                           list={teachingAids} />
+                        {form.watch("teachingAids")?.includes("Other") ?
+                          <CustomInputField
+                            placeholder="Select Other Teaching Aids / Learning Resources / Instructional Materials"
+                            name="teachingAids"
+                            isDisabled={false}
+                            fieldName="Other Teaching Aids / Learning Resources / Instructional Materials"
+                            form={form}
+                          /> : null
+                        }
                       </Row>
                     </Container>
                   </Row>

@@ -17,7 +17,7 @@ const client = new MongoClient(uri);
 const embeddings = new OpenAIEmbeddings();
 
 const db = client.db();
-const collection = db.collection("faqs");
+const collection = db.collection("faqKnowledgeBase");
 
 const vectorStore = new MongoDBAtlasVectorSearch(embeddings, {
   collection,
@@ -82,28 +82,26 @@ export async function planSimilaritySearch(
   req: Request,
   query: Record<string, any>,
   res: Response,
-  instructionFn: (context: Record<string, any>) => string, // should return string
+  instructionFn: (context: Record<string, any>, knowledgeBase: string) => string, // should return string
   planName: string,
   metaData: string,
 ): Promise<void> {
   try {
     const results = await vectorStore.similaritySearch(JSON.stringify(query), 10);
     const context = results.map((doc) => doc.pageContent).join("\n");
+    console.log('context', context)
     let fullResponse = "";
     const stream = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
         {
           role: "system",
-          content: instructionFn(query),
-        },
-        {
-          role: "user",
-          content: "Generate a lesson plan based on the provided context and parameters.",
+          content: instructionFn(query, context),
         },
       ],
       temperature: 0.7,
       stream: true,
+      max_tokens:3000,
     });
     for await (const chunk of stream) {
       const content = chunk.choices?.[0]?.delta?.content;

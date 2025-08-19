@@ -42,7 +42,7 @@ export default function LessonPlan() {
 
   const { isLoaded, data: excelData } = useCurriculumStore();
   const { handleCities, cities, handleYearClass, handleTerm, handleCurriculum,
-    setCurriculumEntry, handleSubjectDicipline } = useProjectTaskFacilitationStore();
+    setCurriculumEntry, handleSubjectDicipline,setOtherTeachingAids } = useProjectTaskFacilitationStore();
   // const { downloadPDF } = useMarkdownStore()
   const navigate = useNavigate()
   useEffect(() => {
@@ -56,6 +56,10 @@ export default function LessonPlan() {
   }, [
     form.watch("curriculum"), form.watch("subject"), form.watch("yearClass")
   ])
+
+  useEffect(() => {
+    setOtherTeachingAids(form);
+  }, [form.watch("teachingAids")])
 
   const onSubmit = async (data: lessonPlanFormSchema) => {
     setData("");
@@ -326,6 +330,15 @@ export default function LessonPlan() {
                         name="teachingAids"
                         fieldName="Availability of Teaching Aids / Learning Resources / Instructional Materials"
                         list={teachingAids} />
+                      {form.watch("teachingAids")?.includes("Other") ?
+                        <CustomInputField
+                          placeholder="Select Other Teaching Aids / Learning Resources / Instructional Materials"
+                          name="teachingAids"
+                          isDisabled={false}
+                          fieldName="Other Teaching Aids / Learning Resources / Instructional Materials"
+                          form={form}
+                        /> : null
+                      }
                     </Row>
                   </Container>
                 </Container>

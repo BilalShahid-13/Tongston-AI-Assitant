@@ -14,12 +14,13 @@ const connectDb_1 = require("../lib/connectDb");
 const openai_2 = __importDefault(require("../lib/openai"));
 const faqHistory_1 = require("../model/faqHistory");
 const userHistorySchema_1 = require("../model/userHistorySchema");
+const globalChatHistory_1 = require("./globalChatHistory");
 (0, dotenv_1.config)();
 const uri = process.env.MONGODB_URI || "mongodb://localhost:27017";
 const client = new mongodb_2.MongoClient(uri);
 const embeddings = new openai_1.OpenAIEmbeddings();
 const db = client.db();
-const collection = db.collection("faqs");
+const collection = db.collection("faqKnowledgeBase");
 const vectorStore = new mongodb_1.MongoDBAtlasVectorSearch(embeddings, {
     collection,
     indexName: "faq_index",
@@ -30,11 +31,14 @@ async function faqSimilaritySearch(req, query, res, instructionFn) {
     await (0, connectDb_1.connectMongo)();
     const results = await vectorStore.similaritySearch(query, 10);
     const context = results.map((doc) => doc.pageContent).join("\n");
-    let chatHistory = await faqHistory_1.faqHistory.find({});
-    const roleAndContentOnly = chatHistory.flatMap(doc => doc.messages.map((msg) => ({
-        role: msg.role,
-        content: msg.content
-    })));
+    // let chatHistory = await faqHistory.find({});
+    // chatHistory
+    // const roleAndContentOnly = chatHistory.flatMap(doc =>
+    //   doc.messages.map((msg: any) => ({
+    //     role: msg.role,
+    //     content: msg.content
+    //   }))
+    // );
     res.setHeader("Access-Control-Allow-Origin", "*");
     // res.setHeader("Access-Control-Allow-Origin", process.env.ORIGIN_URL!);
     res.setHeader("Access-Control-Allow-Credentials", "false");
@@ -45,8 +49,9 @@ async function faqSimilaritySearch(req, query, res, instructionFn) {
     const stream = await openai_2.default.chat.completions.create({
         model: "gpt-4o-mini",
         messages: [
-            { role: "system", content: instructionFn(context, query) },
-            ...roleAndContentOnly,
+            { role: "assistant", content: instructionFn(context, query) },
+            // ...roleAndContentOnly,
+            ...globalChatHistory_1.chatHistory,
         ],
         temperature: 0.7,
         stream: true,
@@ -60,6 +65,7 @@ async function faqSimilaritySearch(req, query, res, instructionFn) {
     }
     res.write(`data: [END]\n\n`);
     res.end();
+    globalChatHistory_1.chatHistory.push({ role: "user", content: query });
     await faqHistory_1.faqHistory.create({
         messages: [
             { role: "assistant", content: fullResponse },
@@ -73,21 +79,19 @@ planName, metaData) {
     try {
         const results = await vectorStore.similaritySearch(JSON.stringify(query), 10);
         const context = results.map((doc) => doc.pageContent).join("\n");
+        console.log('context', context);
         let fullResponse = "";
         const stream = await openai_2.default.chat.completions.create({
             model: "gpt-4o-mini",
             messages: [
                 {
                     role: "system",
-                    content: instructionFn(query),
-                },
-                {
-                    role: "user",
-                    content: "Generate a lesson plan based on the provided context and parameters.",
+                    content: instructionFn(query, context),
                 },
             ],
             temperature: 0.7,
             stream: true,
+            max_tokens: 3000,
         });
         for await (const chunk of stream) {
             const content = chunk.choices?.[0]?.delta?.content;

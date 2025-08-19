@@ -761,6 +761,20 @@ export const timeOptions = [
   "50 minutes",
   "60 minutes",
   "80 minutes",
+  "90 minutes",
+  "100 minutes",
+  "120 minutes",
+  "135 minutes",
+  "150 minutes",
+  "180 minutes",
+  "160 minutes",
+  "180 minutes",
+  "200 minutes",
+  "240 minutes",
+  "200 minutes",
+  "225 minutes",
+  "250 minutes",
+  "300 minutes"
 ];
 
 export const senDifferentiation = [
@@ -918,8 +932,10 @@ export const teachingAids = [
   "Educational Videos",
   "Apps & Educational Software",
   "Virtual / In Person Field Trips",
-  "Science Kits for practicals",
+  // "Science Kits for practicals",
+  "Kits for practicals",
   "Charts & Posters",
+  "Other",
 ];
 
 export const securityLevel = ["Mild", "Moderate", "Severe", "Profound"];

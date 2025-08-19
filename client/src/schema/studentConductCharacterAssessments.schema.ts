@@ -27,6 +27,7 @@ export const studentConductCharacterAssessmentsFormSchema = z.object({
   teachingAids: z
     .array(z.string())
     .min(1, "Select at least one teaching aid"),
+  otherTeachingAids: z.string().optional(),
   classSize: z.string().nonempty("Class size is required"),
   timeAvailable: z.string().nonempty("Time available is required"),
   // sen

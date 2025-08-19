@@ -16,7 +16,7 @@ import { onSubmitFn } from "@/utils/onSubmit";
 import { resetPlanValues } from "@/utils/resetPlanValues";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FormProvider, useForm, type UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -38,8 +38,8 @@ export default function ProjectTask() {
   const chatbotRef = useRef<HTMLDivElement>(null);
   const [data, setData] = useState<string | null>("");
 
-  const { handleCities, cities, handleYearClass, handleTerm } = useProjectTaskFacilitationStore();
-    const navigate = useNavigate();
+  const { handleCities, cities, handleYearClass, handleTerm, setOtherTeachingAids } = useProjectTaskFacilitationStore();
+  const navigate = useNavigate();
 
   const onSubmit = async (data: IProjectTaskSchema) => {
     setData("");
@@ -59,6 +59,11 @@ export default function ProjectTask() {
     }
     form.reset(resetPlanValues(projectTaskSchema))
   };
+
+  useEffect(() => {
+    setOtherTeachingAids(form);
+  }, [form.watch("teachingAids")])
+
 
   return (
     <>
@@ -231,6 +236,15 @@ export default function ProjectTask() {
                         name="teachingAids"
                         fieldName="Availability of Teaching Aids / Learning Resources / Instructional Materials"
                         list={teachingAids} />
+                      {form.watch("teachingAids")?.includes("Other") ?
+                        <CustomInputField
+                          placeholder="Select Other Teaching Aids / Learning Resources / Instructional Materials"
+                          name="teachingAids"
+                          isDisabled={false}
+                          fieldName="Other Teaching Aids / Learning Resources / Instructional Materials"
+                          form={form}
+                        /> : null
+                      }
                     </Row>
                   </Container>
                 </Container>

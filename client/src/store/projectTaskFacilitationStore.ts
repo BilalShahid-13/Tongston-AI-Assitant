@@ -15,6 +15,7 @@ interface IProjectTaskFacilitation {
   isCurriculumLoaded: boolean;
   CurriculumEntry: CurriculumEntry[];
   setCurriculumEntry: (excelData: CurriculumEntry[], isLoaded: boolean) => void;
+  setOtherTeachingAids: (form: UseFormReturn<any>) => void;
 }
 export const useProjectTaskFacilitationStore = create<IProjectTaskFacilitation>((set) => ({
   cities: [],
@@ -77,7 +78,11 @@ export const useProjectTaskFacilitationStore = create<IProjectTaskFacilitation>(
     }
   },
   setCurriculumEntry: (excelData: CurriculumEntry[], isLoaded: boolean) => set({ CurriculumEntry: excelData, isCurriculumLoaded: isLoaded }),
-
+  setOtherTeachingAids: (form: UseFormReturn<any>) => {
+    if (form.getValues("teachingAids") === "Others") {
+      form.setValue("teachingAids", form.getValues("otherTeachingAids"));
+    }
+  }
 }));
 
 
@@ -175,8 +180,8 @@ const handleSocioEconomic = (form: UseFormReturn<any>, yearClass: string) => {
     case "Senior Secondary 1/ SS1/Grade 11":
       form.setValue("classesSocioEconomic", "Continent");
       break;
-    // case "Senior Secondary 1/ SS1/Grade 11":
-    //   form.setValue("classesSocioEconomic", "TESTS");
+      // case "Senior Secondary 1/ SS1/Grade 11":
+      //   form.setValue("classesSocioEconomic", "TESTS");
       break;
     case "Undergraduate Year 1":
       form.setValue("classesSocioEconomic", "Global Socio-Economic (Trade) Block");

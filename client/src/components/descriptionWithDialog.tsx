@@ -17,17 +17,6 @@ export default function DescriptionWithDialog({ des, setIsOpen, fileName }: Prop
       <div className="transition-all duration-300">
         <span className="text-muted-foreground leading-relaxed">
           <DownloadMarkdown >{truncated}</DownloadMarkdown>
-          {/* <Markdown isButtonEnable={false}>{truncated}</Markdown> */}
-          {des.length > 150 && (
-            <>
-              <Button variant={"link"}
-                className="text-zinc-500 underline"
-                onClick={() => setIsOpen(true)}
-              >
-                See More
-              </Button>
-            </>
-          )}
         </span>
       </div>
 

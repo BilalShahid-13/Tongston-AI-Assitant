@@ -16,7 +16,7 @@ import { onSubmitFn } from "@/utils/onSubmit";
 import { resetPlanValues } from "@/utils/resetPlanValues";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FormProvider, useForm, type UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -33,7 +33,7 @@ export default function ProjectTaskFacilitation() {
       technologyAccess: "No",
     }
   });
-  const { handleCities, cities, handleYearClass, handleTerm } = useProjectTaskFacilitationStore();
+  const { handleCities, cities, handleYearClass, handleTerm, setOtherTeachingAids } = useProjectTaskFacilitationStore();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showChatbot, setShowChatbot] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
@@ -41,6 +41,10 @@ export default function ProjectTaskFacilitation() {
   const chatbotRef = useRef<HTMLDivElement>(null);
   const [data, setData] = useState<string | null>("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setOtherTeachingAids(form);
+  }, [form.watch("teachingAids")])
 
   const onSubmit = async (data: IProjectTaskFacilitationFormSchema) => {
     setData("");
@@ -68,10 +72,10 @@ export default function ProjectTaskFacilitation() {
         showPanel={showChatbot}
       >
 
-               <PlanCard title="Project (Tasks) Lesson Facilitation Plan"
-                 ref={scrollRef}
-                 className="relative h-[90vh] overflow-y-scroll">
-                 <ScrollArea>
+        <PlanCard title="Project (Tasks) Lesson Facilitation Plan"
+          ref={scrollRef}
+          className="relative h-[90vh] overflow-y-scroll">
+          <ScrollArea>
             <FormProvider {...form}>
               <form onSubmit={form.handleSubmit(onSubmit, useOnError())}
                 className="flex flex-col gap-8 mx-3">
@@ -239,6 +243,15 @@ export default function ProjectTaskFacilitation() {
                         name="teachingAids"
                         fieldName="Availability of Teaching Aids / Learning Resources / Instructional Materials"
                         list={teachingAids} />
+                      {form.watch("teachingAids")?.includes("Other") ?
+                        <CustomInputField
+                          placeholder="Select Other Teaching Aids / Learning Resources / Instructional Materials"
+                          name="teachingAids"
+                          isDisabled={false}
+                          fieldName="Other Teaching Aids / Learning Resources / Instructional Materials"
+                          form={form}
+                        /> : null
+                      }
                     </Row>
                   </Container>
                 </Container>
