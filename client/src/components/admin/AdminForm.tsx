@@ -76,18 +76,21 @@ export function AdminForm({ onUploadSuccess }: AdminFormProps) {
       className="w-full max-w-4xl mx-auto"
     >
       <Card className="relative overflow-hidden bg-gradient-to-br from-white via-amber-50/30 to-orange-50/30 dark:from-gray-800 dark:via-gray-700 dark:to-gray-600 border-0 shadow-2xl">
-        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#ffb900] to-[#fe9a00]"></div>
+        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[var(--k12-primary)]
+                to-[var(--k12-secondary)]"></div>
 
         <CardHeader className="text-center pb-8 pt-12">
           <motion.div
             initial={{ scale: 0, rotate: -180 }}
             animate={{ scale: 1, rotate: 0 }}
             transition={{ delay: 0.6, type: "spring", stiffness: 200 }}
-            className="mx-auto w-20 h-20 bg-gradient-to-br from-[#ffb900] to-[#fe9a00] rounded-2xl flex items-center justify-center mb-6 shadow-xl"
+            className="mx-auto w-20 h-20 bg-gradient-to-br from-[var(--k12-primary)]
+                to-[var(--k12-secondary)] rounded-2xl flex items-center justify-center mb-6 shadow-xl"
           >
             <CloudUpload className="w-10 h-10 text-white" />
           </motion.div>
-          <CardTitle className="text-3xl font-bold bg-gradient-to-r from-[#ffb900] to-[#fe9a00] bg-clip-text text-transparent mb-3">
+          <CardTitle className="text-3xl font-bold bg-gradient-to-r from-[var(--k12-primary)]
+                to-[var(--k12-secondary)] bg-clip-text text-transparent mb-3">
             Upload Documents
           </CardTitle>
           <p className="text-muted-foreground text-lg max-w-md mx-auto leading-relaxed">
@@ -122,7 +125,8 @@ export function AdminForm({ onUploadSuccess }: AdminFormProps) {
               <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="pt-4">
                 <Button
                   type="submit"
-                  className="w-full h-14 bg-gradient-to-r from-[#ffb900] to-[#fe9a00] hover:from-[#e6a600] hover:to-[#e58900] text-white font-semibold text-lg transition-all duration-300 shadow-xl hover:shadow-2xl rounded-xl"
+                  className="w-full h-14 bg-gradient-to-r from-[var(--k12-primary)]
+                to-[var(--k12-secondary)] hover:from-red-400 hover:to-red-500 text-white font-semibold text-lg transition-all duration-300 shadow-xl hover:shadow-2xl rounded-xl"
                   disabled={form.formState.isSubmitting}
                 >
                   {form.formState.isSubmitting ? (

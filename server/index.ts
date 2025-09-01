@@ -1,3 +1,4 @@
+import bodyParser from "body-parser";
 import cors from "cors";
 import express, { Request, Response } from "express";
 import faqRouter from "./routes/faqs.route";
@@ -9,7 +10,7 @@ import reportRouter from "./routes/reportGenerator.route";
 import studentConductRouter from "./routes/studentPlan.route";
 import subjectLessonRouter from "./routes/subjectLessonPlan.route";
 import userRouter from "./routes/user.route";
-import bodyParser from "body-parser";
+import ratingRouter from "./routes/rating.route";
 const app = express();
 
 app.use(express.json());
@@ -36,6 +37,8 @@ app.use("/api", studentConductRouter);
 app.use("/api", projectTaskRouter)
 app.use("/api", reportRouter)
 app.use("/api", otpRouter)
+app.use("/api", ratingRouter)
+
 
 // insertFaq();
 // console.log(parseExcelLink('./public/AI Chatbot (K12) Knowledge base sort sheet.xlsx'))

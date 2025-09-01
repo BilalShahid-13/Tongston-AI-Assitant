@@ -1,14 +1,14 @@
-import { RouterProvider, createRouter } from '@tanstack/react-router'
-import { StrictMode } from 'react'
-import ReactDOM from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { RouterProvider, createRouter } from '@tanstack/react-router';
+import { StrictMode } from 'react';
+import ReactDOM from 'react-dom/client';
 
 // Import the generated route tree
-import reportWebVitals from './reportWebVitals.ts'
-import { routeTree } from './routeTree.gen.ts'
-import './styles.css'
-import { Toaster } from './components/ui/sonner.tsx'
 import { ThemeProvider } from './components/theme-provider.tsx';
+import { Toaster } from './components/ui/sonner.tsx';
+import reportWebVitals from './reportWebVitals.ts';
+import { routeTree } from './routeTree.gen.ts';
+import './styles.css';
 
 // Create a new router instance
 const router = createRouter({

@@ -1,10 +1,13 @@
+import { useIsMobile } from '@/hooks/use-mobile';
+import { sidebarItems } from '@/lib/constant';
 import { Link, useLocation } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
-import { sidebarItems } from '@/lib/constant';
-import { SidebarMenu, SidebarMenuItem } from '../ui/sidebar';
+import { SidebarMenu, SidebarMenuItem, useSidebar } from '../ui/sidebar';
 
 export const SidebarItemList = () => {
   const { pathname } = useLocation();
+  const isMobile = useIsMobile()
+  const { setOpenMobile } = useSidebar()
 
   return (
     <SidebarMenu>
@@ -13,6 +16,7 @@ export const SidebarItemList = () => {
         return (
           <SidebarMenuItem key={item.route} className="relative overflow-hidden">
             <Link
+              onClick={() => isMobile && setOpenMobile(false)}
               to={item.route}
               id={item.id}
               className={`relative tabStyle ${isActive

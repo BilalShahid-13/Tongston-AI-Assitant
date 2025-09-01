@@ -229,10 +229,12 @@ export default function DownloadMarkdown({ children, isButtonEnable = true, file
       {/* Printable content */}
       <div ref={contentRef}>
         <div
-          id="print-root"
-          className="prose max-w-none"
+          className="prose w-full
+             bg-gradient-to-br from-neutral-200
+       via-yellow-50/30 to-amber-50/50
+        dark:from-zinc-300 dark:via-orange-400/30
+         dark:to-amber-500/10 rounded-md"
           style={{
-            backgroundColor: "#ffffff",
             color: "#000000",
             padding: "32px",
             marginTop: "16px",

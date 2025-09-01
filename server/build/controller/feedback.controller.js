@@ -4,8 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.insertFeedback = insertFeedback;
-const feedback_1 = __importDefault(require("../model/feedback"));
+exports.getFeedbackAdmin = getFeedbackAdmin;
 const connectDb_1 = require("../lib/connectDb");
+const feedback_1 = __importDefault(require("../model/feedback"));
 async function insertFeedback(req, res) {
     try {
         await (0, connectDb_1.connectMongo)();
@@ -58,5 +59,16 @@ async function insertFeedback(req, res) {
     catch (error) {
         console.error("Error inserting feedback:", error);
         res.status(500).json({ success: false, error: error.message });
+    }
+}
+async function getFeedbackAdmin(req, res) {
+    try {
+        await (0, connectDb_1.connectMongo)();
+        const feedbacks = await feedback_1.default.find().sort({ createdAt: -1 });
+        res.status(200).json({ message: "Feedbacks fetched successfully", data: feedbacks });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json({ error: error });
     }
 }

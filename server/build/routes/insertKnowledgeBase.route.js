@@ -8,4 +8,5 @@ const KnowledgeBaseRouter = (0, express_1.Router)();
 KnowledgeBaseRouter.post("/insertKnowledgeBase", upload_1.upload.single("file"), insertKnowledgeBase_controller_1.insertKnowledgeBase);
 KnowledgeBaseRouter.get("/getKnowledgeBaseFiles", getKnowledgeBaseFile_controller_1.getKnowledgeBaseFile);
 KnowledgeBaseRouter.get("/getKnowledgeBaseFileLength", getKnowledgeBaseFile_controller_1.getKnowledgeBaseFileLength);
+KnowledgeBaseRouter.delete("/deleteKnowledgeBaseFile", getKnowledgeBaseFile_controller_1.deleteKnowledgeBase);
 exports.default = KnowledgeBaseRouter;

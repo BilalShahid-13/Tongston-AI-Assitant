@@ -32,6 +32,6 @@ export async function verifyOtp(req: Request, res: Response): Promise<void> {
     res.status(200).json({ message: "Success" });
   } catch (error) {
     console.error("Verify OTP error:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: error });
   }
 }

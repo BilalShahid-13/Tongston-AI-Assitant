@@ -13,6 +13,7 @@ import { useOnError } from "@/hooks/useOnError";
 import { lessonPlanForm, type lessonPlanFormSchema } from "@/schema/schema.schema";
 import { useCurriculumStore } from "@/store/curriculumStore";
 import { useProjectTaskFacilitationStore } from "@/store/projectTaskFacilitationStore";
+import { useRatingStore } from "@/store/ratingStore";
 import { onSubmitFn } from "@/utils/onSubmit";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "@tanstack/react-router";
@@ -42,8 +43,9 @@ export default function LessonPlan() {
 
   const { isLoaded, data: excelData } = useCurriculumStore();
   const { handleCities, cities, handleYearClass, handleTerm, handleCurriculum,
-    setCurriculumEntry, handleSubjectDicipline,setOtherTeachingAids } = useProjectTaskFacilitationStore();
-  // const { downloadPDF } = useMarkdownStore()
+    setCurriculumEntry, handleSubjectDicipline, setOtherTeachingAids } = useProjectTaskFacilitationStore();
+  const { setIsOpen } = useRatingStore();
+
   const navigate = useNavigate()
   useEffect(() => {
     if (isLoaded) {
@@ -63,6 +65,13 @@ export default function LessonPlan() {
 
   const onSubmit = async (data: lessonPlanFormSchema) => {
     setData("");
+    // if (handleOutput(form)) {
+    //   setShowLessonPlan(true);
+    //   setData(`
+    //     Scaffolded SUBJECT UNIT/TOPIC: No new topic. This is a TESTS year. Learners engage in review, reflection, and consolidation of prior knowledge in preparation for the TESTS assessment. No new topic is introduced.
+    //     `);
+    //   return;
+    // }
     await onSubmitFn({
       payload: data,
       api: "subject/lessonPlan",
@@ -70,7 +79,8 @@ export default function LessonPlan() {
       navigate,
       setShowPlan: setShowLessonPlan,
       setData, setLoading
-    })
+    });
+    setIsOpen(true);
     // form.reset(resetPlanValues(lessonPlanForm))
   };
 
@@ -137,7 +147,6 @@ export default function LessonPlan() {
                       placeholder="Enter your brand name" />
                     <CustomTextArea
                       form={form}
-
                       name="vision"
                       fieldName="School Branding - Vision"
                       placeholder="Enter your vision" />

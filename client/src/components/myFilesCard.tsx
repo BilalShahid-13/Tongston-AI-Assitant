@@ -1,17 +1,11 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Dialog } from '@/components/ui/dialog';
+import { Card, CardHeader } from '@/components/ui/card';
+import { useLessonStore } from '@/store/lessonStore';
+import type { LessonPlanData } from '@/types';
+import { useRouter } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
 import { BookOpen, Calendar, Clock, FileText, GraduationCap, MapPin, Users } from 'lucide-react';
-import { useState } from 'react';
-import DescriptionWithDialog from './descriptionWithDialog';
-
-interface LessonPlanData {
-  answer: string;
-  metaData: string[] | string;
-  createdAt?: string;
-}
 
 interface LessonPlanCardProps {
   data: LessonPlanData;
@@ -21,7 +15,8 @@ interface LessonPlanCardProps {
 
 
 export function MyFilesCard({ data, onView }: LessonPlanCardProps) {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { navigate } = useRouter()
+  const { setCurrentLesson } = useLessonStore()
 
   // Extract key information from the markdown content
   const extractInfo = (content: string) => {
@@ -57,6 +52,16 @@ export function MyFilesCard({ data, onView }: LessonPlanCardProps) {
     return info;
   };
 
+  const handleOpenView = () => {
+    setCurrentLesson(data);
+    console.log("view clicked", data);
+    navigate({
+      to: "/lesson/$lessonId",
+      params: { lessonId: "preview" },
+      search: { data: JSON.stringify(data) }
+    })
+  }
+
   const lessonInfo = extractInfo(data.answer);
 
   return (
@@ -66,19 +71,22 @@ export function MyFilesCard({ data, onView }: LessonPlanCardProps) {
       transition={{ duration: 0.5, ease: "easeOut" }}
       className="w-full max-w-4xl mx-auto shadow-md"
     >
-      <Card className="overflow-hidden
+      <Card className="
       bg-gradient-to-br from-white
        via-yellow-50/30 to-amber-50/50
-        dark:from-gray-900 dark:via-orange-950/30
+        dark:from-zinc-800 dark:via-orange-950/30
          dark:to-amber-950/50 border-0
          shadow-2xl shadow-orange-500/10
-         dark:shadow-orange-400/5 hover:shadow-yellow-500/20 transition-all duration-300">
+         dark:shadow-orange-400/5 hover:shadow-yellow-500/20
+          transition-all duration-300">
         {/* Header with gradient background */}
         <CardHeader className="rounded-md relative bg-gradient-to-r from-[#ffb900] via-[#fe9a00] to-[#ff8c00] text-white p-6">
           <div className="absolute inset-0 bg-black/20"></div>
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
           <div className="relative z-10">
-            <div className="flex items-start justify-between">
+            <div className="flex max-sm:flex-col-reverse
+            max-sm:gap-3 max-xs:gap-3
+            max-xs:flex-col-reverse items-start justify-between">
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   <motion.div
@@ -124,7 +132,9 @@ export function MyFilesCard({ data, onView }: LessonPlanCardProps) {
             </div>
 
             {/* Date and quick actions */}
-            <div className="flex items-center justify-between mt-4">
+            <div className="flex max-sm:flex-col max-xs:flex-col
+                        max-sm:items-start max-xs:items-start max-xs:gap-3 max-md:gap-3
+            items-center justify-between mt-4">
               <div className="flex items-center gap-2 text-orange-100 text-sm">
                 <Calendar className="h-4 w-4" />
                 <span>
@@ -142,20 +152,22 @@ export function MyFilesCard({ data, onView }: LessonPlanCardProps) {
               </div>
               {onView && (
                 <Button
-                  // onClick={onView}
-                  onClick={() => setIsDialogOpen(true)}
+                  onClick={handleOpenView}
                   size="sm"
                   variant="ghost"
-                  className="text-white cursor-pointer hover:bg-white/20 border border-white/30 backdrop-blur-sm"
+                  className="text-white cursor-pointer
+                  max-xs:w-full
+                  hover:bg-white/20 border border-white/30 backdrop-blur-sm"
                 >
                   <BookOpen className="h-4 w-4 mr-2" />
-                  Open Full View
+                  Open Preview Mode
                 </Button>
               )}
             </div>
 
             {/* Key info grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6
+            max-xs:grid-cols-1 max-sm:grid-cols-1">
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 className="flex items-center gap-2 p-3 bg-white/10 rounded-lg backdrop-blur-sm border border-white/20"
@@ -202,16 +214,6 @@ export function MyFilesCard({ data, onView }: LessonPlanCardProps) {
             </div>
           </div>
         </CardHeader>
-
-        {/* Content area */}
-        <CardContent className="p-0">
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DescriptionWithDialog
-              des={data.answer}
-              fileName={lessonInfo?.topic}
-            />
-          </Dialog>
-        </CardContent>
       </Card>
     </motion.div>
   );

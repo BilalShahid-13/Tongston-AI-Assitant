@@ -8,6 +8,8 @@ import { MessageCircle, Send, Sparkles, X } from "lucide-react"
 import type React from "react"
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import Markdown from "./markdown"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip"
+import { Badge } from "./ui/badge"
 
 interface Message {
   id: string
@@ -21,8 +23,7 @@ export default function AIChatbot() {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-  const [log] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     scrollToBottom();
@@ -116,8 +117,6 @@ export default function AIChatbot() {
     }
   };
 
-  console.log('log', log)
-
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -133,14 +132,30 @@ export default function AIChatbot() {
   return (
     <>
       {/* Floating Button */}
-      <motion.div className="fixed bottom-6 right-6 z-50" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-        <Button
-          onClick={() => setIsOpen(true)}
-          className="h-14 w-14 rounded-full bg-yellow-600 hover:bg-yellow-700 shadow-lg"
-          size="icon"
-        >
-          <MessageCircle className="h-6 w-6 text-white" />
-        </Button>
+      <motion.div
+        className="fixed bottom-6 right-6 z-50 flex flex-col items-center gap-2"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      >
+        <TooltipProvider>
+          <Tooltip delayDuration={300}>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={() => setIsOpen(true)}
+                className="h-14 w-14 rounded-full bg-gradient-to-br from-yellow-500 to-yellow-700 hover:from-yellow-600 hover:to-yellow-800 shadow-md  transition-all duration-300"
+                size="icon"
+              >
+                <MessageCircle className="h-6 w-6 text-white" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="top" className="text-sm max-w-[200px] text-center">
+              Ask me anything about using this AI Assistant
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+        <Badge variant="secondary"
+          onClick={() => setIsOpen(true)}>Need help?</Badge>
       </motion.div>
 
       {/* Chatbot Side Panel */}
@@ -158,12 +173,14 @@ export default function AIChatbot() {
               <div className="flex items-center justify-between p-4 border-b">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                  <span className="font-medium text-gray-900 dark:text-neutral-200">AI Assist</span>
+                  <img src="favicon.ico" alt="" className="w-6 h-7" />
+                  <span className="font-medium text-gray-900 dark:text-neutral-200">Ask T-World K-12 AI Navigator</span>
                 </div>
                 <Button variant="destructive" size="icon" onClick={() => setIsOpen(false)} className="h-8 w-8">
                   <X className="h-4 w-4" />
                 </Button>
               </div>
+
 
               {/* Messages Area */}
               <div className="flex-1 overflow-y-auto gap-3
@@ -178,7 +195,7 @@ export default function AIChatbot() {
                     >
                       <Sparkles className="h-8 w-8 text-white" />
                     </motion.div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">Ask anything about your lesson or topic</h3>
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">Ask me anything about using this AI Assistant</h3>
 
                   </div>
                 ) : (
@@ -265,7 +282,7 @@ export default function AIChatbot() {
             </Card>
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence >
     </>
   )
 }

@@ -18,6 +18,9 @@ export interface ISidebarLinkProps {
 
 export interface SidebarStore extends React.HTMLAttributes<HTMLDivElement> {
   isOpen: boolean;
+  sidebarRef: RefObject<HTMLButtonElement> | null;
+   isMobile: boolean;
+  setSidebarRef: (ref: HTMLButtonElement) => void;
   toggleSidebar: () => void;
 }
 
@@ -89,8 +92,17 @@ export interface IHistory {
 }
 
 export interface LessonPlanData {
+  id?: string | undefined;
   answer: string;
   metaData: string[];
   createdAt?: string;
   isFavorite?: boolean;
+}
+
+// admin
+export type FAQ = {
+  id?: string
+  heading: string
+  description: string
+  category: string
 }

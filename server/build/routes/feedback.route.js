@@ -12,4 +12,5 @@ feedbackRouter.post("/insertFeedback", upload_1.default.fields([
     { name: "issueScreenshot", maxCount: 5 },
     { name: "suggestionScreenshot", maxCount: 5 },
 ]), feedback_controller_1.insertFeedback);
+feedbackRouter.get("/getFeedbackAdmin", feedback_controller_1.getFeedbackAdmin);
 exports.default = feedbackRouter;

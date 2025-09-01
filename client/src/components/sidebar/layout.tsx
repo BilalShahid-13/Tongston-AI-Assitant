@@ -1,17 +1,16 @@
 import { useSidebarStore } from "@/store/sidebarStore";
-import { SidebarProvider, SidebarTrigger } from "../ui/sidebar";
-import { AppSidebar } from "./appSidebar";
-import SidebarContent from "./sidebarContent";
 import { Outlet, useLocation } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState, useTransition } from "react";
 import { Loader } from "../Loader";
+import { SidebarProvider, SidebarTrigger } from "../ui/sidebar";
+import { AppSidebar } from "./appSidebar";
+import SidebarContent from "./sidebarContent";
 export function Layout() {
-  const { isOpen, toggleSidebar } = useSidebarStore();
+  const { isOpen, toggleSidebar,sidebarRef } = useSidebarStore();
   const location = useLocation(); // 🧠 important
   const [isPending, startTransition] = useTransition(); // 🌀 React 18 transition hook
   const [currentPath, setCurrentPath] = useState(location.pathname);
-
   useEffect(() => {
     startTransition(() => {
       setCurrentPath(location.pathname);
@@ -28,8 +27,9 @@ export function Layout() {
     >
       <AppSidebar />
       <SidebarTrigger
+        // onClick={toggleSidebar}
         variant="outline"
-        className="absolute top-0 mt-[15px] ml-4"
+        className="absolute top-0 left-0 ml-4 mt-6 hidden max-sm:flex"
         size="lg"
       />
       <AnimatePresence mode="wait">

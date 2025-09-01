@@ -1,34 +1,102 @@
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
-import { motion } from "framer-motion"
-import {
-  CalendarClock,
-  Package,
-  Users
-} from "lucide-react"
+import { BookOpen, ClipboardCheck, FileText, FolderOpen, Settings, User, Users, Download, Filter } from "lucide-react"
+import { useState } from "react"
 
-// import { Calendar } from "@/components/ui/calendar"
+import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { Badge } from "@/components/ui/badge"
 import { backendApi } from "@/lib/constant"
 import { parseLessonMetadata } from "@/lib/data-parser"
-import { Bar, BarChart, CartesianGrid, Pie, PieChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
-import { Error, Loader } from "./Loader"
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Line,
+  LineChart,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+} from "recharts"
+import { Loader } from "./Loader"
 
-// Function to fetch analytics data
+// Plan type mappings
+const PLAN_TYPE_MAPPING = {
+  subjectLessonPlan: "Subject Lesson Plans",
+  subjectAssessmentPlan: "Subject Assessments",
+  studentConductCharacterPlan: "Student Conduct & Character Lesson Plans",
+  studentConductCharacterAssessmentPlan: "Student Conduct & Character Assessments",
+  projectTaskPlan: "Project (Tasks)",
+  projectTaskFacilitationPlan: "Project (Tasks) Facilitation Plans",
+  reportGenerator: "Lesson Plan Marking & Reports",
+}
+
+const FILTER_BUTTONS = [
+  {
+    key: "subjectLessonPlan",
+    label: "Subject Lesson Plans",
+    icon: BookOpen,
+    color: "from-[#ffb900] to-[#fe9a00]",
+  },
+  {
+    key: "subjectAssessmentPlan",
+    label: "Subject Assessments",
+    icon: ClipboardCheck,
+    color: "from-[#E04A2F] to-[#ff6b4a]",
+  },
+  {
+    key: "studentConductCharacterAssessmentPlan",
+    label: "Student Conduct & Character Assessments",
+    icon: Users,
+    color: "from-[#111111] to-[#333333]",
+  },
+  {
+    key: "projectTaskPlan",
+    label: "Project (Tasks)",
+    icon: FolderOpen,
+    color: "from-[#F5C242] to-[#ffd700]",
+  },
+  {
+    key: "projectTaskFacilitationPlan",
+    label: "Project (Tasks) Facilitation Plans",
+    icon: Settings,
+    color: "from-[#707070] to-[#909090]",
+  },
+  {
+    key: "studentConductCharacterPlan",
+    label: "Student Conduct & Character Lesson Plans",
+    icon: User,
+    color: "from-[#E04A2F] to-[#ff6b4a]",
+  },
+  {
+    key: "reportGenerator",
+    label: "Lesson Plan Marking & Reports",
+    icon: FileText,
+    color: "from-[#ffb900] to-[#fe9a00]",
+  },
+]
+
+// Fetch analytics data
 async function fetchAnalyticsData() {
   const { data } = await axios.get(`${backendApi}/api/getPlanFiles`)
   return data
 }
 
-// Function to process raw data for charts
-function processChartData(rawData: any) {
-  const subjects: Record<string, number> = {}
-  const bloomLevels: Record<string, number> = {}
-  const schoolLevels: Record<string, number> = {}
-  const classSizes: Record<string, number> = {}
+// Process chart data with filtering
+function processChartData(rawData: any, activeFilters: string[]) {
+  const filteredData =
+    activeFilters.length > 0 ? rawData.data.filter((item: any) => activeFilters.includes(item.plan)) : rawData.data
 
-  rawData.data.forEach((item: any) => {
+  const subjects: Record<string, number> = {}
+  const disciplines: Record<string, number> = {}
+  const schoolLevels: Record<string, number> = {}
+  const planTypes: Record<string, number> = {}
+  const weeklyTrend: Record<string, { lessonPlans: number; assessments: number }> = {}
+
+  filteredData.forEach((item: any) => {
     const metadata = parseLessonMetadata(item.answer)
 
     // Subject & Discipline
@@ -37,10 +105,10 @@ function processChartData(rawData: any) {
       subjects[subject] = (subjects[subject] || 0) + 1
     }
 
-    // Bloom's Taxonomy Level
-    const bloomLevel = metadata["Bloom’s Taxonomy Level"]
-    if (bloomLevel) {
-      bloomLevels[bloomLevel] = (bloomLevels[bloomLevel] || 0) + 1
+    // Discipline mapping
+    const discipline = getDisciplineFromSubject(subject)
+    if (discipline) {
+      disciplines[discipline] = (disciplines[discipline] || 0) + 1
     }
 
     // School Level
@@ -49,39 +117,125 @@ function processChartData(rawData: any) {
       schoolLevels[schoolLevel] = (schoolLevels[schoolLevel] || 0) + 1
     }
 
-    // Class Size (handling ranges by taking the first number or the range itself as a category)
-    const classSize = metadata["Class Size"]
-    if (classSize) {
-      classSizes[classSize] = (classSizes[classSize] || 0) + 1
+    // Plan Types
+    const planType = PLAN_TYPE_MAPPING[item.plan as keyof typeof PLAN_TYPE_MAPPING] || item.plan
+    planTypes[planType] = (planTypes[planType] || 0) + 1
+
+    // Weekly trend (simplified - using creation date)
+    const date = new Date(item.createdAt)
+    const weekKey = `Week ${Math.ceil(date.getDate() / 7)}`
+    if (!weeklyTrend[weekKey]) {
+      weeklyTrend[weekKey] = { lessonPlans: 0, assessments: 0 }
+    }
+
+    if (item.plan.includes("Assessment")) {
+      weeklyTrend[weekKey].assessments += 1
+    } else {
+      weeklyTrend[weekKey].lessonPlans += 1
     }
   })
+
   return {
-    subjects: Object.entries(subjects).map(([name, count]) => ({
-      name,
-      count,
+    subjects: Object.entries(subjects)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 10)
+      .map(([name, count]) => ({ name, count })),
+    disciplines: Object.entries(disciplines).map(([name, count]) => ({ name, count })),
+    schoolLevels: Object.entries(schoolLevels).map(([name, count]) => ({ name, count })),
+    planTypes: Object.entries(planTypes).map(([name, count]) => ({ name, count })),
+    weeklyTrend: Object.entries(weeklyTrend).map(([week, data]) => ({
+      week,
+      lessonPlans: data.lessonPlans,
+      assessments: data.assessments,
     })),
-    bloomLevels: Object.entries(bloomLevels).map(([name, count]) => ({
-      name,
-      count,
-    })),
-    schoolLevels: Object.entries(schoolLevels).map(([name, count]) => ({
-      name,
-      count,
-    })),
-    classSizes: Object.entries(classSizes).map(([name, count]) => ({
-      name,
-      count,
-    })),
+    filteredCount: filteredData.length,
   }
 }
 
-export default function AnalyticsDashboard() {
+// Helper function to map subjects to disciplines
+function getDisciplineFromSubject(subject: string): string {
+  if (!subject) return "Other"
+
+  const disciplineMap: Record<string, string> = {
+    Mathematics: "STEM",
+    Science: "STEM",
+    Physics: "STEM",
+    Chemistry: "STEM",
+    Biology: "STEM",
+    Computer: "Technology",
+    ICT: "Technology",
+    English: "Languages",
+    Literature: "Languages",
+    History: "Humanities",
+    Geography: "Humanities",
+    Economics: "Business",
+    Business: "Business",
+    Trade: "Business",
+  }
+
+  for (const [key, discipline] of Object.entries(disciplineMap)) {
+    if (subject.toLowerCase().includes(key.toLowerCase())) {
+      return discipline
+    }
+  }
+
+  return "Other"
+}
+
+export default function FilteredDashboard() {
+  const [activeFilters, setActiveFilters] = useState<string[]>([])
+
   const { data, isLoading, isError } = useQuery({
     queryKey: ["analyticsData"],
     queryFn: fetchAnalyticsData,
   })
 
-  const chartData = data ? processChartData(data) : null
+  const chartData = data ? processChartData(data, activeFilters) : null
+
+  // Calculate totals by plan type
+  const getTotalByPlanType = (planType: string) => {
+    if (!data) return 0
+    return data.data.filter((item: any) => item.plan === planType).length
+  }
+
+  const getTotalTeachers = () => {
+    if (!data) return 0
+    return new Set(data.data.map((item: any) => item.userId.username)).size
+  }
+
+  const toggleFilter = (filterKey: string) => {
+    setActiveFilters((prev) => (prev.includes(filterKey) ? prev.filter((f) => f !== filterKey) : [...prev, filterKey]))
+  }
+
+  const clearFilters = () => {
+    setActiveFilters([])
+  }
+
+  const exportData = () => {
+    if (!data) return
+
+    const csvContent = [
+      ["Plan Type", "Subject", "School Level", "Created Date", "Teacher"].join(","),
+      ...data.data.map((item: any) => {
+        const metadata = parseLessonMetadata(item.answer)
+        return [
+          PLAN_TYPE_MAPPING[item.plan as keyof typeof PLAN_TYPE_MAPPING] || item.plan,
+          metadata["Subject & Discipline"] || "",
+          metadata["School Level"] || "",
+          new Date(item.createdAt).toLocaleDateString(),
+          item.userId.username,
+        ].join(",")
+      }),
+    ].join("\n")
+
+    const blob = new Blob([csvContent], { type: "text/csv" })
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = "lesson-plans-data.csv"
+    a.click()
+    window.URL.revokeObjectURL(url)
+  }
 
   if (isLoading) {
     return (
@@ -91,240 +245,288 @@ export default function AnalyticsDashboard() {
 
   if (isError) {
     return (
-      <Error />
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-red-600">Error Loading Data</h2>
+          <p className="text-gray-600">Please try again later.</p>
+        </div>
+      </div>
     )
   }
 
   return (
-    <div className="min-h-screen w-full lg:grid-cols-[280px_1fr]">
-      <div className="flex flex-col">
-        <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="grid gap-6"
-          >
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium">Total Subject Lesson Plans</CardTitle>
-                  <Package className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{data?.count || 0}</div>
-                  <p className="text-xs text-muted-foreground">Total plans generated</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium">Unique Teachers</CardTitle>
-                  <Users className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">
-                    {new Set(data?.data.map((item: any) => item.userId.username)).size || 0}
-                  </div>
-                  <p className="text-xs text-muted-foreground">Teachers using the platform</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium">Avg. Time Available</CardTitle>
-                  <CalendarClock className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">
-                    {chartData?.subjects.length
-                      ? // Calculate average time available if data exists
-                      (
-                        data?.data.reduce((sum: number, item: any) => {
-                          const metadata = parseLessonMetadata(item.answer)
-                          const timeStr = metadata["Time Available"]
-                          const match = timeStr ? timeStr.match(/(\d+)\s*minutes/) : null
-                          return sum + (match ? Number.parseInt(match[1]) : 0)
-                        }, 0) / data?.data.length
-                      ).toFixed(0) + " min"
-                      : "N/A"}
-                  </div>
-                  <p className="text-xs text-muted-foreground">Average lesson duration</p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium">Total Number of Teachers Year to Date</CardTitle>
-                  <Users className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">
-                    {chartData?.subjects.length
-                      ? // Calculate average class size if data exists
-                      (
-                        data?.data.reduce((sum: number, item: any) => {
-                          const metadata = parseLessonMetadata(item.answer)
-                          const sizeStr = metadata["Class Size"]
-                          const match = sizeStr ? sizeStr.match(/(\d+)-?(\d+)?/) : null
-                          if (match) {
-                            const min = Number.parseInt(match[1])
-                            const max = match[2] ? Number.parseInt(match[2]) : min
-                            return sum + (min + max) / 2
-                          }
-                          return sum
-                        }, 0) / data?.data.length
-                      ).toFixed(0)
-                      : "N/A"}
-                  </div>
-                  <p className="text-xs text-muted-foreground">Average students per class</p>
-                </CardContent>
-              </Card>
-            </div>
+    <div className="min-h-screen w-full p-4 md:p-6">
+      <div className="flex flex-col gap-6">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h1 className="text-3xl font-bold">Analytics Dashboard</h1>
+            <p className="text-muted-foreground">Comprehensive view of lesson plans and assessments</p>
+          </div>
+          <div className="flex gap-2">
+            <Button onClick={exportData} variant="outline" className="flex items-center gap-2 bg-transparent">
+              <Download className="h-4 w-4" />
+              Export CSV
+            </Button>
+            {activeFilters.length > 0 && (
+              <Button onClick={clearFilters} variant="outline">
+                Clear Filters ({activeFilters.length})
+              </Button>
+            )}
+          </div>
+        </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card className="flex flex-col">
-                <CardHeader>
-                  <CardDescription>Lesson Plans by Subject</CardDescription>
-                  <CardTitle>Subject Distribution</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {chartData?.subjects && chartData.subjects.length > 0 ? (
-                    <ChartContainer
-                      config={{
-                        count: {
-                          label: "Count",
-                          color: "#ffb900", // Using k12-primary
-                        },
-                      }}
-                      className="aspect-[4/3] h-[250px]"
-                    >
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={chartData.subjects}>
-                          <CartesianGrid vertical={false} />
-                          <XAxis dataKey="name" tickLine={false} tickMargin={10} axisLine={false} className="text-xs" />
-                          <YAxis tickLine={false} axisLine={false} className="text-xs" />
-                          <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-                          <Bar dataKey="count" fill="var(--color-count)" radius={8} />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </ChartContainer>
-                  ) : (
-                    <div className="flex items-center justify-center h-[250px] text-muted-foreground">
-                      No subject data available.
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+        {/* Filter Buttons */}
+        <div className="flex flex-wrap gap-2">
+          <div className="flex items-center gap-2 mr-4">
+            <Filter className="h-4 w-4" />
+            <span className="font-medium">Filters:</span>
+          </div>
+          {FILTER_BUTTONS.map((filter) => (
+            <Button
+              key={filter.key}
+              onClick={() => toggleFilter(filter.key)}
+              variant={activeFilters.includes(filter.key) ? "default" : "outline"}
+              className={`flex items-center gap-2 ${activeFilters.includes(filter.key) ? `bg-gradient-to-r ${filter.color} text-white` : ""
+                }`}
+            >
+              <filter.icon className="h-4 w-4" />
+              {filter.label}
+              {activeFilters.includes(filter.key) && (
+                <Badge variant="secondary" className="ml-1">
+                  {getTotalByPlanType(filter.key)}
+                </Badge>
+              )}
+            </Button>
+          ))}
+        </div>
 
-              <Card className="flex flex-col">
-                <CardHeader>
-                  <CardDescription>Lesson Plans by Bloom's Taxonomy Level</CardDescription>
-                  <CardTitle>Bloom's Level Distribution</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {chartData?.bloomLevels && chartData.bloomLevels.length > 0 ? (
-                    <ChartContainer
-                      config={{
-                        count: {
-                          label: "Count",
-                          color: "#fe9a00", // Using k12-secondary
-                        },
-                      }}
-                      className="aspect-[4/3] h-[250px]"
-                    >
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={chartData.bloomLevels}>
-                          <CartesianGrid vertical={false} />
-                          <XAxis dataKey="name" tickLine={false} tickMargin={10} axisLine={false} className="text-xs" />
-                          <YAxis tickLine={false} axisLine={false} className="text-xs" />
-                          <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-                          <Bar dataKey="count" fill="var(--color-count)" radius={8} />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </ChartContainer>
-                  ) : (
-                    <div className="flex items-center justify-center h-[250px] text-muted-foreground">
-                      No Bloom's Level data available.
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
+        {/* Summary Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium">Total Teachers</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{getTotalTeachers()}</div>
+              <p className="text-xs text-muted-foreground">Platform-wide teachers</p>
+            </CardContent>
+          </Card>
 
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card className="flex flex-col">
-                <CardHeader>
-                  <CardDescription>Lesson Plans by School Level</CardDescription>
-                  <CardTitle>School Level Distribution</CardTitle>
-                </CardHeader>
-                <CardContent className="flex items-center justify-center">
-                  {chartData?.schoolLevels && chartData.schoolLevels.length > 0 ? (
-                    <ChartContainer
-                      config={{
-                        count: {
-                          label: "Count",
-                          color: "#ffb900", // Using k12-primary
-                        },
-                      }}
-                      className="aspect-square h-[250px]"
-                    >
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <ChartTooltip cursor={false} content={<ChartTooltipContent nameKey="name" />} />
-                          <Pie
-                            data={chartData.schoolLevels}
-                            dataKey="count"
-                            nameKey="name"
-                            innerRadius={60}
-                            outerRadius={80}
-                            fill="hsl(var(--color-count))" // Use var(--color-count) to pick from config
-                            label
-                          />
-                        </PieChart>
-                      </ResponsiveContainer>
-                    </ChartContainer>
-                  ) : (
-                    <div className="flex items-center justify-center h-[250px] text-muted-foreground">
-                      No school level data available.
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium">Subject Lesson Plans</CardTitle>
+              <BookOpen className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{getTotalByPlanType("subjectLessonPlan")}</div>
+              <p className="text-xs text-muted-foreground">Total subject lessons</p>
+            </CardContent>
+          </Card>
 
-              <Card className="flex flex-col">
-                <CardHeader>
-                  <CardDescription>Lesson Plans by Class Size</CardDescription>
-                  <CardTitle>Class Size Distribution</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {chartData?.classSizes && chartData.classSizes.length > 0 ? (
-                    <ChartContainer
-                      config={{
-                        count: {
-                          label: "Count",
-                          color: "#fe9a00", // Using k12-secondary
-                        },
-                      }}
-                      className="aspect-[4/3] h-[250px]"
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium">Subject Assessments</CardTitle>
+              <ClipboardCheck className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{getTotalByPlanType("subjectAssessmentPlan")}</div>
+              <p className="text-xs text-muted-foreground">Total assessments</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium">Project Tasks</CardTitle>
+              <FolderOpen className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{getTotalByPlanType("projectTaskPlan")}</div>
+              <p className="text-xs text-muted-foreground">Total project tasks</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Charts Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Lesson Plans by Subject */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Lesson Plans by Subject</CardTitle>
+              <CardDescription>Top 10 subjects by lesson plan count</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {chartData?.subjects && chartData.subjects.length > 0 ? (
+                <ChartContainer
+                  config={{
+                    count: {
+                      label: "Count",
+                      color: "#ffb900",
+                    },
+                  }}
+                  className="h-[300px]"
+                >
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={chartData.subjects}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} />
+                      <YAxis />
+                      <ChartTooltip content={<ChartTooltipContent />} />
+                      <Bar dataKey="count" fill="var(--color-count)" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </ChartContainer>
+              ) : (
+                <div className="flex items-center justify-center h-[300px] text-muted-foreground">
+                  No subject data available
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Lesson Plans by Discipline */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Lesson Plans by Discipline</CardTitle>
+              <CardDescription>Distribution across 6 main disciplines</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {chartData?.disciplines && chartData.disciplines.length > 0 ? (
+                <ChartContainer
+                  config={{
+                    count: {
+                      label: "Count",
+                      color: "#fe9a00",
+                    },
+                  }}
+                  className="h-[300px]"
+                >
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={chartData.disciplines}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" />
+                      <YAxis />
+                      <ChartTooltip content={<ChartTooltipContent />} />
+                      <Bar dataKey="count" fill="var(--color-count)" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </ChartContainer>
+              ) : (
+                <div className="flex items-center justify-center h-[300px] text-muted-foreground">
+                  No discipline data available
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* School Level Distribution */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Plans by School Level</CardTitle>
+              <CardDescription>Distribution across education levels</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {chartData?.schoolLevels && chartData.schoolLevels.length > 0 ? (
+                <ChartContainer
+                  config={{
+                    count: {
+                      label: "Count",
+                      color: "#F5C242",
+                    },
+                  }}
+                  className="h-[300px]"
+                >
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
+                      <Pie
+                        data={chartData.schoolLevels}
+                        dataKey="count"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={80}
+                        fill="var(--color-count)"
+                        label
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </ChartContainer>
+              ) : (
+                <div className="flex items-center justify-center h-[300px] text-muted-foreground">
+                  No school level data available
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Weekly Trend */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Weekly Trend</CardTitle>
+              <CardDescription>Lesson plans vs assessments over time</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {chartData?.weeklyTrend && chartData.weeklyTrend.length > 0 ? (
+                <ChartContainer
+                  config={{
+                    lessonPlans: {
+                      label: "Lesson Plans",
+                      color: "#ffb900",
+                    },
+                    assessments: {
+                      label: "Assessments",
+                      color: "#E04A2F",
+                    },
+                  }}
+                  className="h-[300px]"
+                >
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={chartData.weeklyTrend}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="week" />
+                      <YAxis />
+                      <ChartTooltip content={<ChartTooltipContent />} />
+                      <Line type="monotone" dataKey="lessonPlans" stroke="var(--color-lessonPlans)" strokeWidth={2} />
+                      <Line type="monotone" dataKey="assessments" stroke="var(--color-assessments)" strokeWidth={2} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </ChartContainer>
+              ) : (
+                <div className="flex items-center justify-center h-[300px] text-muted-foreground">
+                  No trend data available
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Active Filters Summary */}
+        {activeFilters.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Active Filters</CardTitle>
+              <CardDescription>Showing {chartData?.filteredCount || 0} items with active filters</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap gap-2">
+                {activeFilters.map((filter) => {
+                  const filterConfig = FILTER_BUTTONS.find((f) => f.key === filter)
+                  return (
+                    <Badge
+                      key={filter}
+                      variant="secondary"
+                      className={`bg-gradient-to-r ${filterConfig?.color} text-white`}
                     >
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={chartData.classSizes}>
-                          <CartesianGrid vertical={false} />
-                          <XAxis dataKey="name" tickLine={false} tickMargin={10} axisLine={false} className="text-xs" />
-                          <YAxis tickLine={false} axisLine={false} className="text-xs" />
-                          <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-                          <Bar dataKey="count" fill="var(--color-count)" radius={8} />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </ChartContainer>
-                  ) : (
-                    <div className="flex items-center justify-center h-[250px] text-muted-foreground">
-                      No class size data available.
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-          </motion.div>
-        </main>
+                      {filterConfig?.label}
+                    </Badge>
+                  )
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   )

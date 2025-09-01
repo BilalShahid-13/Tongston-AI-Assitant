@@ -24,9 +24,7 @@ export default function PlanCard({ children, title = "Subject Lesson Plan & Note
     <>
       <Card ref={ref} className={className}>
         <CardHeader>
-          {/* <CardTitle className="text-xl font-semibold font-inter">{title}</CardTitle> */}
-          <CardHeader className={cn("bg-gradient-to-l from-[#dc2626] to-[#f75d5d] text-white rounded-t-xl p-6", cardHeaderClassName)}>
-          {/* <CardHeader className={cn("bg-[#ffb900] text-white rounded-t-xl p-6", cardHeaderClassName)}> */}
+          <CardHeader className={cn("bg-gradient-to-l from-[var(--k12-tertiary)]/20 to-[var(--k12-tertiary)] text-white rounded-t-xl p-6", cardHeaderClassName)}>
             <CardTitle className="text-2xl font-bold">{title}</CardTitle>
             <p className="text-sm opacity-90">{des}</p>
           </CardHeader>
@@ -37,9 +35,7 @@ export default function PlanCard({ children, title = "Subject Lesson Plan & Note
         <CardFooter>
           <CardAction>
             {ctaButton}
-            {/* <Button className="bg-amber-300 text-zinc-800
-              hover:bg-amber-400 active:bg-amber-300 cursor-pointer"><Wand />Generate Lesson Plan</Button> */}
-          </CardAction>
+           </CardAction>
         </CardFooter>
       </Card>
     </>

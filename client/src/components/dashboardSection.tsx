@@ -17,13 +17,14 @@ import {
   Users,
 } from "lucide-react"
 export default function DashboardSection() {
+  const bgColor = `bg-gradient-to-br from-[var(--k12-primary)] to-[var(--k12-secondary)]`
   const features = [
     {
       category: "Lesson Planning & Teaching",
       icon: <BookOpen className="h-6 w-6" />,
       color: "border-2",
       id: "subject-lesson-plan",
-      bgColor: "bg-gradient-to-br from-[oklch(0.828_0.189_84.429)] to-[oklch(0.769_0.188_70.08)]",
+      bgColor: bgColor,
       items: [
         {
           title: "Subject-Specific Lesson Plans",
@@ -47,7 +48,7 @@ export default function DashboardSection() {
       id: "subject-assessments",
       icon: <ClipboardCheck className="h-6 w-6" />,
       color: "border-2",
-      bgColor: "bg-gradient-to-br from-[oklch(0.769_0.188_70.08)] to-[oklch(0.828_0.189_84.429)]",
+      bgColor: bgColor,
       items: [
         {
           title: "Continuous Assessment Design",
@@ -71,7 +72,7 @@ export default function DashboardSection() {
       id: "project-tasks",
       icon: <Lightbulb className="h-6 w-6" />,
       color: "border-2",
-      bgColor: "bg-gradient-to-br from-[oklch(0.828_0.189_84.429)]/80 to-[oklch(0.769_0.188_70.08)]/80",
+      bgColor: bgColor,
       items: [
         {
           title: "Real-World Skills Projects",
@@ -95,7 +96,7 @@ export default function DashboardSection() {
       id: "student-conduct-and-character-lesson-plan",
       icon: <Users className="h-6 w-6" />,
       color: "border-2",
-      bgColor: "bg-gradient-to-br from-[oklch(0.769_0.188_70.08)]/80 to-[oklch(0.828_0.189_84.429)]/80",
+      bgColor: bgColor,
       items: [
         {
           title: "Character Development Plans",
@@ -141,10 +142,10 @@ export default function DashboardSection() {
   useAutoOpenTour();
   return (
     <>
+        <BreadCrumb section="AI Assistant" />
       <div className="flex flex-col gap-6">
-        {/* Enhanced Hero Section with Brand Colors */}
-        <div className="bg-gradient-to-r from-[oklch(0.828_0.189_84.429)] to-[oklch(0.769_0.188_70.08)] flex flex-col gap-4 text-zinc-800 p-8 rounded-lg shadow-lg max-sm:gap-4 max-sm:p-6">
-          <BreadCrumb section="AI Assistant" className="text-zinc-700" />
+        <div className="
+        bg-gradient-to-r from-[var(--k12-secondary)] from-10% to-[var(--k12-secondary)] to-90% flex flex-col gap-4 text-zinc-800 p-8 rounded-lg shadow-lg max-sm:gap-4 max-sm:p-6">
 
           <div className="flex items-center gap-4 mb-4">
             <div className="bg-white/90 dark:bg-white/10 backdrop-blur-sm p-3 rounded-full shadow-md">
@@ -171,7 +172,9 @@ export default function DashboardSection() {
             </div>
           </div>
 
-          <p id="welcome-accordion" className="font-normal text-lg leading-relaxed text-zinc-800">
+          <p id="welcome-accordion"
+          className="font-normal text-lg leading-relaxed
+          max-lg:text-left max-md:text-left text-zinc-800">
             Your AI teaching assistant for lesson plans, assessments, student conduct KPIs, project tasks, reports, and
             more powered by Bloom's Taxonomy, Multiple Intelligences, Tongston's 6 subject disciplines, and exam-aligned
             question banks.
@@ -187,7 +190,7 @@ export default function DashboardSection() {
             <h3 className="text-2xl font-bold text-zinc-800 dark:text-neutral-300 mb-2">
               Comprehensive Educational Tools
               </h3>
-            <p className="text-zinc-600 dark:text-neutral-400 ">
+            <p className="text-zinc-600 dark:text-neutral-400 max-lg:text-left max-md:text-left max-lg:mx-2">
               Your AI teaching assistant for lesson plans, assessments, student conduct KPIs, project tasks, reports, and more powered by Tongston's Entrepreneurial Education Curriculum & 33 Principles, Bloom's Taxonomy, Multiple Intelligences, Tongston's 6 Disciplines - Citizenship, Arts, English, Mathematics, Science & Technology and Business & Entrepreneurship & 30 subjects and standardised assessment & lesson plan-aligned question banks for all K-12 levels.
             </p>
           </div>
@@ -197,11 +200,12 @@ export default function DashboardSection() {
               <Card
                 id={category?.id}
                 key={categoryIndex}
-                className={`${category.color} ${category.bgColor} hover:shadow-lg transition-all duration-300 hover:scale-[1.02]`}
+                className={`${category.color} ${category.bgColor}
+                   hover:shadow-lg transition-all duration-300 hover:scale-[1.02]`}
               >
                 <CardHeader>
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-white/90 dark:bg-white/10 backdrop-blur-sm rounded-lg shadow-sm">{category.icon}</div>
+                    <div className="p-2 bg-white/90 dark:bg-white/60 dark:text-zinc-800 backdrop-blur-sm rounded-lg shadow-sm">{category.icon}</div>
                     <CardTitle className="text-lg text-zinc-800">{category.category}</CardTitle>
                   </div>
                 </CardHeader>
@@ -226,7 +230,7 @@ export default function DashboardSection() {
           </div>
 
           {/* Resources Section */}
-          <div className="bg-gradient-to-r from-[oklch(0.828_0.189_84.429)]/10 to-[oklch(0.769_0.188_70.08)]/10 rounded-xl shadow-lg p-6 border border-[oklch(0.828_0.189_84.429)]/20">
+          <div className="bg-gradient-to-r from-[var(--k12-secondary)]/10 to-[var(--k12-secondary)]/10 rounded-xl shadow-lg p-6 border border-[oklch(0.828_0.189_84.429)]/20">
             <div className="text-center mb-6">
               <h3 className="text-xl font-bold dark:text-white/80 text-zinc-800 mb-2">“VIP” Resource Library & Tools</h3>
               <p className="text-zinc-600 dark:text-white/80">
@@ -234,17 +238,21 @@ export default function DashboardSection() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="lesson-plan-marking">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+            id="lesson-plan-marking">
               {resources.map((resource, index) => (
                 <div
                   key={index}
-                  className="text-center p-4 rounded-lg bg-gradient-to-br from-[oklch(0.828_0.189_84.429)]/20 to-[oklch(0.769_0.188_70.08)]/20 hover:from-[oklch(0.828_0.189_84.429)]/30 hover:to-[oklch(0.769_0.188_70.08)]/30 transition-all duration-300 hover:scale-105"
+                  className="text-center p-4 rounded-lg bg-gradient-to-br
+                   from-[var(--k12-tertiary)]/50 to-[var(--k12-tertiary)]/50
+                   hover:from-[var(--k12-tertiary)]/60 hover:to-[var(--k12-tertiary)]/30
+                   transition-all duration-300 hover:scale-105"
                 >
                   <div className="flex justify-center mb-3">
                     <div className="p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-sm">{resource.icon}</div>
                   </div>
-                  <h4 className="font-semibold text-zinc-800 mb-2 text-sm">{resource.title}</h4>
-                  <p className="text-xs text-zinc-600">{resource.description}</p>
+                  <h4 className="font-semibold text-zinc-800 dark:text-neutral-100 mb-2 text-sm">{resource.title}</h4>
+                  <p className="text-xs text-zinc-600 dark:text-neutral-200">{resource.description}</p>
                 </div>
               ))}
             </div>

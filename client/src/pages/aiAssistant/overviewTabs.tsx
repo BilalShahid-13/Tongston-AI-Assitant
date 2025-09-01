@@ -54,12 +54,13 @@ const OverviewTabs = () => {
         {/* Enhanced Header */}
         <div className="mb-6 ml-5">
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-gradient-to-r from-[oklch(0.828_0.189_84.429)] to-[oklch(0.769_0.188_70.08)] rounded-lg">
+            <div className="p-2 bg-gradient-to-r from-[var(--k12-primary)]
+             to-[var(--k12-secondary)] rounded-lg">
               <Sparkles className="h-5 w-5 text-zinc-800" />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-zinc-800">AI Assistant Tools</h3>
-              <p className="text-sm text-zinc-600 max-w-4xl">
+              <h3 className="text-xl font-bold text-zinc-800 dark:text-neutral-100">AI Assistant Tools</h3>
+              <p className="text-sm text-zinc-600 max-w-4xl dark:text-neutral-200">
                 Choose a tool to get started with your teaching and assessment for subjects (cognitive domain - KNOWLEDGE), projects (tasks) (psychomotor domain - SKILLS, student conduct & character building (affective domain - ATTITUDE)
               </p>
             </div>
@@ -69,8 +70,9 @@ const OverviewTabs = () => {
         {/* Enhanced Tabs List */}
         <TabsList
           className={`grid ${isOpen ? "grid-cols-4" : "grid-cols-3"}
-            gap-3 w-full mx-auto h-auto bg-gradient-to-r from-[oklch(0.828_0.189_84.429)]/10 to-[oklch(0.769_0.188_70.08)]/10
-            p-2 rounded-2xl border border-[oklch(0.828_0.189_84.429)]/20 backdrop-blur-sm
+            gap-3 w-full mx-auto h-auto bg-gradient-to-r
+             from-[var(--k12-primary)]/10 to-[var(--k12-primary)]/10
+            p-2 rounded-2xl border border-[var(--k12-primary)]/20 backdrop-blur-sm
             max-lg:grid-cols-2 max-sm:grid-cols-1`}
         >
           {aiAssistantTabs.map((tab, index) => {
@@ -104,11 +106,11 @@ const OverviewTabs = () => {
                         value={tab.name}
                         className={`relative flex items-center gap-3 px-4 py-4 text-sm font-medium
           transition-all duration-300 rounded-xl cursor-pointer overflow-hidden w-full
-          border-2 border-transparent hover:border-[oklch(0.828_0.189_84.429)]/30
+          border-2 border-transparent hover:border-[var(--k12-secondary)]/30
           ${colSpanClass}
           ${isActive
-                            ? "bg-gradient-to-r from-[oklch(0.828_0.189_84.429)] to-[oklch(0.769_0.188_70.08)] text-zinc-800 shadow-lg"
-                            : "bg-white/80 hover:bg-white text-zinc-700 hover:text-zinc-800 shadow-sm hover:shadow-md"
+                            ? "bg-gradient-to-r from-[var(--k12-primary)] to-[var(--k12-primary)] text-zinc-800 dark:text-neutral-900 shadow-lg"
+                            : "dark:text-neutral-200 bg-white/80 dark:bg-[var(--k12-primary)]/20 hover:bg-white text-zinc-700 hover:text-zinc-800 shadow-sm hover:shadow-md"
                           }`}
                       >
                         {/* Tab content */}
@@ -116,7 +118,7 @@ const OverviewTabs = () => {
                           <div
                             className={`p-2 rounded-lg transition-colors flex-shrink-0 ${isActive
                               ? "bg-white/20 backdrop-blur-sm"
-                              : "bg-gradient-to-r from-[oklch(0.828_0.189_84.429)]/10 to-[oklch(0.769_0.188_70.08)]/10"
+                              : "bg-gradient-to-r from-[var(--k12-secondary)]/10 to-[var(--k12-primary)]/10"
                               }`}
                           >
                             <tab.icon className="w-4 h-4" />
@@ -164,16 +166,17 @@ const OverviewTabs = () => {
                     value={tab.name}
                     className="mt-0 focus-visible:outline-none focus-visible:ring-0">
                     {/* Content wrapper with enhanced styling */}
-                    <div className="bg-white rounded-2xl shadow-lg border border-[oklch(0.828_0.189_84.429)]/10 overflow-hidden">
+                    <div className="bg-white dark:bg-zinc-800 rounded-2xl shadow-lg border
+                    border-[var(--k12-secondary)]/10 overflow-hidden">
                       {/* Content header */}
-                      <div className="bg-gradient-to-r from-[oklch(0.828_0.189_84.429)]/5 to-[oklch(0.769_0.188_70.08)]/5 px-6 py-4 border-b border-[oklch(0.828_0.189_84.429)]/10">
+                      <div className="bg-gradient-to-r from-[var(--k12-secondary)]/5 to-[var(--k12-primary)]/5 px-6 py-4 border-b border-[var(--k12-secondary)]/10">
                         <div className="flex items-center gap-3">
-                          <div className="p-2 bg-gradient-to-r from-[oklch(0.828_0.189_84.429)] to-[oklch(0.769_0.188_70.08)] rounded-lg">
+                          <div className="p-2 bg-gradient-to-r from-[var(--k12-secondary)] to-[var(--k12-primary)] rounded-lg">
                             <tab.icon className="w-5 h-5 text-zinc-800" />
                           </div>
                           <div className="flex-1">
-                            <h4 className="font-bold text-zinc-800 text-lg">{tab.name}</h4>
-                            <p className="text-sm text-zinc-600 mt-1">{getDetailedDescription(tab.name)}</p>
+                            <h4 className="font-bold text-zinc-800 text-lg dark:text-neutral-200">{tab.name}</h4>
+                            <p className="text-sm text-zinc-600 mt-1 dark:text-neutral-200">{getDetailedDescription(tab.name)}</p>
                           </div>
                         </div>
                       </div>
@@ -185,7 +188,7 @@ const OverviewTabs = () => {
                             <div className="flex items-center justify-center py-12">
                               <div className="text-center">
                                 <div className="mb-4">
-                                  <div className="p-3 bg-gradient-to-r from-[oklch(0.828_0.189_84.429)]/10 to-[oklch(0.769_0.188_70.08)]/10 rounded-full w-fit mx-auto">
+                                  <div className="p-3 bg-gradient-to-r from-[var(--k12-secondary)]/10 to-[var(--k12-primary)]/10 rounded-full w-fit mx-auto">
                                     <tab.icon className="w-6 h-6 text-zinc-600" />
                                   </div>
                                 </div>

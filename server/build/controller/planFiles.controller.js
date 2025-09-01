@@ -10,7 +10,6 @@ async function getUserPlans(req, res) {
         const plans = await userHistorySchema_1.History.find({}).sort({ createdAt: -1 }).populate({
             path: "userId",
             model: user_1.User,
-            // select: "username subject role",
         });
         if (plans.length > 0) {
             res.status(200).json({

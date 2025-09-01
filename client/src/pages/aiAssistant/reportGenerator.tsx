@@ -11,6 +11,7 @@ import { useOnError } from "@/hooks/useOnError";
 import { backendApi } from "@/lib/constant";
 import { reportGeneratorSchema, type ReportGeneratorSchema } from "@/schema/reportGenerator.schema";
 import { useProjectTaskFacilitationStore } from "@/store/projectTaskFacilitationStore";
+import { useRatingStore } from "@/store/ratingStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
@@ -27,13 +28,13 @@ export default function ReportGenerator() {
   const [loading, setLoading] = useState(false);
   const chatbotRef = useRef<HTMLDivElement>(null);
   const [data, setData] = useState<string | null>("");
-
   useEffect(() => {
     setShowChatbot(false);
     setStatusMessage(null);
     setLoading(false);
   }, [])
   const { handleTerm } = useProjectTaskFacilitationStore();
+  const { setIsOpen } = useRatingStore()
   const onSubmit = async (data: ReportGeneratorSchema) => {
     setData("");
     setLoading(true);
@@ -62,6 +63,7 @@ export default function ReportGenerator() {
       // ✅ Success — handle response
       setData(res.data);
       setShowChatbot(true);
+      setIsOpen(true);
       setStatusMessage("Report generated successfully");
     } catch (error) {
       console.error(error);
@@ -73,7 +75,6 @@ export default function ReportGenerator() {
   const uniqueClassTypes = Array.from(
     new Set(yearClassMappings.flatMap((yearClass) => yearClass.normalized))
   );
-
   return (
     <>
       <ScrollAnimate scrollRef={scrollRef} />

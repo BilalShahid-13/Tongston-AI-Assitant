@@ -12,7 +12,7 @@ function RouteComponent() {
     <ReactTourProvider
       walkthroughSteps={helpWalkthroughSteps}
     >
-      <FaqCategoriesTab />
+    <FaqCategoriesTab />
     </ReactTourProvider>
   </>
 }

@@ -1,17 +1,30 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
-import { Download, Search, FileText, FileX, Grid3X3, List } from "lucide-react"
-import { motion } from "framer-motion"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { useState, useMemo } from "react"
-
+import { backendApi } from "@/lib/constant"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import axios from "axios"
+import { motion } from "framer-motion"
+import { Download, FileText, FileX, Grid3X3, List, LoaderCircle, Search, Trash2 } from "lucide-react"
+import { useMemo, useState } from "react"
 // Import icons (adjust if you use a different library)
 import {
   AiOutlineFile,
   AiOutlineFileImage,
   AiOutlineFilePdf,
-  AiOutlineFileWord,
   AiOutlineFileText,
+  AiOutlineFileWord,
 } from "react-icons/ai"
 
 type Document = {
@@ -44,11 +57,23 @@ export function getFileIcon(fileName: string) {
 export function UploadedDocumentsGrid({ files }: { files: Document[] }) {
   const [searchTerm, setSearchTerm] = useState("")
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
+  const [open, setOpen] = useState(false)
 
   const filteredDocuments = useMemo(() => {
     if (!searchTerm) return files
     return files.filter((doc) => doc.originalName.toLowerCase().includes(searchTerm.toLowerCase()))
   }, [files, searchTerm])
+
+  const queryClient = useQueryClient()
+
+  const deleteFileMutation = useMutation({
+    mutationFn: (id: string) =>
+      axios.delete(`${backendApi}/api/deleteKnowledgeBaseFile`, { data: { id } }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["knowledgeBaseData"] })
+    },
+  })
+
 
   return (
     <motion.div
@@ -58,15 +83,18 @@ export function UploadedDocumentsGrid({ files }: { files: Document[] }) {
       className="w-full max-w-7xl mx-auto"
     >
       <Card className="bg-gradient-to-br from-white via-amber-50/20 to-orange-50/20 dark:from-gray-800 dark:via-gray-700 dark:to-gray-600 border-0 shadow-2xl">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#ffb900] to-[#fe9a00]"></div>
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--k12-primary)]
+                to-[var(--k12-secondary)]"></div>
 
         <CardHeader className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 pb-8">
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-gradient-to-br from-[#ffb900] to-[#fe9a00] rounded-xl shadow-lg">
+            <div className="p-3 bg-gradient-to-br from-[var(--k12-primary)]
+                to-[var(--k12-tertiary)] rounded-xl shadow-lg">
               <FileText className="w-7 h-7 text-white" />
             </div>
             <div>
-              <CardTitle className="text-2xl font-bold bg-gradient-to-r from-[#ffb900] to-[#fe9a00] bg-clip-text text-transparent">
+              <CardTitle className="text-2xl font-bold bg-gradient-to-r from-[var(--k12-primary)]
+                to-[var(--k12-tertiary)] bg-clip-text text-transparent">
                 Document Library
               </CardTitle>
               <p className="text-muted-foreground mt-1">
@@ -82,7 +110,7 @@ export function UploadedDocumentsGrid({ files }: { files: Document[] }) {
               <Input
                 type="text"
                 placeholder="Search documents..."
-                className="pl-10 pr-4 py-3 rounded-xl border-2 focus:border-[#ffb900] transition-colors w-full lg:w-[320px] bg-white/80 dark:bg-gray-700/80 shadow-sm"
+                className="pl-10 pr-4 py-3 rounded-xl border-2 focus:border-[var(--k12-primary] transition-colors w-full lg:w-[320px] bg-white/80 dark:bg-gray-700/80 shadow-sm"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -93,7 +121,7 @@ export function UploadedDocumentsGrid({ files }: { files: Document[] }) {
                 variant={viewMode === "grid" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setViewMode("grid")}
-                className={`px-3 py-2 ${viewMode === "grid" ? "bg-[#ffb900] text-white" : ""}`}
+                className={`px-3 py-2 ${viewMode === "grid" ? "bg-[var(--k12-secondary)] text-white" : ""}`}
               >
                 <Grid3X3 className="w-4 h-4" />
               </Button>
@@ -101,7 +129,7 @@ export function UploadedDocumentsGrid({ files }: { files: Document[] }) {
                 variant={viewMode === "list" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setViewMode("list")}
-                className={`px-3 py-2 ${viewMode === "list" ? "bg-[#ffb900] text-white" : ""}`}
+                className={`px-3 py-2 ${viewMode === "list" ? "bg-[var(--k12-secondary)] text-white" : ""}`}
               >
                 <List className="w-4 h-4" />
               </Button>
@@ -115,7 +143,7 @@ export function UploadedDocumentsGrid({ files }: { files: Document[] }) {
               className="text-center py-16">
               <div className="w-24 h-24 bg-gradient-to-br from-[#ffb900]/20
                to-[#fe9a00]/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <FileX className="w-12 h-12 text-[#ffb900]" />
+                <FileX className="w-12 h-12 text-[var(--k12-primary)]" />
               </div>
               <h3 className="text-xl font-semibold text-foreground mb-3">
                 {files.length === 0 ? "No documents uploaded yet" : "No documents found"}
@@ -138,12 +166,18 @@ export function UploadedDocumentsGrid({ files }: { files: Document[] }) {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.05 }}
                   whileHover={{ y: -8, scale: 1.02 }}
-                  className="group"
+                  className="group relative"
                 >
                   <Card
-                    className={`h-full bg-gradient-to-br from-white to-amber-50/50 dark:from-gray-800 dark:to-gray-700 border-2 border-transparent hover:border-[#ffb900]/30 transition-all duration-300 shadow-lg hover:shadow-xl group-hover:shadow-[#ffb900]/20 ${viewMode === "list" ? "flex flex-row items-center p-4" : "flex flex-col items-center p-6"
+                    className={`h-full bg-gradient-to-br from-white to-amber-50/50 dark:from-gray-800 dark:to-gray-700
+              border-2 border-transparent hover:border-[#ffb900]/30
+              transition-all duration-300 shadow-lg hover:shadow-xl
+              group-hover:shadow-[#ffb900]/20 ${viewMode === "list"
+                        ? "flex flex-row items-center p-4"
+                        : "flex flex-col items-center p-6"
                       }`}
                   >
+                    {/* File icon */}
                     <div
                       className={`transform group-hover:scale-110 transition-transform duration-200 ${viewMode === "list" ? "mr-4" : "mb-4"
                         }`}
@@ -151,9 +185,47 @@ export function UploadedDocumentsGrid({ files }: { files: Document[] }) {
                       {getFileIcon(doc.originalName)}
                     </div>
 
-                    <div className={`max-w-sm flex-1 text-center ${viewMode === "list" ? "text-left mr-4" : "mb-4"}`}>
+                    <AlertDialog open={open} onOpenChange={setOpen}>
+                      <AlertDialogTrigger asChild
+                        className="absolute top-4 right-4 hover:bg-[var(--k12-tertiary)]/80 hover:text-neutral-200 cursor-pointer">
+                        <Button variant="secondary" size={"icon"} onClick={() => setOpen(true)}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This will permanently remove the file and its knowledge base entries. This action cannot be undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel onClick={() => setOpen(false)}
+                            disabled={deleteFileMutation?.isPending}>Cancel</AlertDialogCancel>
+                          <AlertDialogAction asChild>
+                            <Button
+                              onClick={() => deleteFileMutation.mutate(doc._id)}
+                              // onClick={() => handleDelete(doc._id)}
+                              disabled={deleteFileMutation.isPending}
+                              className="bg-[var(--k12-tertiary)]/80 hover:bg-[var(--k12-tertiary)] text-white cursor-pointer">
+                              {deleteFileMutation?.isPending ? <LoaderCircle className="h-4 w-4 animate-spin" /> :
+                                <Trash2 className="h-4 w-4 mr-2" />}
+                              Delete
+                            </Button>
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+
+                    {/* File Info */}
+                    <div
+                      className={`max-w-sm flex-1 text-center ${viewMode === "list" ? "text-left mr-4" : "mb-4"
+                        }`}
+                    >
                       <p
-                        className={`max-w-sm font-medium capitalize text-foreground mb-2 ${viewMode === "list" ? "text-base" : "text-sm w-full px-2 break-words"
+                        className={`max-w-sm font-medium capitalize text-foreground mb-2 ${viewMode === "list"
+                          ? "text-base"
+                          : "text-sm w-full px-2 break-words"
                           }`}
                       >
                         {doc.originalName}
@@ -165,6 +237,7 @@ export function UploadedDocumentsGrid({ files }: { files: Document[] }) {
                       </div>
                     </div>
 
+                    {/* Download Button */}
                     <motion.div
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
@@ -173,10 +246,15 @@ export function UploadedDocumentsGrid({ files }: { files: Document[] }) {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="bg-gradient-to-r from-[#ffb900] to-[#fe9a00] hover:from-[#e6a600] hover:to-[#e58900] text-white border-0 font-medium transition-all duration-200 shadow-md hover:shadow-lg"
+                        className="bg-gradient-to-r from-[var(--k12-primary)] to-[var(--k12-secondary)] hover:from-[var(--k12-tertiary)]/70 hover:to-[var(--k12-tertiary)] text-white border-0 font-medium transition-all duration-200 shadow-md hover:shadow-lg"
                         asChild
                       >
-                        <a href={doc.fileUrl} download={doc.originalName} target="_blank" rel="noreferrer">
+                        <a
+                          href={doc.fileUrl}
+                          download={doc.originalName}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
                           <Download className="h-4 w-4 mr-2" />
                           Download
                         </a>

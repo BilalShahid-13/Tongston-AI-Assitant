@@ -10,7 +10,6 @@ export async function getUserPlans(req: Request, res: Response): Promise<void> {
     const plans = await History.find({}).sort({ createdAt: -1 }).populate({
       path: "userId",
       model: User,
-      // select: "username subject role",
     });
 
     if (plans.length > 0) {

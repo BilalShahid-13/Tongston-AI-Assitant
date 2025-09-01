@@ -86,11 +86,16 @@ export function OTPLogin() {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-              className="mx-auto w-16 h-16 bg-gradient-to-r from-[#ffb900] to-[#fe9a00] rounded-full flex items-center justify-center mb-4"
+                className="mx-auto w-16 h-16 bg-gradient-to-r
+                from-[var(--k12-primary)]
+                to-[var(--k12-secondary)] rounded-md
+                flex items-center justify-center mb-4"
             >
-              <Shield className="w-8 h-8 text-white" />
+              <img src="/favicon.ico" className="p-3" alt="" />
             </motion.div>
-            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-[#ffb900] to-[#fe9a00] bg-clip-text text-transparent">
+
+            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-[var(--k12-primary)]
+                to-[var(--k12-secondary)] bg-clip-text text-transparent">
               Admin Access
             </CardTitle>
             <p className="text-muted-foreground mt-2">
@@ -131,7 +136,8 @@ export function OTPLogin() {
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full h-12 bg-gradient-to-r from-[#ffb900] to-[#fe9a00] hover:from-[#e6a600] hover:to-[#e58900] text-white font-semibold transition-all duration-200 transform hover:scale-[1.02]"
+                  className="w-full h-12 bg-gradient-to-r from-[var(--k12-primary)]
+                to-[var(--k12-secondary)] hover:from-red-400 hover:to-red-500 text-white font-semibold transition-all duration-200 transform hover:scale-[1.02]"
                 >
                   {isLoading ? (
                     <motion.div
@@ -187,7 +193,8 @@ export function OTPLogin() {
                   <Button
                     onClick={handleVerifyOTP}
                     disabled={isVerifying || otp.length !== 4}
-                    className="w-full h-12 bg-gradient-to-r from-[#ffb900] to-[#fe9a00] hover:from-[#e6a600] hover:to-[#e58900] text-white font-semibold transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                    className="w-full h-12 bg-gradient-to-r from-[var(--k12-primary)]
+                to-[var(--k12-secondary)] hover:from-red-40 hover:to-red-500 text-white font-semibold transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                   >
                     {isVerifying ? (
                       <motion.div

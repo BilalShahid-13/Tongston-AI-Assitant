@@ -78,6 +78,6 @@ async function sendOtp(req, res) {
     }
     catch (error) {
         console.error("Error in sendOtp:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+        res.status(500).json({ error: error });
     }
 }

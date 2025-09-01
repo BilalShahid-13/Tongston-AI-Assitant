@@ -1,0 +1,62 @@
+  <AlertDialog
+                            open={openDialogId === doc._id}
+                            onOpenChange={(open) => {
+                              if (!isPending) {
+                                setOpenDialogId(open ? doc._id : null)
+                              }
+                            }}
+                          >
+                            <AlertDialogTrigger asChild>
+                              <DropdownMenuItem
+                                className="text-red-500 cursor-pointer"
+                                onSelect={(e) => {
+                                  e.preventDefault()
+                                  setOpenDialogId(doc._id)
+                                }}
+                              >
+                                <Trash2 className="h-4 w-4 mr-2" />
+                                Delete
+                              </DropdownMenuItem>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                  {isPending ? (
+                                    <div className="flex items-center">
+                                      <Loader className="animate-spin mr-2 h-4 w-4" />
+                                      Deleting...
+                                    </div>
+                                  ) : (
+                                    <div className="flex items-center">
+                                      <Trash2 className="mr-2 h-4 w-4" />
+                                      Delete "{doc.originalName}"?
+                                    </div>
+                                  )}
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This will permanently remove the file and its knowledge base entries. This action
+                                  cannot be undone.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  className="bg-red-500 hover:bg-red-600 disabled:opacity-50"
+                                  onClick={() => handleDelete(doc._id)}
+                                  disabled={isPending}
+                                >
+                                  {isPending ? (
+                                    <>
+                                      <Loader className="animate-spin h-4 w-4 mr-2" />
+                                      Deleting...
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Trash2 className="h-4 w-4 mr-2" />
+                                      Delete
+                                    </>
+                                  )}
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>

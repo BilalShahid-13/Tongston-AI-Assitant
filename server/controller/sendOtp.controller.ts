@@ -81,6 +81,6 @@ export async function sendOtp(req: Request, res: Response): Promise<void> {
     res.status(200).json({ message: "OTP sent successfully" });
   } catch (error) {
     console.error("Error in sendOtp:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: error });
   }
 }

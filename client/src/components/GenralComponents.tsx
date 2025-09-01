@@ -77,54 +77,15 @@ export const ContainerPlan = ({
     </div>
   );
 };
-
-// export const Grid = ({ children, columns = 2 }: { children: React.ReactNode, columns?: 2 | 3 | 4 }) => {
-//   return (
-//     <div className={`grid grid-cols-${columns} gap-x-4 gap-y-6
-//      transition-all duration-150`}>{children}</div>)
-// }
-
-// export const Grid = ({
-//   children,
-//   columns = 2,
-// }: {
-//   children: React.ReactNode;
-//   columns?: 2 | 3 | 4;
-// }) => {
-//   const childrenArray = React.Children.toArray(children);
-//   const totalItems = childrenArray.length;
-//   const firstIndexOfLastRow = Math.floor((totalItems - 1) / columns) * columns;
-//   const itemsInLastRow = totalItems - firstIndexOfLastRow;
-
-//   return (
-//     <div className={`grid grid-cols-${columns} gap-x-4 gap-y-6 transition-all duration-150`}>
-//       {childrenArray.map((child, index) => {
-//         // Only apply col-span if it's in the last row and the row isn't full
-//         let colSpanClass = "";
-//         if (index >= firstIndexOfLastRow && itemsInLastRow < columns) {
-//           // const span = 3; // span the full row
-//           const span = columns; // span the full row
-//           colSpanClass = `col-span-${span}`;
-//         }
-
-//         return (
-//           <div key={index} className={colSpanClass}>
-//             {child}
-//           </div>
-//         );
-//       })}
-//     </div>
-//   );
-// };
 export const Grid = ({ children, columns = 2 }: { children: React.ReactNode, columns?: 2 | 3 | 4 }) => {
   return (
     <div className={`grid grid-cols-${columns} gap-x-4 gap-y-6
-      max-md:grid-cols-1
+      max-md:grid-cols-1 max-lg:grid-cols-1 max-sm:grid-cols-1
      transition-all duration-150`}>{children}</div>)
 }
 
 export const Row = ({ children, className, gaps }: IContainerProps) => {
-  const variants = componentVariants("grid grid-flow-row w-full")
+  const variants = componentVariants("grid grid-flow-row w-full max-sm:grid-cols-1 max-sm:grid max-lg:grid max-lg:grid-cols-1")
   return (
     <div className={cn(variants({ gaps }), className)}>{children}</div>
   )

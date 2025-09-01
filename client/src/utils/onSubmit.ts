@@ -1,6 +1,7 @@
 import { backendApi, feedbackGeneratorCount, type ApiType } from "@/lib/constant";
 import { useNavigate } from "@tanstack/react-router";
 import { animateStatusMessages } from "./showFieldError";
+import { useRatingStore } from "@/store/ratingStore";
 
 interface IOnSubmit {
   api: ApiType,
@@ -54,7 +55,6 @@ export const onSubmitFn = async ({ payload, api, navigate,
     }
     feedbackCount += 1;
     localStorage.setItem("feedbackCount", feedbackCount.toString());
-
     // If user has generated 3 plans, show feedback section
     if (feedbackCount >= feedbackGeneratorCount) {
       localStorage.setItem("feedbackCount", "0"); // ✅ reset count

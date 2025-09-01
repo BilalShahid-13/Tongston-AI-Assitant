@@ -2,6 +2,7 @@ import type { Path, UseFormReturn } from "react-hook-form";
 import Required from "../Required";
 import { FormField, FormItem, FormLabel } from "../ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { cn } from "@/lib/utils";
 
 interface IFormSchema<T extends Record<string, any>> {
   name: Path<T>;
@@ -36,7 +37,7 @@ export default function CustomSelectField<T extends Record<string, any>>
               }}
               value={Array.isArray(field.value) ? field.value[0] : field.value}
             >
-              <SelectTrigger className={"w-full"}>
+              <SelectTrigger className={cn("w-full", className)}>
                 <SelectValue placeholder={placeholder} />
               </SelectTrigger>
               <SelectContent className={className || "w-[250px]"}>

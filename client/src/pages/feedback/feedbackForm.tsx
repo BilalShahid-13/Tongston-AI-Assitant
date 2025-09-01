@@ -24,6 +24,7 @@ import { allCountryNames, subjectLists, yearClasses } from "@/constants/lessonPl
 import { backendApi } from "@/lib/constant"
 import { feedbackSchema, type IFeedbackSchema } from "@/schema/feedback.schema"; // Removed 'type' keyword
 import { toast } from "sonner"
+import BreadCrumb from "@/components/breadcrumb"
 const useOnError = () => (errors: any) => {
   console.error("Form errors:", errors)
   toast.error("Please correct the errors in the form.")
@@ -99,10 +100,10 @@ const FormSection: React.FC<{ title: string; description?: string; children: Rea
     animate={{ opacity: 1, y: 0 }}
     exit={{ opacity: 0, y: -20 }}
     transition={{ duration: 0.3 }}
-    className="space-y-6 p-6 border rounded-lg bg-white shadow-sm"
+    className="space-y-6 p-6 border rounded-lg bg-white dark:bg-zinc-800 shadow-sm"
   >
-    <h3 className="text-xl font-semibold text-gray-800">{title}</h3>
-    {description && <p className="text-sm text-gray-600">{description}</p>}
+    <h3 className="text-xl font-semibold text-gray-800 dark:text-neutral-100">{title}</h3>
+    {description && <p className="text-sm text-gray-600 dark:text-neutral-200">{description}</p>}
     {children}
   </motion.div>
 )
@@ -118,10 +119,7 @@ export default function FeedbackForm() {
       followUp: false,
       email: "",
       sectionReferringTo: "",
-      feedbackCategory: undefined, // Must be undefined initially for Zod enum
-      // recommendColleague: false,
-      // colleagueEmails: [""],
-      // rating: 0,
+      feedbackCategory: undefined,
       positiveMessage: "",
       issueDescription: "",
       issueScreenshot: undefined,
@@ -244,19 +242,20 @@ export default function FeedbackForm() {
 
   return (
     <>
+      <BreadCrumb section="Feedback" className="text-white" />
       <PlanCard title="Feedback Form"
         des="Help us improve your experience on the platform."
-        className="my-6 h-auto overflow-auto">
-        {/* <ScrollArea className="h-[450px]" ref={scrollRef}> */}
+        className="my-6">
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit, useOnError())}
             className="flex flex-col gap-8 mx-3">
-            <Container>
-              <Row gaps="lg">
+            <Container >
+              <Row gaps="lg" >
                 {/* Step 1: About You */}
                 <AnimatePresence mode="wait">
                   {currentStep === 1 && (
-                    <FormSection key="step1" title="Step 1: Tell us a bit about you">
+                    <FormSection key="step1"
+                      title="Step 1: Tell us a bit about you">
                       <Grid>
                         <CustomSelectField<IFeedbackSchema>
                           form={methods}
@@ -280,7 +279,7 @@ export default function FeedbackForm() {
 
                         <CustomSelectField<IFeedbackSchema>
                           form={methods}
-                          className="w-full"
+                          className="w-[65%]"
                           fieldName="Role"
                           placeholder="Select your role"
                           name="role"

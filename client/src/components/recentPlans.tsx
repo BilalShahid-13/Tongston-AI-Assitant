@@ -5,6 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import BreadCrumb from "./breadcrumb";
 import { MyFilesCard } from "./myFilesCard";
+import { useLocation } from "@tanstack/react-router";
+import { getBadgeName } from "@/utils/getBadgeName";
 
 async function fetchPlanFile(planName: string) {
   const { data } = await axios.post(`${backendApi}/api/getLatestProjectTaskPlan`, { planName });
@@ -30,6 +32,10 @@ export default function RecentPlan({ planNames }: RecentPlanProps) {
     }
   });
 
+  const location = useLocation().href.split('/').pop();
+  const part1 = location?.slice(0, 6);
+  const part2 = location?.slice(6, 100);
+
   if (isLoading) return <Loader />;
 
   if (error instanceof Error) return (
@@ -53,13 +59,11 @@ export default function RecentPlan({ planNames }: RecentPlanProps) {
         <CustomError planNames={planNames} />
       );
     }
+
     return (
       <>
+        <BreadCrumb section={getBadgeName()} className="text-zinc-600 z-20 capitalize" />
         <div className="max-h-[90vh] overflow-y-scroll hide-scrollbar">
-          <div className="w-full h-12 bg-linear-65 px-4 rounded-b-md
-          from-yellow-400 to-yellow-500 flex justify-start items-center">
-            <BreadCrumb section="Recent Lessons" className="text-zinc-600 z-20" />
-          </div>
           <div className="flex flex-col gap-3 mt-3">
             {filteredPlans.map(({ data }: any, index: number) => {
               const transformed: LessonPlanData = {
@@ -85,11 +89,8 @@ export default function RecentPlan({ planNames }: RecentPlanProps) {
     }
     return (
       <>
+        <BreadCrumb section={getBadgeName()} className="text-zinc-600 z-20 capitalize" />
         <div className="max-h-[90vh] overflow-y-scroll hide-scrollbar">
-          <div className="w-full h-12 bg-linear-65 px-4 rounded-b-md
-          from-yellow-400 to-yellow-500 flex justify-start items-center">
-            <BreadCrumb section="Recent Lessons" className="text-zinc-600 z-20" />
-          </div>
           <div className="flex flex-col gap-3 mt-3">
             {data && (
               <MyFilesCard

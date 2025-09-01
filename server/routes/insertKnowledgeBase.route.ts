@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getKnowledgeBaseFile, getKnowledgeBaseFileLength } from "../controller/getKnowledgeBaseFile.controller";
+import { deleteKnowledgeBase, getKnowledgeBaseFile, getKnowledgeBaseFileLength } from "../controller/getKnowledgeBaseFile.controller";
 import { insertKnowledgeBase } from "../controller/insertKnowledgeBase.controller";
 import { upload } from "../middleware/upload";
 
@@ -8,4 +8,5 @@ const KnowledgeBaseRouter = Router();
 KnowledgeBaseRouter.post("/insertKnowledgeBase", upload.single("file"), insertKnowledgeBase);
 KnowledgeBaseRouter.get("/getKnowledgeBaseFiles", getKnowledgeBaseFile);
 KnowledgeBaseRouter.get("/getKnowledgeBaseFileLength", getKnowledgeBaseFileLength);
+KnowledgeBaseRouter.delete("/deleteKnowledgeBaseFile", deleteKnowledgeBase);
 export default KnowledgeBaseRouter;

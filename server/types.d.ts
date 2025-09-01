@@ -174,3 +174,23 @@ export interface IFeedbackDocument extends Document {
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+import mongoose, { Schema, Document } from 'mongoose';
+
+export interface IRating extends Document {
+  userId: mongoose.Types.ObjectId;
+  value: number;
+  comment?: string;
+  createdAt: Date;
+}
+
+const RatingSchema = new Schema<IRating>(
+  {
+    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    value: { type: Number, required: true, min: 1, max: 5 },
+    comment: { type: String },
+  },
+  { timestamps: true }
+);
+
+export const Rating = mongoose.model<IRating>('Rating', RatingSchema);

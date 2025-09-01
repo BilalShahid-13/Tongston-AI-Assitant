@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import FeedbackModel from "../model/feedback";
 import { connectMongo } from "../lib/connectDb";
+import FeedbackModel from "../model/feedback";
 
 export async function insertFeedback(req: Request, res: Response): Promise<void> {
   try {
@@ -80,5 +80,17 @@ export async function insertFeedback(req: Request, res: Response): Promise<void>
   } catch (error: any) {
     console.error("Error inserting feedback:", error);
     res.status(500).json({ success: false, error: error.message });
+  }
+}
+
+
+export async function getFeedbackAdmin(req: Request, res: Response): Promise<void> {
+  try {
+    await connectMongo();
+    const feedbacks = await FeedbackModel.find().sort({ createdAt: -1 });
+    res.status(200).json({ message: "Feedbacks fetched successfully", data: feedbacks });
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ error: error });
   }
 }

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { insertFeedback } from "../controller/feedback.controller";
+import { getFeedbackAdmin, insertFeedback } from "../controller/feedback.controller";
 import cloudinaryUpload from "../middleware/upload";
 const feedbackRouter = Router();
 
@@ -12,5 +12,7 @@ feedbackRouter.post(
   ]),
   insertFeedback
 );
+
+feedbackRouter.get("/getFeedbackAdmin", getFeedbackAdmin)
 
 export default feedbackRouter;

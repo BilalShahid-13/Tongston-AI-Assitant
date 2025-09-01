@@ -6,7 +6,7 @@ import StudentConductCharacterAssessment from "@/pages/aiAssistant/StudentConduc
 import StudentConductCharacterPlan from "@/pages/aiAssistant/StudentConduct/studentConductCharacterPlan";
 import Assessments from "@/pages/aiAssistant/Subject/assessments";
 import LessonPlans from "@/pages/aiAssistant/Subject/lessonPlans";
-import type { IWalkthroughSteps } from "@/types";
+import type { FAQ, IWalkthroughSteps } from "@/types";
 import {
   BookOpenText,
   Bot,
@@ -29,8 +29,8 @@ import {
   Users
 } from "lucide-react";
 
-export const backendApi = 'https://tongston-ai-assitant-rt92.vercel.app';
-// export const backendApi = 'http://localhost:5000';
+// export const backendApi = 'https://tongston-ai-assitant-rt92.vercel.app';
+export const backendApi = 'http://localhost:5000';
 export const feedbackGeneratorCount = 3;
 
 export const navbarItems = [
@@ -494,11 +494,11 @@ export const homePageWalkthroughSteps: IWalkthroughSteps[] = [
 `,
     selector: `#project-tasks`
   },
-//   {
-//     content: `To plan weekly lessons for projects, head to the “Project Weekly Plan” section. After selecting how many weeks your project will run, fill in basic details like class and topic. The AI will automatically generate weekly breakdowns, reflection prompts, and cross-disciplinary teaching cues. You can review and adjust the content, then save the facilitation plan for teaching use.
-// `,
-//     selector: `#${aiAssistantTabs[6].id}`
-//   },
+  //   {
+  //     content: `To plan weekly lessons for projects, head to the “Project Weekly Plan” section. After selecting how many weeks your project will run, fill in basic details like class and topic. The AI will automatically generate weekly breakdowns, reflection prompts, and cross-disciplinary teaching cues. You can review and adjust the content, then save the facilitation plan for teaching use.
+  // `,
+  //     selector: `#${aiAssistantTabs[6].id}`
+  //   },
   // {
   //   content: `To evaluate your own lesson plan, open the “Marking & Report” section. Upload your completed lesson plan and select the marking criteria. Click generate, and the AI will rate your lesson across 10 teaching standards, giving you a score and detailed feedback. Save the report and use it to improve future lesson delivery.`,
   //   selector: `#${aiAssistantTabs[6].id}`
@@ -555,5 +555,29 @@ export const latestStudentConductPlan = [
 ]
 
 
+// admin
+export const mockFaqs: FAQ[] = [
+  {
+    id: "1",
+    heading: "How do I reset my password?",
+    description:
+      "To reset your password, go to the login page and click 'Forgot Password'. Enter your email address and follow the instructions sent to your email.",
+    category: "Account Management",
+  },
+  {
+    id: "2",
+    heading: "What payment methods do you accept?",
+    description:
+      "We accept all major credit cards (Visa, MasterCard, American Express), PayPal, and bank transfers for enterprise accounts.",
+    category: "Billing & Payments",
+  },
+  {
+    id: "3",
+    heading: "How do I use the AI Generator?",
+    description:
+      "The AI Generator is easy to use. Simply enter your prompt in the text box, select your preferred settings, and click 'Generate'. The AI will create content based on your input.",
+    category: "Navigating the AI Generator",
+  },
+]
 
 export type ApiType = typeof apisList[number]

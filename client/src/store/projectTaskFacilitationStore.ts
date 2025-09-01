@@ -16,12 +16,25 @@ interface IProjectTaskFacilitation {
   CurriculumEntry: CurriculumEntry[];
   setCurriculumEntry: (excelData: CurriculumEntry[], isLoaded: boolean) => void;
   setOtherTeachingAids: (form: UseFormReturn<any>) => void;
+  handleOutput: (form: UseFormReturn<any>) => boolean
 }
 export const useProjectTaskFacilitationStore = create<IProjectTaskFacilitation>((set) => ({
   cities: [],
   isCurriculumLoaded: false,
   CurriculumEntry: [],
 
+  handleOutput: (form: UseFormReturn) => {
+    const yearClass = form.watch("yearClass");
+    if (yearClass === "Nursery 3/Kindergarten 3" ||
+      yearClass === "Primary 3/Grade 3/Basic 3" ||
+      yearClass === "Primary 6/Grade 6/Basic 6" ||
+      yearClass === "Junior Secondary 3/JSS3/JS3/Grade 9" ||
+      yearClass === "Undergraduate Year 3"
+    ) {
+      return true
+    }
+    return false
+  },
 
   handleCities: (form: UseFormReturn<any>) => {
     const stateName = form.getValues("state");
