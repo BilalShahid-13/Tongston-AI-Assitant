@@ -7,7 +7,7 @@ import { SidebarProvider, SidebarTrigger } from "../ui/sidebar";
 import { AppSidebar } from "./appSidebar";
 import SidebarContent from "./sidebarContent";
 export function Layout() {
-  const { isOpen, toggleSidebar,sidebarRef } = useSidebarStore();
+  const { isOpen, toggleSidebar } = useSidebarStore();
   const location = useLocation(); // 🧠 important
   const [isPending, startTransition] = useTransition(); // 🌀 React 18 transition hook
   const [currentPath, setCurrentPath] = useState(location.pathname);

@@ -1,4 +1,3 @@
-import type React from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -8,7 +7,8 @@ import { backendApi } from "@/lib/constant"
 import { useAdminAuthStore } from "@/store/adminAuth"
 import axios from "axios"
 import { motion } from "framer-motion"
-import { ArrowRight, CheckCircle, Mail, Shield } from "lucide-react"
+import { ArrowRight, CheckCircle, Mail } from "lucide-react"
+import type React from "react"
 import { useState } from "react"
 import { toast } from "sonner"
 
@@ -86,7 +86,7 @@ export function OTPLogin() {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                className="mx-auto w-16 h-16 bg-gradient-to-r
+              className="mx-auto w-16 h-16 bg-gradient-to-r
                 from-[var(--k12-primary)]
                 to-[var(--k12-secondary)] rounded-md
                 flex items-center justify-center mb-4"

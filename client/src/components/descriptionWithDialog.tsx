@@ -1,11 +1,7 @@
-"use client"
-
 import type React from "react"
-
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { X } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
 import DownloadMarkdown from "./downloadMarkdown"
 
 interface FullScreenPreviewProps {
@@ -33,7 +29,7 @@ export default function FullScreenPreview({ isOpen, onClose, content, fileName }
     onClose()
   }
 
-  console.log('isOpen',isOpen)
+  console.log('isOpen', isOpen)
 
   return (
     <div>

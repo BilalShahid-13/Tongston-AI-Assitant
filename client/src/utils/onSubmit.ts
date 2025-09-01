@@ -1,7 +1,6 @@
 import { backendApi, feedbackGeneratorCount, type ApiType } from "@/lib/constant";
 import { useNavigate } from "@tanstack/react-router";
 import { animateStatusMessages } from "./showFieldError";
-import { useRatingStore } from "@/store/ratingStore";
 
 interface IOnSubmit {
   api: ApiType,

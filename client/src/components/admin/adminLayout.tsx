@@ -1,6 +1,7 @@
 import { useAdminAuthStore } from "@/store/adminAuth";
 import { useEffect, useState } from "react";
 import AdminHeader from "./adminHeader";
+import { OTPLogin } from "./otpLogin";
 
 export default function AdminLayout() {
   const { isAuthenticated } = useAdminAuthStore();
@@ -10,11 +11,11 @@ export default function AdminLayout() {
   }, [isAuthenticated])
   return (
     <>
-      {/* {isAuth ?
+      {isAuth ?
         <>
           <AdminHeader />
-        </> : <OTPLogin />} */}
-      <AdminHeader />
+        </> : <OTPLogin />}
+      {/* <AdminHeader /> */}
     </>
   )
 }
