@@ -17,6 +17,7 @@ type RecentPlanProps = {
 };
 
 export default function RecentPlan({ planNames }: RecentPlanProps) {
+  const badgeName = getBadgeName();
   // Decide how to fetch: single or multiple
   const { data, isLoading, error } = useQuery({
     queryKey: ['recentPlanFiles', planNames],
@@ -57,7 +58,7 @@ export default function RecentPlan({ planNames }: RecentPlanProps) {
 
     return (
       <>
-        <BreadCrumb section={getBadgeName()} className="text-zinc-600 z-20 capitalize" />
+        <BreadCrumb section={badgeName} className="text-zinc-600 z-20 capitalize" />
         <div className="max-h-[90vh] overflow-y-scroll hide-scrollbar">
           <div className="flex flex-col gap-3 mt-3">
             {filteredPlans.map(({ data }: any, index: number) => {
@@ -84,7 +85,7 @@ export default function RecentPlan({ planNames }: RecentPlanProps) {
     }
     return (
       <>
-        <BreadCrumb section={getBadgeName()} className="text-zinc-600 z-20 capitalize" />
+        <BreadCrumb section={badgeName} className="text-zinc-600 z-20 capitalize" />
         <div className="max-h-[90vh] overflow-y-scroll hide-scrollbar">
           <div className="flex flex-col gap-3 mt-3">
             {data && (
