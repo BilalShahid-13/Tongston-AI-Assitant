@@ -18,7 +18,7 @@ export const feedbackSchema = z
       error: "Please select a feedback category.",
     }),
     positiveMessage: z.string().optional(),
-
+    inspirationUrl: z.string().optional(),
     // Issue Feedback fields
     issueDescription: z.string().optional(),
     issueScreenshot: z.any().optional(), // FileList type

@@ -26,6 +26,8 @@ export default function KnowledgeBaseContent() {
     queryFn: fetchKnowledgeBaseData,
   })
 
+console.log(data)
+
   if (isLoading) return <Loader />
 
   if (error instanceof Error)

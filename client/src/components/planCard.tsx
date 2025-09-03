@@ -15,10 +15,11 @@ interface IChildren {
   ref?: React.Ref<HTMLDivElement>
   className?: string,
   des?: string
-  cardHeaderClassName?: string
+  cardHeaderClassName?: string,
 }
 
-export default function PlanCard({ children, title = "Subject Lesson Plan & Notes Generator", ref,
+export default function PlanCard({ children,
+   title = "Subject Lesson Plan & Notes Generator", ref,
   ctaButton, className, des, cardHeaderClassName }: IChildren) {
   return (
     <>

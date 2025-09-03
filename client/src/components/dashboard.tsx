@@ -13,6 +13,7 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
+  Cell,
   Line,
   LineChart,
   Pie,
@@ -191,7 +192,7 @@ export default function FilteredDashboard() {
   })
 
   const chartData = data ? processChartData(data, activeFilters) : null
-
+  console.log(chartData)
   // Calculate totals by plan type
   const getTotalByPlanType = (planType: string) => {
     if (!data) return 0
@@ -447,9 +448,22 @@ export default function FilteredDashboard() {
                         cx="50%"
                         cy="50%"
                         outerRadius={80}
-                        fill="var(--color-count)"
                         label
-                      />
+                      >
+                        {chartData.schoolLevels.map((entry: any, index: number) => {
+                          const name = entry.name.toLowerCase()
+
+                          let fillColor = "#707070" // default grey for unknown/tertiary
+
+                          if (name.includes("nursery")) fillColor = "#F5C242" // Yellow
+                          else if (name.includes("primary")) fillColor = "#E04A2F" // Red
+                          else if (name.includes("secondary")) fillColor = "#111111" // Black
+                          else if (name.includes("university") || name.includes("tertiary"))
+                            fillColor = "#707070" // Grey
+
+                          return <Cell key={`cell-${index}`} fill={fillColor} />
+                        })}
+                      </Pie>
                     </PieChart>
                   </ResponsiveContainer>
                 </ChartContainer>

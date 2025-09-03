@@ -26,6 +26,7 @@ export async function insertFeedback(req: Request, res: Response): Promise<void>
       otherSuggestionTypeDetail,
       suggestionMessage,
       suggestionAppearance,
+      inspirationUrl,
     } = req.body;
 
     const issueScreenshot =
@@ -66,6 +67,7 @@ export async function insertFeedback(req: Request, res: Response): Promise<void>
       suggestionMessage,
       suggestionAppearance,
       suggestionScreenshot,
+      inspirationUrl,
       meta: {
         ip: req.ip,
         userAgent: req.headers["user-agent"],

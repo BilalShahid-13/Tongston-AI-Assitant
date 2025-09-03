@@ -279,7 +279,7 @@ export default function FeedbackForm() {
 
                         <CustomSelectField<IFeedbackSchema>
                           form={methods}
-                          className="w-[65%]"
+                          className="max-w-lg"
                           fieldName="Role"
                           placeholder="Select your role"
                           name="role"
@@ -565,6 +565,13 @@ export default function FeedbackForm() {
                             name="suggestionType"
                             list={suggestionTypeOptions}
                             isRequired
+                          />
+                          <CustomInputField<IFeedbackSchema>
+                            form={methods}
+                            fieldName="Inspiration URL"
+                            placeholder="Paste the website link"
+                            name="inspirationUrl"
+                            isDisabled={false}
                           />
                           <AnimatePresence>
                             {suggestionType === "Other" && (

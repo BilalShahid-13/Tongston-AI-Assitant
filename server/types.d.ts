@@ -164,6 +164,7 @@ export interface IFeedbackDocument extends Document {
   suggestionMessage?: string | null;
   suggestionAppearance?: string | null;
   suggestionScreenshot?: IFileMeta[];
+  inspirationUrl: string,
 
   // optional metadata
   meta?: {

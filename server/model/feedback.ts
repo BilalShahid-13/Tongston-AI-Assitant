@@ -48,6 +48,9 @@ const FeedbackSchema = new Schema<IFeedbackDocument>(
     suggestionAppearance: { type: String },
     suggestionScreenshot: { type: [FileMetaSchema], default: [] },
 
+    inspirationUrl: { type: String, trim: true },
+
+
     // optional metadata
     meta: {
       ip: { type: String },

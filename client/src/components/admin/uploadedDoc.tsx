@@ -30,7 +30,8 @@ import {
 type Document = {
   _id: string
   originalName: string
-  fileUrl: string
+  fileUrl: string;
+  fileType: string
   // add other props if needed
 }
 
@@ -53,6 +54,20 @@ export function getFileIcon(fileName: string) {
       return <AiOutlineFile className="text-gray-500 text-4xl mb-3" />
   }
 }
+
+function handleDownload(url: string, filename: string) {
+  fetch(url)
+    .then(res => res.blob())
+    .then(blob => {
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+      window.URL.revokeObjectURL(link.href);
+    })
+    .catch(err => console.error("Download failed:", err));
+}
+
 
 export function UploadedDocumentsGrid({ files }: { files: Document[] }) {
   const [searchTerm, setSearchTerm] = useState("")
@@ -182,7 +197,7 @@ export function UploadedDocumentsGrid({ files }: { files: Document[] }) {
                       className={`transform group-hover:scale-110 transition-transform duration-200 ${viewMode === "list" ? "mr-4" : "mb-4"
                         }`}
                     >
-                      {getFileIcon(doc.originalName)}
+                      {getFileIcon(doc.fileType)}
                     </div>
 
                     <AlertDialog open={open} onOpenChange={setOpen}>
@@ -223,16 +238,18 @@ export function UploadedDocumentsGrid({ files }: { files: Document[] }) {
                         }`}
                     >
                       <p
-                        className={`max-w-sm font-medium capitalize text-foreground mb-2 ${viewMode === "list"
-                          ? "text-base"
-                          : "text-sm w-full px-2 break-words"
+                        className={`max-w-[15rem] font-medium capitalize
+                          text-foreground mb-2 ${viewMode === "list"
+                            ? "text-base"
+                            : "text-sm w-full px-2 break-words"
                           }`}
                       >
                         {doc.originalName}
                       </p>
                       <div className="max-w-sm flex items-center justify-center gap-2 text-xs text-muted-foreground">
-                        <span className="max-w-sm px-2 py-1 bg-[#ffb900]/10 text-[#ffb900] rounded-full font-medium">
-                          {doc.originalName.split(".").pop()?.toUpperCase()}
+                        <span className="uppercase max-w-sm px-2 py-1 bg-[#ffb900]/10 text-[#ffb900] rounded-full font-medium">
+                          {doc.fileType}
+                          {/* {doc.originalName.split(".").pop()?.toUpperCase()} */}
                         </span>
                       </div>
                     </div>
@@ -246,18 +263,11 @@ export function UploadedDocumentsGrid({ files }: { files: Document[] }) {
                       <Button
                         variant="outline"
                         size="sm"
+                        onClick={() => handleDownload(doc.fileUrl, doc.originalName)}
                         className="bg-gradient-to-r from-[var(--k12-primary)] to-[var(--k12-secondary)] hover:from-[var(--k12-tertiary)]/70 hover:to-[var(--k12-tertiary)] text-white border-0 font-medium transition-all duration-200 shadow-md hover:shadow-lg"
-                        asChild
                       >
-                        <a
-                          href={doc.fileUrl}
-                          download={doc.originalName}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          <Download className="h-4 w-4 mr-2" />
-                          Download
-                        </a>
+                        <Download className="h-4 w-4 mr-2" />
+                        Download
                       </Button>
                     </motion.div>
                   </Card>

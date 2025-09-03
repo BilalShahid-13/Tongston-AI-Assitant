@@ -31,7 +31,6 @@ export default function AdminTab() {
                  data-[state=active]:text-black font-semibold"
             >
               <Upload className="w-4 h-4 mr-2" />
-
               FAQ Management
             </TabsTrigger>
           </TabsList>

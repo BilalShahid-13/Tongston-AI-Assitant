@@ -43,7 +43,7 @@ export default function LessonPlan() {
 
   const { isLoaded, data: excelData } = useCurriculumStore();
   const { handleCities, cities, handleYearClass, handleTerm, handleCurriculum,
-    setCurriculumEntry, handleSubjectDicipline, setOtherTeachingAids } = useProjectTaskFacilitationStore();
+    setCurriculumEntry, handleSubjectDicipline, setOtherTeachingAids, handleOutput } = useProjectTaskFacilitationStore();
   const { setIsOpen } = useRatingStore();
 
   const navigate = useNavigate()
@@ -65,13 +65,13 @@ export default function LessonPlan() {
 
   const onSubmit = async (data: lessonPlanFormSchema) => {
     setData("");
-    // if (handleOutput(form)) {
-    //   setShowLessonPlan(true);
-    //   setData(`
-    //     Scaffolded SUBJECT UNIT/TOPIC: No new topic. This is a TESTS year. Learners engage in review, reflection, and consolidation of prior knowledge in preparation for the TESTS assessment. No new topic is introduced.
-    //     `);
-    //   return;
-    // }
+    if (handleOutput(form)) {
+      setShowLessonPlan(true);
+      setData(`
+        Scaffolded SUBJECT UNIT/TOPIC: No new topic. This is a TESTS year. Learners engage in review, reflection, and consolidation of prior knowledge in preparation for the TESTS assessment. No new topic is introduced.
+        `);
+      return;
+    }
     await onSubmitFn({
       payload: data,
       api: "subject/lessonPlan",
