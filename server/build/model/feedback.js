@@ -71,6 +71,7 @@ const FeedbackSchema = new mongoose_1.Schema({
     suggestionMessage: { type: String },
     suggestionAppearance: { type: String },
     suggestionScreenshot: { type: [FileMetaSchema], default: [] },
+    inspirationUrl: { type: String, trim: true },
     // optional metadata
     meta: {
         ip: { type: String },

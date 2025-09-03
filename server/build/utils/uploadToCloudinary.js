@@ -5,9 +5,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uploadToCloudinary = void 0;
 const cloudinary_1 = __importDefault(require("../config/cloudinary"));
-const uploadToCloudinary = (buffer, filename) => {
+const uploadToCloudinary = (buffer, filename, folder = "/") => {
     return new Promise((resolve, reject) => {
-        const stream = cloudinary_1.default.uploader.upload_stream({ public_id: `${Date.now()}-${filename.replace(/\s+/g, "_")}`, resource_type: "auto" }, (error, result) => {
+        const stream = cloudinary_1.default.uploader.upload_stream({
+            public_id: `${folder}${Date.now()}-${filename.replace(/\s+/g, "_")}`,
+            resource_type: "auto"
+        }, (error, result) => {
             if (error)
                 reject(error);
             else

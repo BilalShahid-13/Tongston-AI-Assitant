@@ -10,7 +10,7 @@ const feedback_1 = __importDefault(require("../model/feedback"));
 async function insertFeedback(req, res) {
     try {
         await (0, connectDb_1.connectMongo)();
-        const { subject, yearClassLevel, role, country, followUp, email, sectionReferringTo, otherSectionDetail, feedbackCategory, positiveMessage, issueDescription, problemOccurredAt, otherProblemOccurredAtDetail, issueCheckboxes, issueDetails, suggestionType, otherSuggestionTypeDetail, suggestionMessage, suggestionAppearance, } = req.body;
+        const { subject, yearClassLevel, role, country, followUp, email, sectionReferringTo, otherSectionDetail, feedbackCategory, positiveMessage, issueDescription, problemOccurredAt, otherProblemOccurredAtDetail, issueCheckboxes, issueDetails, suggestionType, otherSuggestionTypeDetail, suggestionMessage, suggestionAppearance, inspirationUrl, } = req.body;
         const issueScreenshot = req.files?.issueScreenshot?.map((file) => ({
             filename: file.originalname || file.original_filename || "", // ensure always set
             url: file.path || file.secure_url,
@@ -45,6 +45,7 @@ async function insertFeedback(req, res) {
             suggestionMessage,
             suggestionAppearance,
             suggestionScreenshot,
+            inspirationUrl,
             meta: {
                 ip: req.ip,
                 userAgent: req.headers["user-agent"],
