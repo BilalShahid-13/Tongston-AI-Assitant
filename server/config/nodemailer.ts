@@ -3,11 +3,13 @@ import nodemailer from "nodemailer";
 config();
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
-  port: 587,
+  port: 465,
+  // port: 587,
   auth: {
     user: process.env.GOOGLE_APP_USER,
     pass: process.env.GOOGLE_APP_PASSWORD,
   },
+  connectionTimeout: 10000, // 10 seconds
 });
 export async function sendMail(subject: string, html: string, to: string) {
   try {
