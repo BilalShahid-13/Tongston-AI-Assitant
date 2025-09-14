@@ -241,7 +241,7 @@ export default function FeedbackForm() {
                 <AnimatePresence mode="wait">
                   {/* Step 2: Which section are you referring to? */}
                   {currentStep === 2 && (
-                    <FormSection key="step2" title="Step 2: Which section are you referring to?">
+                    <FormSection key="step2" title="Step 1: Which section are you referring to?">
                       <CustomSelectField<IFeedbackSchema>
                         form={methods}
                         className="w-full"
@@ -277,7 +277,7 @@ export default function FeedbackForm() {
                   {/* Step 3: Feedback Category */}
                   {currentStep === 3 && (
                     <FormSection key="step3"
-                      title="Step 3: What kind of feedback would you like to share?">
+                      title="Step 2: What kind of feedback would you like to share?">
                       <RadioGroup
                         onValueChange={(value: "positive" | "issue" | "suggestion") => {
                           setValue("feedbackCategory", value, { shouldValidate: true })
