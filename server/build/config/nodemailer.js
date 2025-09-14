@@ -9,11 +9,13 @@ const nodemailer_1 = __importDefault(require("nodemailer"));
 (0, dotenv_1.config)();
 const transporter = nodemailer_1.default.createTransport({
     host: process.env.SMTP_HOST,
-    port: 587,
+    port: 465,
+    // port: 587,
     auth: {
         user: process.env.GOOGLE_APP_USER,
         pass: process.env.GOOGLE_APP_PASSWORD,
     },
+    connectionTimeout: 10000, // 10 seconds
 });
 async function sendMail(subject, html, to) {
     try {
