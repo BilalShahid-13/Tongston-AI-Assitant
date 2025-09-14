@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button"
-import { useLessonStore } from "@/store/lessonStore"
+import { useMyFileStore } from "@/store/myFilesStore"
 import { useRouter } from "@tanstack/react-router"
 import { motion } from "framer-motion"
 import { ArrowLeft, FileText } from "lucide-react"
@@ -10,7 +10,7 @@ import Watermark from "./watermark"
 
 export default function LessonPage() {
   const { navigate } = useRouter()
-  const { currentLesson, clearCurrentLesson } = useLessonStore()
+  const { currentLesson, clearCurrentLesson } = useMyFileStore()
   const contentRef = useRef<HTMLDivElement>(null);
   const [watermarkCount, setWatermarkCount] = useState(0);
 
@@ -82,7 +82,7 @@ export default function LessonPage() {
   const lessonInfo = extractInfo(currentLesson.answer)
 
   const handleBack = () => {
-    clearCurrentLesson()
+    clearCurrentLesson();
     navigate({ to: "/myFiles" })
   }
 

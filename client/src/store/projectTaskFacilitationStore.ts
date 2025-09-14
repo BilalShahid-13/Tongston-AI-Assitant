@@ -1,6 +1,5 @@
 import { allCities, juniorSecondarySchool, nurserySchool, primartSchool, secondarySchool, seniorSecondarySchool, studentAge, subjectLists, tertiarySchool, yearClassMappings } from "@/constants/lessonPlanConstant";
 import type { CurriculumEntry } from "@/types";
-import { createRef, type RefObject } from "react";
 import type { UseFormReturn } from "react-hook-form";
 import { create } from "zustand";
 

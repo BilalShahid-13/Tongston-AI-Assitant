@@ -16,9 +16,9 @@ interface IFormSchema<T extends Record<string, any>> {
 }
 
 export default function CustomSelectField<T extends Record<string, any>>
-({ form, name, isRequired = false,
-  fieldName, placeholder = "Select a Location",
-  list, className, onChange }: IFormSchema<T>) {
+  ({ form, name, isRequired = false,
+    fieldName, placeholder = "Select a Location",
+    list, className, onChange }: IFormSchema<T>) {
   return (
     <>
       <FormField
@@ -41,7 +41,7 @@ export default function CustomSelectField<T extends Record<string, any>>
                 <SelectValue placeholder={placeholder} />
               </SelectTrigger>
               <SelectContent className={className || "w-[250px]"}>
-                {list.map((item, index) =>
+                {list.map((item) =>
                   <SelectItem key={item} value={item}>{item}</SelectItem>)}
               </SelectContent>
             </Select>

@@ -1,7 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader } from '@/components/ui/card';
-import { useLessonStore } from '@/store/lessonStore';
+import { useMyFileStore } from '@/store/myFilesStore';
 import type { LessonPlanData } from '@/types';
 import { useRouter } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
@@ -16,7 +16,7 @@ interface LessonPlanCardProps {
 
 export function MyFilesCard({ data, onView }: LessonPlanCardProps) {
   const { navigate } = useRouter()
-  const { setCurrentLesson } = useLessonStore()
+  const { setCurrentLesson } = useMyFileStore()
 
   // Extract key information from the markdown content
   const extractInfo = (content: string) => {

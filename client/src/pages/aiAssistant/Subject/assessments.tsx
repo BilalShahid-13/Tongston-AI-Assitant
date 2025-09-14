@@ -125,7 +125,7 @@ const Assessments = () => {
       >
         <PlanCard title="Subject Assessments"
           ref={scrollRef}
-          isOpen={false}
+          // isOpen={false}
           className="relative h-[90vh] overflow-y-scroll">
           <ScrollArea
           >
@@ -582,7 +582,7 @@ const Assessments = () => {
           </ScrollArea>
         </PlanCard>
         <PlanCard
-          isOpen={currentLesson}
+          // isOpen={currentLesson}
           ref={chatbotRef}
           title="Ai Assistant"
           className={`transition-opacity duration-700 ease-in-out
