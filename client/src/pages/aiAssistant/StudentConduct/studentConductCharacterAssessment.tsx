@@ -13,6 +13,7 @@ import { allCities, allCountryNames, assesmentWeightLists, bloomTaxonomyLevel, c
 import { KPIList } from "@/constants/studentConductCharacterPlanConstant";
 import { useOnError } from "@/hooks/useOnError";
 import { studentConductCharacterAssessmentsFormSchema, type IStudentConductCharacterAssessmentsForm } from "@/schema/studentConductCharacterAssessments.schema";
+import { useLessonStore } from "@/store/lessonStore";
 import { useProjectTaskFacilitationStore } from "@/store/projectTaskFacilitationStore";
 import { onSubmitFn } from "@/utils/onSubmit";
 import { resetPlanValues } from "@/utils/resetPlanValues";
@@ -36,12 +37,12 @@ export default function StudentConductCharacterAssessment() {
   const { handleCities, cities, handleTerm, resetContinousAssessment, handleSubjectLearning,
     handleSubjectDicipline, handleYearClass, setOtherTeachingAids } = useProjectTaskFacilitationStore();
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [showChatbot, setShowChatbot] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const chatbotRef = useRef<HTMLDivElement>(null);
   const [data, setData] = useState<string | null>("");
   const navigate = useNavigate();
+  const {currentLesson,setCurrentLesson} = useLessonStore();
 
   const onSubmit = async (data: IStudentConductCharacterAssessmentsForm) => {
     console.log("Form Data:", data);
@@ -50,7 +51,7 @@ export default function StudentConductCharacterAssessment() {
       payload: data,
       api: "student/ConductCharacterAssessment",
       setStatusMessage,
-      setShowPlan: setShowChatbot,
+      setShowPlan: setCurrentLesson,
       setData,
       navigate,
       setLoading
@@ -75,11 +76,12 @@ export default function StudentConductCharacterAssessment() {
     <>
       <ScrollAnimate scrollRef={scrollRef} />
       <ContainerPlan
-        showPanel={showChatbot}
+        showPanel={currentLesson}
       >
 
         <PlanCard title="Student Conduct & Character Assessments"
           ref={scrollRef}
+          // isOpen={true}
           className="relative h-[90vh] overflow-y-scroll">
           <ScrollArea>
             <FormProvider {...form}>
@@ -557,10 +559,11 @@ export default function StudentConductCharacterAssessment() {
         </PlanCard>
         <PlanCard
           ref={chatbotRef}
+          // isOpen={currentLesson}
           title="Ai Assistant"
           className={`transition-opacity duration-700 ease-in-out
                                     max-h-screen
-                                     ${showChatbot ? "opacity-100" : "opacity-0"
+                                     ${currentLesson ? "opacity-100" : "opacity-0"
             }`}>
           <Chatbot chats={data} />
         </PlanCard>

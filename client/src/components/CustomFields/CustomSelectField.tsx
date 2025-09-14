@@ -42,7 +42,7 @@ export default function CustomSelectField<T extends Record<string, any>>
               </SelectTrigger>
               <SelectContent className={className || "w-[250px]"}>
                 {list.map((item, index) =>
-                  <SelectItem key={index} value={item}>{item}</SelectItem>)}
+                  <SelectItem key={item} value={item}>{item}</SelectItem>)}
               </SelectContent>
             </Select>
           </FormItem>

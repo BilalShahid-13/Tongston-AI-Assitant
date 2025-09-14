@@ -10,7 +10,7 @@ const feedback_1 = __importDefault(require("../model/feedback"));
 async function insertFeedback(req, res) {
     try {
         await (0, connectDb_1.connectMongo)();
-        const { subject, yearClassLevel, role, country, followUp, email, sectionReferringTo, otherSectionDetail, feedbackCategory, positiveMessage, issueDescription, problemOccurredAt, otherProblemOccurredAtDetail, issueCheckboxes, issueDetails, suggestionType, otherSuggestionTypeDetail, suggestionMessage, suggestionAppearance, inspirationUrl, } = req.body;
+        const { followUp, email, sectionReferringTo, otherSectionDetail, feedbackCategory, positiveMessage, issueDescription, problemOccurredAt, otherProblemOccurredAtDetail, issueCheckboxes, issueDetails, suggestionType, otherSuggestionTypeDetail, suggestionMessage, suggestionAppearance, inspirationUrl, } = req.body;
         const issueScreenshot = req.files?.issueScreenshot?.map((file) => ({
             filename: file.originalname || file.original_filename || "", // ensure always set
             url: file.path || file.secure_url,
@@ -24,10 +24,6 @@ async function insertFeedback(req, res) {
             size: file.size,
         })) || [];
         const feedback = await feedback_1.default.create({
-            subject,
-            yearClassLevel,
-            role,
-            country,
             followUp: followUp === "true" || followUp === true,
             email: email || null,
             sectionReferringTo,

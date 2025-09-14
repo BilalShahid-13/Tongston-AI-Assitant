@@ -10,6 +10,7 @@ import { termOptions, yearClassMappings } from "@/constants/lessonPlanConstant";
 import { useOnError } from "@/hooks/useOnError";
 import { backendApi } from "@/lib/constant";
 import { reportGeneratorSchema, type ReportGeneratorSchema } from "@/schema/reportGenerator.schema";
+import { useLessonStore } from "@/store/lessonStore";
 import { useProjectTaskFacilitationStore } from "@/store/projectTaskFacilitationStore";
 import { useRatingStore } from "@/store/ratingStore";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,18 +24,18 @@ export default function ReportGenerator() {
     resolver: zodResolver(reportGeneratorSchema)
   });
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [showChatbot, setShowChatbot] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const chatbotRef = useRef<HTMLDivElement>(null);
   const [data, setData] = useState<string | null>("");
   useEffect(() => {
-    setShowChatbot(false);
+    setCurrentLesson(false);
     setStatusMessage(null);
     setLoading(false);
   }, [])
   const { handleTerm } = useProjectTaskFacilitationStore();
   const { setIsOpen } = useRatingStore()
+  const { currentLesson, setCurrentLesson } = useLessonStore();
   const onSubmit = async (data: ReportGeneratorSchema) => {
     setData("");
     setLoading(true);
@@ -62,7 +63,7 @@ export default function ReportGenerator() {
       }
       // ✅ Success — handle response
       setData(res.data);
-      setShowChatbot(true);
+      setCurrentLesson(true);
       setIsOpen(true);
       setStatusMessage("Report generated successfully");
     } catch (error) {
@@ -79,7 +80,7 @@ export default function ReportGenerator() {
     <>
       <ScrollAnimate scrollRef={scrollRef} />
       <ContainerPlan
-        showPanel={showChatbot}
+        showPanel={currentLesson}
       >
         <PlanCard title="Lesson Plan Marking & Reports"
           ref={scrollRef}
@@ -155,7 +156,7 @@ export default function ReportGenerator() {
           title="Ai Assistant"
           className={`transition-opacity duration-700 ease-in-out
                                     max-h-screen
-                                     ${showChatbot ? "opacity-100" : "opacity-0"
+                                     ${currentLesson ? "opacity-100" : "opacity-0"
             }`}>
           <Chatbot chats={data} />
         </PlanCard>

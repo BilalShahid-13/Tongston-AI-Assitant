@@ -11,6 +11,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { allCities, allCountryNames, classSizes, cognitiveProcessingTime, communicationMethod, iepPlan, medicalEmergencyProtocol, mobility, securityLevel, senDifferentiation, sensoryConsideration, socialInteraction, supportProvided, teachingAids, termOptions, timeOptions, yearClasses } from "@/constants/lessonPlanConstant";
 import { useOnError } from "@/hooks/useOnError";
 import { projectTaskFacilitationFormSchema, type IProjectTaskFacilitationFormSchema } from "@/schema/projectTaskFacilitation.schema";
+import { useLessonStore } from "@/store/lessonStore";
 import { useProjectTaskFacilitationStore } from "@/store/projectTaskFacilitationStore";
 import { onSubmitFn } from "@/utils/onSubmit";
 import { resetPlanValues } from "@/utils/resetPlanValues";
@@ -35,12 +36,12 @@ export default function ProjectTaskFacilitation() {
   });
   const { handleCities, cities, handleYearClass, handleTerm, setOtherTeachingAids } = useProjectTaskFacilitationStore();
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [showChatbot, setShowChatbot] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const chatbotRef = useRef<HTMLDivElement>(null);
   const [data, setData] = useState<string | null>("");
   const navigate = useNavigate();
+  const {currentLesson,setCurrentLesson} = useLessonStore();
 
   useEffect(() => {
     setOtherTeachingAids(form);
@@ -53,7 +54,7 @@ export default function ProjectTaskFacilitation() {
       api: "project/Facilitation",
       setStatusMessage,
       navigate,
-      setShowPlan: setShowChatbot,
+      setShowPlan: setCurrentLesson,
       setData,
       setLoading
     })
@@ -69,7 +70,7 @@ export default function ProjectTaskFacilitation() {
     <>
       <ScrollAnimate scrollRef={scrollRef} />
       <ContainerPlan
-        showPanel={showChatbot}
+        showPanel={currentLesson}
       >
 
         <PlanCard title="Project (Tasks) Lesson Facilitation Plan"
@@ -373,7 +374,7 @@ export default function ProjectTaskFacilitation() {
           title="Ai Assistant"
           className={`transition-opacity duration-700 ease-in-out
                                     max-h-screen
-                                     ${showChatbot ? "opacity-100" : "opacity-0"
+                                     ${currentLesson ? "opacity-100" : "opacity-0"
             }`}>
           <Chatbot chats={data} />
         </PlanCard>

@@ -1,11 +1,6 @@
 import z from "zod";
 export const feedbackSchema = z
   .object({
-    // Step 1 fields
-    subject: z.string().min(1, "Please select a subject."),
-    yearClassLevel: z.string().min(1, "Please select a year/class level."),
-    role: z.string().min(1, "Please select your role."),
-    country: z.string().min(1, "Please select your country."),
     followUp: z.boolean(),
     email: z.string().email("Invalid email address.").optional().or(z.literal("")),
 

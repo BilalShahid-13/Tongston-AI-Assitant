@@ -13,6 +13,7 @@ import { allCities, allCountryNames, assesmentWeightLists, bloomTaxonomyLevel, c
 import { useOnError } from "@/hooks/useOnError";
 import { assesmentPlanForm, type assesmentPlanFormSchema } from "@/schema/schema.schema";
 import { useCurriculumStore } from "@/store/curriculumStore";
+import { useLessonStore } from "@/store/lessonStore";
 import { useProjectTaskFacilitationStore } from "@/store/projectTaskFacilitationStore";
 import { onSubmitFn } from "@/utils/onSubmit";
 import { resetPlanValues } from "@/utils/resetPlanValues";
@@ -32,12 +33,12 @@ const Assessments = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
-  const [showAssessmentPlan, setShowAssessmentPlan] = useState(false);
   const [data, setData] = useState<string | null>("");
   const chatbotRef = useRef<HTMLDivElement>(null);
   const { handleCities, cities, handleYearClass, handleTerm, handleCurriculum, resetContinousAssessment, setCurriculumEntry, handleSubjectDicipline } = useProjectTaskFacilitationStore();
   const { isLoaded, data: excelData } = useCurriculumStore();
   const navigate = useNavigate();
+    const { currentLesson, setCurrentLesson } = useLessonStore();
 
   useEffect(() => {
     if (isLoaded) {
@@ -103,7 +104,7 @@ const Assessments = () => {
       // payload: cleanPayload(payload),
       api: "subject/assessmentPlan",
       setStatusMessage,
-      setShowPlan: setShowAssessmentPlan,
+      setShowPlan: setCurrentLesson,
       setData,
       navigate,
       setLoading
@@ -120,10 +121,11 @@ const Assessments = () => {
     <>
       <ScrollAnimate scrollRef={scrollRef} />
       <ContainerPlan
-        showPanel={showAssessmentPlan}
+        showPanel={currentLesson}
       >
         <PlanCard title="Subject Assessments"
           ref={scrollRef}
+          isOpen={false}
           className="relative h-[90vh] overflow-y-scroll">
           <ScrollArea
           >
@@ -580,11 +582,12 @@ const Assessments = () => {
           </ScrollArea>
         </PlanCard>
         <PlanCard
+          isOpen={currentLesson}
           ref={chatbotRef}
           title="Ai Assistant"
           className={`transition-opacity duration-700 ease-in-out
                     max-h-screen
-                     ${showAssessmentPlan ? "opacity-100" : "opacity-0"
+                     ${currentLesson ? "opacity-100" : "opacity-0"
             }`}>
           <Chatbot chats={data} />
         </PlanCard>

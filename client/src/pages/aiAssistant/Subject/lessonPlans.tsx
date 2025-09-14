@@ -4,17 +4,20 @@ import CustomInputField from "@/components/CustomFields/CustomInputField";
 import CustomRadioButton from "@/components/CustomFields/CustomRadioButton";
 import CustomSelectField from "@/components/CustomFields/CustomSelectField";
 import CustomTextArea from "@/components/CustomFields/CustomTextArea";
-import { Container, ContainerPlan, Grid, Heading, Row, SubmitButton } from "@/components/GenralComponents";
+import { Container, Grid, Heading, Row, SubmitButton } from "@/components/GenralComponents";
 import PlanCard from "@/components/planCard";
+import ResizableScrollable from "@/components/ResizableScrollable";
 import ScrollAnimate from "@/components/scrollAnimate";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { allCities, allCountryNames, assesmentWeightLists, bloomTaxonomyLevel, classSizes, cognitiveProcessingTime, communicationMethod, curriculumTypes, iepPlan, mcqsQuestions, medicalEmergencyProtocol, mobility, nationalTestList, securityLevel, senDifferentiation, sensoryConsideration, settings, socialInteraction, studentConduct_KPI, subjectLists, supportProvided, teachingAids, termOptions, timeOptions, totalNumberofQuestionsAsString, typesofQuestions, weekList, yearClasses } from "@/constants/lessonPlanConstant";
 import { useOnError } from "@/hooks/useOnError";
 import { lessonPlanForm, type lessonPlanFormSchema } from "@/schema/schema.schema";
 import { useCurriculumStore } from "@/store/curriculumStore";
+import { useLessonStore } from "@/store/lessonStore";
 import { useProjectTaskFacilitationStore } from "@/store/projectTaskFacilitationStore";
 import { useRatingStore } from "@/store/ratingStore";
 import { onSubmitFn } from "@/utils/onSubmit";
+import { resetPlanValues } from "@/utils/resetPlanValues";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
@@ -33,25 +36,28 @@ export default function LessonPlan() {
     }
   });
 
-
   const [data, setData] = useState<string | null>("");
   const [loading, setLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
-  const [showLessonPlan, setShowLessonPlan] = useState(false);
   const chatbotRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef(null);
 
   const { isLoaded, data: excelData } = useCurriculumStore();
-  const { handleCities, cities, handleYearClass, handleTerm, handleCurriculum,
+  const { handleCities, cities, handleYearClass, handleTerm, handleCurriculum, editButton,
     setCurriculumEntry, handleSubjectDicipline, setOtherTeachingAids, handleOutput } = useProjectTaskFacilitationStore();
   const { setIsOpen } = useRatingStore();
+  const { currentLesson, setCurrentLesson } = useLessonStore();
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   useEffect(() => {
     if (isLoaded) {
       setCurriculumEntry(excelData, isLoaded);
     }
   }, [isLoaded, excelData]);
+
+  useEffect(()=>{
+    setCurrentLesson(false);
+  },[])
 
   useEffect(() => {
     handleCurriculum(form);
@@ -63,10 +69,14 @@ export default function LessonPlan() {
     setOtherTeachingAids(form);
   }, [form.watch("teachingAids")])
 
+  useEffect(() => {
+
+  }, [editButton]); // depend on .current, not the object
+
   const onSubmit = async (data: lessonPlanFormSchema) => {
-    setData("");
+    setData(``);
     if (handleOutput(form)) {
-      setShowLessonPlan(true);
+      setCurrentLesson(true);
       setData(`
         Scaffolded SUBJECT UNIT/TOPIC: No new topic. This is a TESTS year. Learners engage in review, reflection, and consolidation of prior knowledge in preparation for the TESTS assessment. No new topic is introduced.
         `);
@@ -77,23 +87,26 @@ export default function LessonPlan() {
       api: "subject/lessonPlan",
       setStatusMessage,
       navigate,
-      setShowPlan: setShowLessonPlan,
+      setShowPlan: setCurrentLesson,
       setData, setLoading
     });
     setIsOpen(true);
-    // form.reset(resetPlanValues(lessonPlanForm))
+    form.reset(resetPlanValues(lessonPlanForm))
   };
 
   return (
     <>
+      {/* <DrawerLayout onTriggerName="Generate Lesson Plan" headerName="Subject" /> */}
       <ScrollAnimate scrollRef={scrollRef} />
-      <ContainerPlan
-        showPanel={showLessonPlan}
-      >
-        <PlanCard title="Subject Lesson Plan"
-          ref={scrollRef}
-          className="relative h-[90vh] overflow-y-scroll">
-          <ScrollArea>
+      <ResizableScrollable
+        isOpen={currentLesson}
+        leftChildren={
+          <PlanCard title="Subject Lesson Plan"
+            ref={scrollRef}
+            // isOpen={false}
+            className="relative max-h-[100vh] overflow-y-scroll"
+          >
+            {/* <ScrollArea className="relative h-[95vh]"> */}
             <FormProvider {...form}>
               <form onSubmit={form.handleSubmit(onSubmit, useOnError())}
                 className="flex flex-col gap-8 mx-3">
@@ -564,20 +577,27 @@ export default function LessonPlan() {
                 />
               </form>
             </FormProvider>
-          </ScrollArea>
-        </PlanCard >
-        <PlanCard
-          ref={chatbotRef}
-          title="Ai Assistant"
-          className={`transition-opacity duration-700 ease-in-out
-            max-h-screen mt-4 flex flex-col gap-4
-             ${showLessonPlan ? "opacity-100" : "opacity-0"
-            }`}>
-          <Chatbot chats={data}
-          />
-
-        </PlanCard>
-      </ContainerPlan >
+            {/* </ScrollArea> */}
+          </PlanCard >
+        }
+        RightChildren={
+          <PlanCard
+            ref={chatbotRef}
+            // isOpen={currentLesson}
+            title="Ai Assistant"
+            planTitle={"Subject Lesson Plan"}
+            className={`transition-opacity duration-700 ease-in-out
+          max-h-screen mt-4 flex flex-col gap-4
+           ${currentLesson ? "opacity-100" : "opacity-0"
+              }`}
+          >
+            <ScrollArea className="h-[75vh]">
+              <Chatbot chats={data} />
+            </ScrollArea>
+          </PlanCard>
+        }
+      />
+      {/* </ContainerPlan> */}
     </>
   );
 }

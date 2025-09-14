@@ -19,7 +19,7 @@ export interface ISidebarLinkProps {
 export interface SidebarStore extends React.HTMLAttributes<HTMLDivElement> {
   isOpen: boolean;
   sidebarRef: RefObject<HTMLButtonElement> | null;
-   isMobile: boolean;
+  isMobile: boolean;
   setSidebarRef: (ref: HTMLButtonElement) => void;
   toggleSidebar: () => void;
 }
@@ -105,4 +105,11 @@ export type FAQ = {
   heading: string
   description: string
   category: string
+}
+
+
+export type IResizableScrollable = {
+  leftChildren: ReactNode;
+  RightChildren: ReactNode;
+  isOpen: boolean;
 }

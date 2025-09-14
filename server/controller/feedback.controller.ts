@@ -7,10 +7,6 @@ export async function insertFeedback(req: Request, res: Response): Promise<void>
     await connectMongo();
 
     const {
-      subject,
-      yearClassLevel,
-      role,
-      country,
       followUp,
       email,
       sectionReferringTo,
@@ -46,10 +42,6 @@ export async function insertFeedback(req: Request, res: Response): Promise<void>
       })) || [];
 
     const feedback = await FeedbackModel.create({
-      subject,
-      yearClassLevel,
-      role,
-      country,
       followUp: followUp === "true" || followUp === true,
       email: email || null,
       sectionReferringTo,

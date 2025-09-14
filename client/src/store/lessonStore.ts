@@ -1,14 +1,15 @@
-import type { LessonPlanData } from "@/types";
 import { create } from "zustand"
 
 interface LessonStore {
-  currentLesson: LessonPlanData | null
-  setCurrentLesson: (lesson: LessonPlanData) => void;
-  clearCurrentLesson: () => void
+  currentLesson: boolean
+  setCurrentLesson: (lesson: boolean) => void
+  planData: string
+  setPlanData: (data: string) => void
 }
 
 export const useLessonStore = create<LessonStore>((set) => ({
-  currentLesson: null,
+  currentLesson: false,
+  planData: "",
+  setPlanData: (data) => set({ planData: data }),
   setCurrentLesson: (lesson) => set({ currentLesson: lesson }),
-  clearCurrentLesson: () => set({ currentLesson: null }),
 }))

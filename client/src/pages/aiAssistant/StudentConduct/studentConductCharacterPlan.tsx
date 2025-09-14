@@ -12,6 +12,7 @@ import { allCities, allCountryNames, assesmentWeightLists, bloomTaxonomyLevel, c
 import { KPIList } from "@/constants/studentConductCharacterPlanConstant";
 import { useOnError } from "@/hooks/useOnError";
 import { studentConductCharacterPlanSchema, type IStudentConductCharacterPlan } from "@/schema/studentConductCharater.schema";
+import { useLessonStore } from "@/store/lessonStore";
 import { useProjectTaskFacilitationStore } from "@/store/projectTaskFacilitationStore";
 import { onSubmitFn } from "@/utils/onSubmit";
 import { resetPlanValues } from "@/utils/resetPlanValues";
@@ -23,7 +24,6 @@ import { toast } from "sonner";
 
 export default function StudentConductCharacterPlan() {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [showChatbot, setShowChatbot] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const chatbotRef = useRef<HTMLDivElement>(null);
@@ -40,6 +40,8 @@ export default function StudentConductCharacterPlan() {
   });
   const { handleCities, cities, handleYearClass, handleTerm, setOtherTeachingAids } = useProjectTaskFacilitationStore();
   const navigate = useNavigate();
+  const { currentLesson, setCurrentLesson } = useLessonStore();
+
 
   const onSubmit = async (data: IStudentConductCharacterPlan) => {
     console.log("Form Data:IStudentConductCharacterPlan", data);
@@ -48,7 +50,7 @@ export default function StudentConductCharacterPlan() {
       payload: data,
       api: "student/ConductCharacter",
       setStatusMessage,
-      setShowPlan: setShowChatbot,
+      setShowPlan: setCurrentLesson,
       setData,
       navigate,
       setLoading
@@ -69,9 +71,10 @@ export default function StudentConductCharacterPlan() {
     <>
       <ScrollAnimate scrollRef={scrollRef} />
       <ContainerPlan
-        showPanel={showChatbot}
+        showPanel={currentLesson}
       >
         <PlanCard title="Student Conduct and Character Lesson Plan"
+          // isOpen={false}
           ref={scrollRef}
           className="relative h-[90vh] overflow-y-scroll">
           <ScrollArea>
@@ -499,11 +502,12 @@ export default function StudentConductCharacterPlan() {
           </ScrollArea>
         </PlanCard>
         <PlanCard
+          // isOpen={false}
           ref={chatbotRef}
           title="Ai Assistant"
           className={`transition-opacity duration-700 ease-in-out
                             max-h-screen
-                             ${showChatbot ? "opacity-100" : "opacity-0"
+                             ${currentLesson ? "opacity-100" : "opacity-0"
             }`}>
           <Chatbot chats={data} />
         </PlanCard>

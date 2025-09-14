@@ -1,5 +1,6 @@
 import { allCities, juniorSecondarySchool, nurserySchool, primartSchool, secondarySchool, seniorSecondarySchool, studentAge, subjectLists, tertiarySchool, yearClassMappings } from "@/constants/lessonPlanConstant";
 import type { CurriculumEntry } from "@/types";
+import { createRef, type RefObject } from "react";
 import type { UseFormReturn } from "react-hook-form";
 import { create } from "zustand";
 
@@ -17,12 +18,20 @@ interface IProjectTaskFacilitation {
   setCurriculumEntry: (excelData: CurriculumEntry[], isLoaded: boolean) => void;
   setOtherTeachingAids: (form: UseFormReturn<any>) => void;
   handleOutput: (form: UseFormReturn<any>) => boolean
+  isEditClicked: boolean;
+  editButton: () => boolean; // returns the updated state
 }
-export const useProjectTaskFacilitationStore = create<IProjectTaskFacilitation>((set) => ({
+export const useProjectTaskFacilitationStore = create<IProjectTaskFacilitation>((set, get) => ({
   cities: [],
   isCurriculumLoaded: false,
   CurriculumEntry: [],
-
+  isEditClicked: false,
+  editButton: () => {
+    const newState = get().isEditClicked; // toggle true/false
+    set({ isEditClicked: newState });
+    console.log('new state', newState)
+    return newState;
+  },
   handleOutput: (form: UseFormReturn) => {
     const yearClass = form.watch("yearClass");
     if (yearClass === "Nursery 3/Kindergarten 3" ||

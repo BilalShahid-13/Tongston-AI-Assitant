@@ -94,7 +94,7 @@ export default function LessonPage() {
         className="text-white font-medium"
       />
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 modal">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -118,7 +118,7 @@ export default function LessonPage() {
           </div>
 
           {/* Lesson Plan Content */}
-          <div className="bg-white dark:bg-zinc-800 rounded-lg shadow-lg">
+          <div className="bg-white dark:bg-zinc-800 rounded-lg shadow-lg ">
             {/* Title Header */}
             <div className="bg-gradient-to-r from-[var(--k12-primary)] via-[var(--k12-secondary)]
              to-[#ff8c00] text-white p-6">

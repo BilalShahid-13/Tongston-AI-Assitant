@@ -14,7 +14,7 @@ export default function AIAssistant({ chats }: { chats: string | null }) {
     <div
       ref={chatRef}
       className="flex flex-col border rounded-lg bg-card shadow-sm
-      max-h-[75vh] overflow-y-scroll p-4">
+       p-4">
       {/* <p>{chats}</p> */}
       {/* <Markdown>{String(chats)}</Markdown> */}
       <DownloadMarkdown>{String(chats)}</DownloadMarkdown>

@@ -189,23 +189,52 @@ code {
   @apply text-red-500;
 }
 
-
-
 /* lessonPage.css */
 .protected-content {
-  user-select: none;           /* disable copy */
+  user-select: none; /* disable copy */
   -webkit-user-drag: none;
 }
 
+/* Modal base */
+.modal {
+  user-select: none; /* disable text selection */
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  position: relative;
+  /* existing modal styles... */
+}
+
+/* Prevent text highlighting on touch/drag */
+.modal * {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Hide modal content in print, show a short notice instead */
 @media print {
-  .protected-content {
+  /* hide everything in modal */
+  .modal,
+  .modal * {
     display: none !important;
+    visibility: hidden !important;
   }
-  .print-blocked {
+
+  /* show only the print-notice (put it outside .modal or absolutely positioned) */
+  .print-notice {
     display: block !important;
-    text-align: center;
+    visibility: visible !important;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
     padding: 2rem;
-    font-size: 1.25rem;
-    color: red;
+    font-size: 1.2rem;
+    background: #fff;
+    color: #000;
+    z-index: 2147483647;
   }
+}
+
+/* Hide the print notice during screen (default hidden) */
+.print-notice {
+  display: none;
 }

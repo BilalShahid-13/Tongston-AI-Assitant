@@ -19,25 +19,15 @@ import { FileUploader } from "@/components/fileUploader"
 import { Container, Grid, Row } from "@/components/GenralComponents"
 import PlanCard from "@/components/planCard"
 
+import BreadCrumb from "@/components/breadcrumb"
 import CustomCheckBox from "@/components/CustomFields/CustomCheckBox"
-import { allCountryNames, subjectLists, yearClasses } from "@/constants/lessonPlanConstant"
 import { backendApi } from "@/lib/constant"
 import { feedbackSchema, type IFeedbackSchema } from "@/schema/feedback.schema"; // Removed 'type' keyword
 import { toast } from "sonner"
-import BreadCrumb from "@/components/breadcrumb"
 const useOnError = () => (errors: any) => {
   console.error("Form errors:", errors)
   toast.error("Please correct the errors in the form.")
 }
-const roles = [
-  "Teacher",
-  "Educational Service Provider (e.g., Education Consultant, Ed Tech Provider)",
-  "School Administrator / Vice Principal / Principal / Head Teacher",
-  "Government Personnel",
-  "Parent/Guardian",
-  "Other",
-]
-
 const sectionOptions = [
   "Lesson plan marking & report generator",
   "Subject lesson plan & notes generator",
@@ -112,10 +102,6 @@ export default function FeedbackForm() {
   const methods = useForm<IFeedbackSchema>({
     resolver: zodResolver(feedbackSchema),
     defaultValues: {
-      subject: "",
-      yearClassLevel: "",
-      role: "",
-      country: "",
       followUp: false,
       email: "",
       sectionReferringTo: "",
@@ -142,7 +128,7 @@ export default function FeedbackForm() {
     reset,
   } = methods
 
-  const [currentStep, setCurrentStep] = useState(1)
+  const [currentStep, setCurrentStep] = useState(2)
   const [isPending, startTransition] = useTransition()
 
   const feedbackCategory = watch("feedbackCategory")
@@ -224,7 +210,7 @@ export default function FeedbackForm() {
   const handleNextStep = async () => {
     let isValid = false
     if (currentStep === 1) {
-      isValid = await trigger(["subject", "yearClassLevel", "role", "country", "email"])
+      // isValid = await trigger(["subject", "yearClassLevel", "role", "country", "email"])
     } else if (currentStep === 2) {
       isValid = await trigger("sectionReferringTo")
     } else if (currentStep === 3) {
@@ -253,86 +239,6 @@ export default function FeedbackForm() {
               <Row gaps="lg" >
                 {/* Step 1: About You */}
                 <AnimatePresence mode="wait">
-                  {currentStep === 1 && (
-                    <FormSection key="step1"
-                      title="Step 1: Tell us a bit about you">
-                      <Grid>
-                        <CustomSelectField<IFeedbackSchema>
-                          form={methods}
-                          className="w-full"
-                          fieldName="Subject you teach"
-                          placeholder="Select a subject"
-                          name="subject"
-                          list={subjectLists.map((item) => item.subject)}
-                          isRequired
-                        />
-
-                        <CustomSelectField<IFeedbackSchema>
-                          form={methods}
-                          className="w-full"
-                          fieldName="Year/Class Level"
-                          placeholder="Select level"
-                          name="yearClassLevel"
-                          list={yearClasses}
-                          isRequired
-                        />
-
-                        <CustomSelectField<IFeedbackSchema>
-                          form={methods}
-                          className="max-w-lg"
-                          fieldName="Role"
-                          placeholder="Select your role"
-                          name="role"
-                          list={roles}
-                          isRequired
-                        />
-
-                        <CustomSelectField<IFeedbackSchema>
-                          form={methods}
-                          className="w-full"
-                          fieldName="Country / Location"
-                          placeholder="Select your country"
-                          name="country"
-                          list={allCountryNames}
-                          isRequired
-                        />
-                      </Grid>
-
-                      {/* <div className="flex items-center space-x-2 mt-4">
-                        <Checkbox
-                          id="followUp"
-                          checked={followUp}
-                          onCheckedChange={(checked) => {
-                            setValue("followUp", !!checked)
-                            if (!checked) setValue("email", "") // Clear email if unchecked
-                            trigger("email") // Re-validate email field
-                          }}
-                        />
-                        <Label htmlFor="followUp">Would you like us to follow up with you?</Label>
-                      </div> */}
-                      <AnimatePresence>
-                        {methods.watch("followUp") && (
-                          <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.2 }}
-                            className="overflow-hidden"
-                          >
-                            <CustomInputField<IFeedbackSchema>
-                              form={methods}
-                              fieldName="Email"
-                              placeholder="your@email.com"
-                              name="email"
-                              isDisabled={false}
-                              isRequired
-                            />
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </FormSection>
-                  )}
-
                   {/* Step 2: Which section are you referring to? */}
                   {currentStep === 2 && (
                     <FormSection key="step2" title="Step 2: Which section are you referring to?">
@@ -485,6 +391,11 @@ export default function FeedbackForm() {
                             name="issueDescription"
                             isRequired
                           />
+
+                        {/* <CustomInputField
+                        form={methods}
+                        name="url"
+                        /> */}
 
                           <FileUploader
                             form={methods}
