@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; // adjust to your path
-import { useAnalyticsStore } from "@/store/analyticsStore";
 import { motion, useSpring } from "framer-motion";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import * as React from "react";
@@ -58,7 +57,6 @@ export function StatsCard({
   children,
 }: StatsCardProps) {
   const v = VARIANTS[variant];
-  const { analyticsData } = useAnalyticsStore()
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
