@@ -14,7 +14,7 @@ import axios from "axios"
 import { BookOpen, ClipboardCheck, Download, FileText, Filter, FolderOpen, Settings, User, Users } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Bar, BarChart, CartesianGrid, Cell, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
-import { Loader } from "./Loader"
+import { Loader } from "../../components/Loader"
 
 // Plan type mappings
 const PLAN_TYPE_MAPPING = {
@@ -384,7 +384,8 @@ export default function FilteredDashboard() {
   }
 
   const getTotalSubjectLessonPlans = () => {
-    return getTotalByPlanType("subjectLessonPlan")
+    return getTotalByPlanType("
+    ")
   }
 
   const getTotalConductLessonPlans = () => {

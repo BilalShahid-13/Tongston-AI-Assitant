@@ -113,3 +113,34 @@ export type IResizableScrollable = {
   RightChildren: ReactNode;
   isOpen: boolean;
 }
+
+// analytics
+
+// lib/types-and-constants.ts
+import {
+  BookOpen, Notebook, ClipboardCheck, ShieldCheck, Hammer, ListChecks, FileSpreadsheet,
+  GraduationCap, Tags, CalendarDays, Tag, Layers, Blocks, BookA, Users, Workflow
+} from 'lucide-react';
+
+export type Level = 'Nursery' | 'Primary' | 'Secondary' | 'University';
+export type TopTab = 'Lesson Plan' | 'Lesson Notes' | 'Assessments';
+
+
+interface User {
+  _id: string
+  username: string
+  subject: string
+  role: string
+}
+
+export interface AnalyticsItem {
+  _id: string
+  userId: User
+  fields: string[]
+  answer: string
+  plan: string
+  metaData: string
+  createdAt: string
+  updatedAt: string
+  __v: number
+}

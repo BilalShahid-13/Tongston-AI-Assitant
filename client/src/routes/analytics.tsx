@@ -1,4 +1,4 @@
-import AnalyticsDashboard from '@/components/dashboard'
+import AnalyticsDashboard from '@/pages/analytics/dashboard'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/analytics')({

@@ -1,0 +1,272 @@
+import { BarChartCustom } from "@/components/charts/BarChartCustom"
+import { LineChartCustom } from "@/components/charts/LineChartCustom"
+import { StackedBarChart } from "@/components/charts/StackedBarChart"
+import { Grid } from "@/components/GenralComponents"
+import { GlobalFiltersBar } from "@/components/GlobalFiltersBar"
+import { Loader } from "@/components/Loader"
+import { TimeFilterDropdown } from "@/components/TimeFilterDropdown"
+import { backendApi } from "@/lib/constant"
+import { useAnalyticsStore } from "@/store/analyticsStore"
+import { transformAnalyticsData } from "@/utils/analyticsTransform"
+import { filterByTimeRange } from "@/utils/filterByTimeRange"
+import { useQuery } from "@tanstack/react-query"
+import axios from "axios"
+import { BookOpen, ClipboardCheck, User, Users } from "lucide-react"
+import AnalyticsFilter from "./analyticsFilter"
+import { StatsCard } from "./StatsCard"
+
+export default function Dashboard() {
+  const { activeFilters, setAnalyticsData, getTotalTeachers, filters,
+    getTotalByPlanType, timeFilters, setTimeFilter } = useAnalyticsStore()
+
+  async function fetchAnalyticsData() {
+    const { data } = await axios.get(`${backendApi}/api/getPlanFiles`)
+    setAnalyticsData(data.data);
+    return data.data;
+  }
+
+  const { data: analyticsData = [], isLoading, error } = useQuery({
+    queryKey: ["analyticsData"],
+    queryFn: fetchAnalyticsData,
+  })
+
+  // ✅ Filtering logic
+  // const filteredData =
+  //   activeFilters.length > 0
+  //     ? analyticsData.filter((item: any) => {
+  //       // ✅ Match by plan type
+  //       const matchPlan = activeFilters.includes(item.plan)
+
+  //       // ✅ Match by dropdown values inside fields (like "Personal Development")
+  //       const matchField = item.fields?.some((field: string) =>
+  //         activeFilters.includes(field)
+  //       )
+
+  //       return matchPlan || matchField
+  //     })
+  //     : analyticsData
+
+  // ✅ Apply global filters along with activeFilters and time range
+  const filteredData = analyticsData.filter((item: any) => {
+    const matchPlanOrField =
+      activeFilters.length === 0 ||
+      activeFilters.includes(item.plan) ||
+      item.fields?.some((field: string) => activeFilters.includes(field));
+
+    // Extract country, discipline, subject, schoolLevel from fields
+    const itemCountry = item.fields?.[0] || "";
+    const itemDiscipline = item.fields?.[12] || ""; // based on your data mapping
+    const itemSubject = item.fields?.[11] || "";
+    const itemSchoolLevel = item.fields?.[4] || "";
+
+    const matchCountry = !filters.country || itemCountry === filters.country;
+    const matchDiscipline = !filters.discipline || itemDiscipline === filters.discipline;
+    const matchSubject = !filters.subject || itemSubject === filters.subject;
+    const matchSchoolLevel = !filters.schoolLevel || itemSchoolLevel === filters.schoolLevel;
+
+    return matchPlanOrField && matchCountry && matchDiscipline && matchSubject && matchSchoolLevel;
+  });
+
+
+
+
+  console.log('filteredData', filteredData)
+
+  if (isLoading) {
+    return <Loader />
+  }
+
+  if (error) {
+    return <p className="text-center text-red-500">Error loading analytics</p>
+  }
+
+  const {
+    lessonPlansBySubject,
+    lessonPlansByDiscipline,
+    lessonPlansBySchoolLevel,
+    assessmentsBySubject,
+    trendOverTime,
+  } = transformAnalyticsData(filteredData)
+  // } = transformAnalyticsData(analyticsData)
+
+  return (
+    <div className="flex flex-col gap-4 mt-4 w-full">
+      <GlobalFiltersBar />
+      <AnalyticsFilter />
+      {/* cards */}
+      <div className="p-3">
+        <Grid columns={3}>
+          {/* Total Teachers */}
+          <StatsCard
+            title="Total Teachers"
+            value={getTotalTeachers(
+              filterByTimeRange(filteredData, timeFilters.totalTeachers)
+            ).toString()}
+            description="Unique teachers contributing lesson plans and assessments"
+            icon={Users}
+            variant="amber"
+          >
+            <TimeFilterDropdown
+              value={timeFilters.totalTeachers}
+              onChange={(val) => setTimeFilter("totalTeachers", val)}
+            />
+          </StatsCard>
+
+          {/* Total Subject Assessments */}
+          <StatsCard
+            title="Total Subject Assessments"
+            value={getTotalByPlanType(
+              "subjectAssessmentPlan",
+              filterByTimeRange(filteredData, timeFilters.subjectAssessments)
+            ).toString()}
+            description="Number of subject-based assessments created"
+            icon={ClipboardCheck}
+            variant="blue"
+          >
+            <TimeFilterDropdown
+              value={timeFilters.subjectAssessments}
+              onChange={(val) => setTimeFilter("subjectAssessments", val)}
+            />
+          </StatsCard>
+
+          {/* Total Subject Lesson Plans */}
+          <StatsCard
+            title="Total Subject Lesson Plans"
+            value={getTotalByPlanType(
+              "subjectLessonPlan",
+              filterByTimeRange(filteredData, timeFilters.subjectLessonPlans)
+            ).toString()}
+            description="Lesson plans prepared for different subjects"
+            icon={BookOpen}
+            variant="emerald"
+          >
+            <TimeFilterDropdown
+              value={timeFilters.subjectLessonPlans}
+              onChange={(val) => setTimeFilter("subjectLessonPlans", val)}
+            />
+          </StatsCard>
+
+          {/* Conduct & Character Lesson Plans */}
+          <StatsCard
+            title="Conduct & Character Lesson Plans"
+            value={getTotalByPlanType(
+              "studentConductCharacterPlan",
+              filterByTimeRange(filteredData, timeFilters.conductLessonPlans)
+            ).toString()}
+            description="Plans designed to guide student conduct and character development"
+            icon={User}
+            variant="rose"
+          >
+            <TimeFilterDropdown
+              value={timeFilters.conductLessonPlans}
+              onChange={(val) => setTimeFilter("conductLessonPlans", val)}
+            />
+          </StatsCard>
+
+          {/* Conduct & Character Assessments */}
+          <StatsCard
+            title="Conduct & Character Assessments"
+            value={getTotalByPlanType(
+              "studentConductCharacterAssessmentPlan",
+              filterByTimeRange(filteredData, timeFilters.conductAssessments)
+            ).toString()}
+            description="Assessments evaluating student conduct and character"
+            icon={ClipboardCheck}
+            variant="slate"
+          >
+            <TimeFilterDropdown
+              value={timeFilters.conductAssessments}
+              onChange={(val) => setTimeFilter("conductAssessments", val)}
+            />
+          </StatsCard>
+
+          {/* Project (Tasks) */}
+          <StatsCard
+            title="Project (Tasks)"
+            value={getTotalByPlanType(
+              "projectTaskPlan",
+              filterByTimeRange(filteredData, timeFilters.projectTasks)
+            ).toString()}
+            description="Task-oriented project plans created by teachers"
+            icon={ClipboardCheck}
+            variant="violet"
+          >
+            <TimeFilterDropdown
+              value={timeFilters.projectTasks}
+              onChange={(val) => setTimeFilter("projectTasks", val)}
+            />
+          </StatsCard>
+
+          {/* Project Facilitation Plans */}
+          <StatsCard
+            title="Project Facilitation Plans"
+            value={getTotalByPlanType(
+              "projectTaskFacilitationPlan",
+              filterByTimeRange(filteredData, timeFilters.projectFacilitation)
+            ).toString()}
+            description="Plans focused on facilitating and managing project tasks"
+            icon={ClipboardCheck}
+            variant="amber"
+          >
+            <TimeFilterDropdown
+              value={timeFilters.projectFacilitation}
+              onChange={(val) => setTimeFilter("projectFacilitation", val)}
+            />
+          </StatsCard>
+        </Grid>
+
+      </div>
+      {/* charts */}
+      <div>
+        <Grid columns={2}>
+          <BarChartCustom
+            title="Lesson Plans by Subject"
+            data={lessonPlansBySubject}
+            xKey="subject"
+            yKey="count"
+            color="#10b981" // Tailwind green-500
+          />
+
+          <BarChartCustom
+            title="Lesson Plans by Discipline"
+            data={lessonPlansByDiscipline}
+            xKey="discipline"
+            yKey="count"
+            color="#f59e0b" // Tailwind amber-500
+          />
+
+          <StackedBarChart
+            title="Lesson Plans by School Level"
+            data={lessonPlansBySchoolLevel}
+            xKey="level"
+            stacks={[
+              { key: "Nursery", color: "#f59e0b" },
+              { key: "Primary", color: "#3b82f6" },
+              { key: "Secondary", color: "#ef4444" },
+            ]}
+          />
+
+          <BarChartCustom
+            title="Assessments by Subject"
+            data={assessmentsBySubject}
+            xKey="subject"
+            yKey="count"
+            color="#6366f1" // Tailwind indigo-500
+          />
+
+          <LineChartCustom
+            title="Lesson Plans vs Assessments (Last 12 Weeks)"
+            data={trendOverTime}
+            xKey="week"
+            lines={[
+              { key: "lessonPlans", color: "#10b981" },
+              { key: "assessments", color: "#6366f1" },
+            ]}
+          />
+        </Grid>
+
+      </div>
+
+    </div>
+  )
+}

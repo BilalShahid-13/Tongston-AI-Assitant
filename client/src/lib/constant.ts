@@ -1,4 +1,5 @@
 import AiAssitstant from "@/components/welcome/aiAssistantHeader";
+import { subjectLists, weekList, yearClasses } from "@/constants/lessonPlanConstant";
 import ProjectTask from "@/pages/aiAssistant/Project/projectTask";
 import ProjectTaskFacilitation from "@/pages/aiAssistant/Project/projectTaskFacilitation";
 import ReportGenerator from "@/pages/aiAssistant/reportGenerator";
@@ -6,10 +7,13 @@ import StudentConductCharacterAssessment from "@/pages/aiAssistant/StudentConduc
 import StudentConductCharacterPlan from "@/pages/aiAssistant/StudentConduct/studentConductCharacterPlan";
 import Assessments from "@/pages/aiAssistant/Subject/assessments";
 import LessonPlans from "@/pages/aiAssistant/Subject/lessonPlans";
-import type { FAQ, IWalkthroughSteps } from "@/types";
+import type { FAQ, IWalkthroughSteps, Level } from "@/types";
 import {
+  BookOpen,
   BookOpenText,
   Bot,
+  Calendar,
+  CalendarDays,
   ChartBar,
   CircleCheckBig,
   CircleHelp,
@@ -17,6 +21,7 @@ import {
   ClipboardList,
   FileText,
   Folder,
+  FolderOpen,
   Hammer,
   LayoutDashboard,
   MessageCircle,
@@ -24,6 +29,8 @@ import {
   Projector,
   ScrollText,
   Settings,
+  Tag,
+  User,
   UserCheck,
   UserCog,
   Users
@@ -581,3 +588,128 @@ export const mockFaqs: FAQ[] = [
 ]
 
 export type ApiType = typeof apisList[number]
+
+
+
+
+// analytics\
+
+export const FILTER_BUTTONS = [
+  {
+    key: "subjectLessonPlan",
+    label: "Subject Lesson Plans",
+    icon: BookOpen,
+    color: "from-[#ffb900] to-[#fe9a00]",
+  },
+  {
+    key: "subjectAssessmentPlan",
+    label: "Subject Assessments",
+    icon: ClipboardCheck,
+    color: "from-[#E04A2F] to-[#ff6b4a]",
+  },
+  {
+    key: "studentConductCharacterAssessmentPlan",
+    label: "Student Conduct & Character Assessments",
+    icon: Users,
+    color: "from-[#111111] to-[#333333]",
+  },
+  {
+    key: "projectTaskPlan",
+    label: "Project (Tasks)",
+    icon: FolderOpen,
+    color: "from-[#F5C242] to-[#ffd700]",
+  },
+  {
+    key: "projectTaskFacilitationPlan",
+    label: "Project (Tasks) Facilitation Plans",
+    icon: Settings,
+    color: "from-[#707070] to-[#909090]",
+  },
+  {
+    key: "studentConductCharacterPlan",
+    label: "Student Conduct & Character Lesson Plans",
+    icon: User,
+    color: "from-[#E04A2F] to-[#ff6b4a]",
+  },
+  {
+    key: "reportGenerator",
+    label: "Lesson Plan Marking & Reports",
+    icon: FileText,
+    color: "from-[#ffb900] to-[#fe9a00]",
+  },
+
+  // 🔽 Newly added items
+  {
+    key: "type",
+    label: "Type",
+    icon: Tag,
+    color: "from-[#fc4a1a] to-[#f7b733]",
+  },
+  {
+    key: "discipline",
+    label: "Discipline",
+    icon: ClipboardCheck,
+    color: "from-[#43e97b] to-[#38f9d7]",
+  },
+  {
+    key: "subjectUnitTopic",
+    label: "Subject Unit/Topic",
+    icon: FolderOpen,
+    color: "from-[#36d1dc] to-[#5b86e5]",
+  },
+  {
+    key: "studentConductCharacterUnitTopic",
+    label: "Student Conduct & Character Unit/Topic",
+    icon: User,
+    color: "from-[#b24592] to-[#f15f79]",
+  },
+  {
+    key: "task",
+    label: "Task",
+    icon: Settings,
+    color: "from-[#ff512f] to-[#dd2476]",
+  },
+  {
+    key: "subTask",
+    label: "Sub-Task",
+    icon: FileText,
+    color: "from-[#56ab2f] to-[#a8e063]",
+  },
+  {
+    key: "subject",
+    label: "Subject",
+    icon: BookOpen,
+    color: "from-[#4facfe] to-[#00f2fe]",
+    list: [subjectLists.map((item) => item.subject)].flat(),
+  },
+  {
+    key: "classYear",
+    label: "Class/Year",
+    icon: Users,
+    color: "from-[#ff6a00] to-[#ee0979]",
+    list: yearClasses
+  },
+
+  {
+    key: "week",
+    label: "Week",
+    icon: Calendar,
+    color: "from-[#8e2de2] to-[#4a00e0]",
+    list: weekList,
+  },
+  {
+    key: "term",
+    label: "Term",
+    icon: CalendarDays,
+    color: "from-[#11998e] to-[#38ef7d]",
+    list: ["Personal Development", "Professional Development", "Public Development"]
+  },
+
+];
+
+export const LEVEL_COLORS: Record<Level, string> = {
+  Nursery: '#F5C242',
+  Primary: '#E04A2F',
+  Secondary: '#111111',
+  University: '#707070',
+};
