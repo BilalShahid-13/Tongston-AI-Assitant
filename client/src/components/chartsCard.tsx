@@ -1,8 +1,7 @@
-import type React from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import type { JSX } from "react";
-import { ChartContainer } from "./ui/chart";
 import { ResponsiveContainer } from "recharts";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import { ChartContainer } from "./ui/chart";
 
 interface IChartsCard {
   title: string;

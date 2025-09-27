@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"; // adjust to your path
-import { useSubjectAssessmentStore } from "@/store/analytics/subjectAssessment";
 import type { Variant } from "@/types";
 import { motion, useSpring } from "framer-motion";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
