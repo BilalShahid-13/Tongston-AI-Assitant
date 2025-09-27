@@ -20,7 +20,7 @@ const userHistorySchema = new Schema<IHistory>(
       required: false,
     },
     fields: {
-      type: [String],
+      type: Object,
       required: false,
     },
     answer: {

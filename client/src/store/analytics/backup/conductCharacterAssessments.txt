@@ -1,0 +1,96 @@
+import { create } from "zustand";
+import type { IPlan } from "@/types";
+
+interface ConductCharacterAssessmentsState {
+  conductCharacterAssessmentsPlan: IPlan[];
+  filterConductCharacterAssessmentsPlan: IPlan[];
+
+  filterConductCharacterAssessmentsBySubject: string;
+  filterConductCharacterAssessmentsByClass: string;
+  filterConductCharacterAssessmentsByTerm: string;
+  country: string;
+  discipline: string;
+
+  setConductCharacterAssessmentsPlan: (plans: IPlan[]) => void;
+  setFilterConductCharacterAssessmentsBySubject: (subject: string) => void;
+  setFilterConductCharacterAssessmentsByClass: (classLevel: string) => void;
+  setFilterConductCharacterAssessmentsByTerm: (term: string) => void;
+  setCountry: (country: string) => void;
+  setDiscipline: (discipline: string) => void;
+  resetFilters: () => void;
+}
+
+export const useConductCharacterAssessmentsStore = create<ConductCharacterAssessmentsState>((set, get) => ({
+  conductCharacterAssessmentsPlan: [],
+  filterConductCharacterAssessmentsPlan: [],
+  filterConductCharacterAssessmentsBySubject: "",
+  filterConductCharacterAssessmentsByClass: "",
+  filterConductCharacterAssessmentsByTerm: "",
+  country: "",
+  discipline: "",
+
+  setConductCharacterAssessmentsPlan: (plans) =>
+    set({
+      conductCharacterAssessmentsPlan: plans,
+      filterConductCharacterAssessmentsPlan: plans,
+    }),
+
+  setFilterConductCharacterAssessmentsBySubject: (subject) => {
+    const filtered = get().conductCharacterAssessmentsPlan.filter(
+      (plan: any) => plan.fields?.subject === subject
+    );
+    set({
+      filterConductCharacterAssessmentsPlan: filtered,
+      filterConductCharacterAssessmentsBySubject: subject,
+    });
+  },
+
+  setFilterConductCharacterAssessmentsByClass: (classLevel) => {
+    const filtered = get().conductCharacterAssessmentsPlan.filter(
+      (plan: any) => plan.fields?.yearClass === classLevel
+    );
+    set({
+      filterConductCharacterAssessmentsPlan: filtered,
+      filterConductCharacterAssessmentsByClass: classLevel,
+    });
+  },
+
+  setFilterConductCharacterAssessmentsByTerm: (term) => {
+    const filtered = get().conductCharacterAssessmentsPlan.filter(
+      (plan: any) => plan.fields?.term === term
+    );
+    set({
+      filterConductCharacterAssessmentsPlan: filtered,
+      filterConductCharacterAssessmentsByTerm: term,
+    });
+  },
+
+  setCountry: (country: string) => {
+    const filtered = get().conductCharacterAssessmentsPlan.filter(
+      (plan: any) => plan.fields?.location === country
+    );
+    set({
+      filterConductCharacterAssessmentsPlan: filtered,
+      country,
+    });
+  },
+
+  setDiscipline: (discipline: string) => {
+    const filtered = get().conductCharacterAssessmentsPlan.filter(
+      (plan: any) => plan.fields?.subjectDiscipline.toLowerCase() === discipline.toLowerCase()
+    );
+    set({
+      filterConductCharacterAssessmentsPlan: filtered,
+      discipline,
+    });
+  },
+
+  resetFilters: () => {
+    set((state) => ({
+      filterConductCharacterAssessmentsPlan: state.conductCharacterAssessmentsPlan,
+      filterConductCharacterAssessmentsBySubject: "",
+      filterConductCharacterAssessmentsByClass: "",
+      filterConductCharacterAssessmentsByTerm: "",
+    }));
+  },
+}));

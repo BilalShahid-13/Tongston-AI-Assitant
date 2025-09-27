@@ -89,7 +89,7 @@ export async function planSimilaritySearch(
   try {
     const results = await vectorStore.similaritySearch(JSON.stringify(query), 10);
     const context = results.map((doc) => doc.pageContent).join("\n");
-    console.log('context', context)
+    // console.log('context', context)
     let fullResponse = "";
     const stream = await openai.chat.completions.create({
       model: "gpt-4o-mini",
@@ -114,11 +114,13 @@ export async function planSimilaritySearch(
       await connectMongo();
       const history = await History.create({
         userId: new mongoose.Types.ObjectId("689452b9af9c2c6ff5e178e9"),
-        fields: Array.isArray(query) ? query : Object.values(query).map(String),
+        fields: query,
+        // fields: Array.isArray(query) ? query : Object.values(query).map(String),
         answer: fullResponse,
         plan: planName,
         metaData: metaData
       });
+      console.log(history)
       if (history?.id) {
         // res.write(
         //   `\n[MONGO_DB_INSERT][FINAL_RESPONSE_START]${JSON.stringify({

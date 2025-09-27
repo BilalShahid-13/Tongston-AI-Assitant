@@ -1,0 +1,120 @@
+import { create } from "zustand";
+import type { IPlan } from "@/types";
+
+interface SubjectLessonState {
+  subjectLessonPlan: IPlan[];
+  filterSubjectLessonPlan: IPlan[];
+
+  filterSubjectLessonBySubject: string;
+  filterSubjectLessonByClass: string;
+  filterSubjectLessonByTerm: string;
+  country: string;
+  discipline: string;
+
+  setSubjectLessonPlan: (plans: IPlan[]) => void;
+  setFilterSubjectLessonBySubject: (subject: string) => void;
+  setFilterSubjectLessonByClass: (classLevel: string) => void;
+  setFilterSubjectLessonByTerm: (term: string) => void;
+  setCountry: (country: string) => void;
+  setDiscipline: (discipline: string) => void;
+  resetFilters: () => void;
+}
+
+const applyFilters = (get: () => SubjectLessonState, set: any) => {
+  const {
+    subjectLessonPlan,
+    filterSubjectLessonBySubject,
+    filterSubjectLessonByClass,
+    filterSubjectLessonByTerm,
+    country,
+    discipline,
+  } = get();
+
+  const filtered = subjectLessonPlan.filter((plan: any) => {
+    return (
+      (!filterSubjectLessonBySubject || plan.fields?.subject === filterSubjectLessonBySubject) &&
+      (!filterSubjectLessonByClass || plan.fields?.yearClass === filterSubjectLessonByClass) &&
+      (!filterSubjectLessonByTerm || plan.fields?.term === filterSubjectLessonByTerm) &&
+      (!country || plan.fields?.location === country) &&
+      (!discipline ||
+        plan.fields?.subjectDiscipline?.toLowerCase() === discipline.toLowerCase())
+    );
+  });
+
+  set({ filterSubjectLessonPlan: filtered });
+};
+
+export const useSubjectLessonStore = create<SubjectLessonState>((set, get) => ({
+  subjectLessonPlan: [],
+  filterSubjectLessonPlan: [],
+  filterSubjectLessonBySubject: "",
+  filterSubjectLessonByClass: "",
+  filterSubjectLessonByTerm: "",
+  country: "",
+  discipline: "",
+
+  setSubjectLessonPlan: (plans) =>
+    set({
+      subjectLessonPlan: plans,
+      filterSubjectLessonPlan: plans,
+    }),
+
+  setFilterSubjectLessonBySubject: (subject) => {
+    const filtered = get().subjectLessonPlan.filter(
+      (plan: any) => plan.fields?.subject === subject
+    );
+    set({
+      filterSubjectLessonPlan: filtered,
+      filterSubjectLessonBySubject: subject,
+    });
+  },
+
+  setFilterSubjectLessonByClass: (classLevel) => {
+    const filtered = get().subjectLessonPlan.filter(
+      (plan: any) => plan.fields?.yearClass === classLevel
+    );
+    set({
+      filterSubjectLessonPlan: filtered,
+      filterSubjectLessonByClass: classLevel,
+    });
+  },
+
+  setCountry: (country: string) => {
+    const filtered = get().subjectLessonPlan.filter(
+      (plan: any) => plan.fields?.location === country
+    );
+    set({
+      filterSubjectLessonPlan: filtered,
+      country,
+    });
+  },
+
+  setDiscipline: (discipline: string) => {
+    const filtered = get().subjectLessonPlan.filter(
+      (plan: any) => plan.fields?.subjectDiscipline.toLowerCase() == discipline.toLowerCase()
+    );
+    set({
+      filterSubjectLessonPlan: filtered,
+      discipline,
+    });
+  },
+
+  setFilterSubjectLessonByTerm: (term) => {
+    const filtered = get().subjectLessonPlan.filter(
+      (plan: any) => plan.fields?.term === term
+    );
+    set({
+      filterSubjectLessonPlan: filtered,
+      filterSubjectLessonByTerm: term,
+    });
+  },
+
+  resetFilters: () => {
+    set((state) => ({
+      filterSubjectLessonPlan: state.subjectLessonPlan,
+      filterSubjectLessonBySubject: "",
+      filterSubjectLessonByClass: "",
+      filterSubjectLessonByTerm: "",
+    }));
+  },
+}));

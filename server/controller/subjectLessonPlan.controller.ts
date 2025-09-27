@@ -26,7 +26,6 @@ export async function getSubjectLessonPlan(req: Request, res: Response): Promise
       "teachingAids"
     ];
 
-    console.log('lessonPlan', body)
     // ✅ Check missing fields BEFORE sending headers
     const missingFields = compulsoryFields.filter(field => {
       const value = body[field];
@@ -49,6 +48,8 @@ export async function getSubjectLessonPlan(req: Request, res: Response): Promise
 
     // await connectMongo();
     // ✅ Now start streaming
+    // console.log(body)
+    // res.end();
     await planSimilaritySearch(req, body, res, lessonPlanPrompt, "subjectLessonPlan", "Subject Lesson Plan");
 
   } catch (error: any) {

@@ -1,272 +1,504 @@
-import { BarChartCustom } from "@/components/charts/BarChartCustom"
-import { LineChartCustom } from "@/components/charts/LineChartCustom"
-import { StackedBarChart } from "@/components/charts/StackedBarChart"
-import { Grid } from "@/components/GenralComponents"
-import { GlobalFiltersBar } from "@/components/GlobalFiltersBar"
-import { Loader } from "@/components/Loader"
-import { TimeFilterDropdown } from "@/components/TimeFilterDropdown"
-import { backendApi } from "@/lib/constant"
-import { useAnalyticsStore } from "@/store/analyticsStore"
-import { transformAnalyticsData } from "@/utils/analyticsTransform"
-import { filterByTimeRange } from "@/utils/filterByTimeRange"
-import { useQuery } from "@tanstack/react-query"
-import axios from "axios"
-import { BookOpen, ClipboardCheck, User, Users } from "lucide-react"
-import AnalyticsFilter from "./analyticsFilter"
-import { StatsCard } from "./StatsCard"
+import AnalyticsCard from "@/components/analyticsCard";
+import { BarChartCustom } from "@/components/charts/BarChartCustom";
+import { Grid } from "@/components/GenralComponents";
+import GlobalFiltersBar, { SelectWithIcon } from "@/components/GlobalFiltersBar";
+import { Error, Loader } from "@/components/Loader";
+import { subjectLists, termList, yearClasses } from "@/constants/lessonPlanConstant";
+import { backendApi } from "@/lib/constant";
+import { useConductCharacterAssessmentsStore } from "@/store/analytics/conductCharacterAssessments";
+import { useConductCharacterLessonStore } from "@/store/analytics/conductCharacterLesson";
+import { useGlobalFiltersStore } from "@/store/analytics/globalFilters";
+import { useProjectFacilitationStore } from "@/store/analytics/projectFacilitation";
+import { useProjectTaskStore } from "@/store/analytics/projectTask";
+import { useSubjectAssessmentStore } from "@/store/analytics/subjectAssessment";
+import { useSubjectLessonStore } from "@/store/analytics/subjectLesson";
+import type { AnalyticsCardItem, IPlan, Variant } from "@/types";
+import { filterbyPlan, transformAnalyticsData } from "@/utils/analyticsTransform";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { BookOpen, ClipboardCheck, User, Users } from "lucide-react";
+import { StatsCard } from "./StatsCard";
+import { BarChartStacked } from "@/components/charts/BarChartStack";
+import { LineChartCustom } from "@/components/charts/LineChartCustom";
+
+
 
 export default function Dashboard() {
-  const { activeFilters, setAnalyticsData, getTotalTeachers, filters,
-    getTotalByPlanType, timeFilters, setTimeFilter } = useAnalyticsStore()
+  const { setSubjectAssessmentPlan, setFilterSubjectAssessmentBySubject,
+    subjectAssessmentPlan, filterGlobalSubjectAssessmentPlan,
+    setFilterSubjectAssessmentByClass, setFilterSubjectAssessmentByTerm,
+    filterSubjectAssessmentBySubject, filterSubjectAssessmentPlan,
+    filterSubjectAssessmentByClass, filterSubjectAssessmentByTerm, resetFilters: resetAssessmentFilter,
+  } = useSubjectAssessmentStore();
 
-  async function fetchAnalyticsData() {
-    const { data } = await axios.get(`${backendApi}/api/getPlanFiles`)
-    setAnalyticsData(data.data);
-    return data.data;
+  const { setSubjectLessonPlan, filterSubjectLessonPlan,
+    setFilterSubjectLessonByClass, setFilterSubjectLessonBySubject,
+    setFilterSubjectLessonByTerm, subjectLessonPlan,
+    filterSubjectLessonByClass, filterSubjectLessonBySubject,
+    filterGlobalSubjectLessonPlan,
+    filterSubjectLessonByTerm, resetFilters: resetLessonFilters
+  } = useSubjectLessonStore();
+
+
+  const {
+    conductCharacterLessonPlan,
+    filterGlobalConductCharacterPlan,
+    filterConductCharacterLessonPlan,
+    filterConductCharacterLessonBySubject,
+    filterConductCharacterLessonByClass,
+    filterConductCharacterLessonByTerm,
+    setFilterConductCharacterLessonBySubject,
+    setFilterConductCharacterLessonByClass,
+    setFilterConductCharacterLessonByTerm,
+    setConductCharacterLessonPlan,
+    resetFilters: resetConductCharacterFilters,
+  } = useConductCharacterLessonStore();
+
+  const {
+    conductCharacterAssessmentsPlan,
+    filterConductCharacterAssessmentsGlobalPlan,
+    filterConductCharacterAssessmentsPlan,
+    filterConductCharacterAssessmentsBySubject,
+    filterConductCharacterAssessmentsByClass,
+    filterConductCharacterAssessmentsByTerm,
+    setConductCharacterAssessmentsPlan,
+    setFilterConductCharacterAssessmentsBySubject,
+    setFilterConductCharacterAssessmentsByClass,
+    setFilterConductCharacterAssessmentsByTerm,
+    resetFilters: resetConductCharacterAssessmentFilters,
+  } = useConductCharacterAssessmentsStore();
+
+
+  const {
+    projectTaskPlan,
+    filterProjectTaskPlan,
+    filterGlobalProjectTaskPlan,
+    filterProjectTaskBySubject,
+    filterProjectTaskByClass,
+    filterProjectTaskByTerm,
+    setProjectTaskPlan,
+    setFilterProjectTaskBySubject,
+    setFilterProjectTaskByClass
+    , setFilterProjectTaskByTerm,
+    resetFilters: resetProjectTaskFilters,
+  } = useProjectTaskStore()
+
+  const {
+    projectFacilitationPlan,
+    filterProjectFacilitationPlan,
+    filterGlobalProjectFacilitationPlan,
+    filterProjectFacilitationBySubject,
+    filterProjectFacilitationByClass,
+    filterProjectFacilitationByTerm,
+    setProjectFacilitationPlan,
+    setFilterProjectFacilitationBySubject,
+    setFilterProjectFacilitationByClass,
+    setFilterProjectFacilitationByTerm,
+    resetFilters: resetProjectFacilitationFilters,
+  } = useProjectFacilitationStore();
+
+  const { isGlobalFilter } = useGlobalFiltersStore()
+
+  const {
+    chartData,
+    lessonPlansBySubject,
+    lessonPlansByDiscipline,
+    assessmentsBySubject,
+    trendOverTime, } = transformAnalyticsData(filterGlobalSubjectLessonPlan, filterGlobalSubjectAssessmentPlan)
+
+  function getTotalTeachers() {
+    // Combine all plans into one array
+    const allPlans = [
+      ...subjectLessonPlan,
+      ...subjectAssessmentPlan,
+      ...conductCharacterLessonPlan,
+      ...conductCharacterAssessmentsPlan,
+      ...projectTaskPlan,
+      ...projectFacilitationPlan,
+    ];
+    // Get unique teacher usernames
+    return new Set(allPlans.map((item) => item.userId?.username)).size;
   }
 
-  const { data: analyticsData = [], isLoading, error } = useQuery({
+  const analyticsCardList: AnalyticsCardItem[] = [
+    {
+      statsTitle: "Total Subject Assessments",
+      // statsValue: filterSubjectAssessmentPlan.length.toString(),
+      statsValue: filterbyPlan(isGlobalFilter, filterSubjectAssessmentPlan, filterGlobalSubjectAssessmentPlan),
+      statsDescription: "Number of subject-based assessments created",
+      Icon: ClipboardCheck,
+      variant: "blue" as Variant,
+      statsCardDialogTitle: "Filter Subject Assessments",
+      statsCardDialogLabel: "View Details",
+      onReset: resetAssessmentFilter,
+      statsCardDialogChildren: [
+        {
+          label: "Subject",
+          // value: "",
+          value: filterSubjectAssessmentBySubject,
+          onSelect: setFilterSubjectAssessmentBySubject,
+          options: subjectLists.map((item) => item.subject),
+          placeholder: "Select subject",
+          icon: BookOpen,
+        },
+        {
+          label: "Class",
+          value: filterSubjectAssessmentByClass,
+          onSelect: setFilterSubjectAssessmentByClass,
+          options: yearClasses,
+          placeholder: "Select class/year",
+          icon: BookOpen,
+        },
+        {
+          label: "Term",
+          value: filterSubjectAssessmentByTerm,
+          onSelect: setFilterSubjectAssessmentByTerm,
+          options: termList,
+          placeholder: "Select term",
+          icon: ClipboardCheck,
+        },
+      ]
+    },
+    {
+      statsTitle: "Total Subject Lesson Plans",
+      statsValue: filterbyPlan(isGlobalFilter, filterSubjectLessonPlan, filterGlobalSubjectLessonPlan),
+      statsDescription: "Lesson plans prepared for different subjects",
+      Icon: BookOpen,
+      variant: "emerald" as Variant,
+      statsCardDialogTitle: "Filter Subject Lesson Plans",
+      statsCardDialogLabel: "View Details",
+      onReset: resetLessonFilters,
+      statsCardDialogChildren: [
+        {
+          label: "Subject",
+          value: filterSubjectLessonBySubject,
+          onSelect: setFilterSubjectLessonBySubject,
+          options: subjectLists.map((item) => item.subject),
+          placeholder: "Select subject",
+          icon: BookOpen,
+        },
+        {
+          label: "Class",
+          value: filterSubjectLessonByClass,
+          onSelect: setFilterSubjectLessonByClass,
+          options: yearClasses,
+          placeholder: "Select class/year",
+          icon: BookOpen,
+        },
+        {
+          label: "Term",
+          value: filterSubjectLessonByTerm,
+          onSelect: setFilterSubjectLessonByTerm,
+          options: termList,
+          placeholder: "Select term",
+          icon: ClipboardCheck,
+        },
+      ]
+    },
+    {
+      statsTitle: "Conduct & Character Lesson Plans",
+      statsValue: filterbyPlan(isGlobalFilter, filterConductCharacterLessonPlan, filterGlobalConductCharacterPlan),
+      // statsValue: filterConductCharacterLessonPlan.length.toString(),
+      statsDescription: "Plans designed to guide student conduct and character development",
+      Icon: User,
+      variant: "rose" as Variant,
+      statsCardDialogTitle: "Filter Student Conduct & Character Lesson Plans",
+      statsCardDialogLabel: "View Details",
+      onReset: resetConductCharacterFilters,
+      statsCardDialogChildren: [
+        {
+          label: "Subject",
+          value: filterConductCharacterLessonBySubject,
+          onSelect: setFilterConductCharacterLessonBySubject,
+          options: subjectLists.map((item) => item.subject),
+          placeholder: "Select subject",
+          icon: BookOpen,
+        },
+        {
+          label: "Class",
+          value: filterConductCharacterLessonByClass,
+          onSelect: setFilterConductCharacterLessonByClass,
+          options: yearClasses,
+          placeholder: "Select class/year",
+          icon: BookOpen,
+        },
+        {
+          label: "Term",
+          value: filterConductCharacterLessonByTerm,
+          onSelect: setFilterConductCharacterLessonByTerm,
+          options: termList,
+          placeholder: "Select term",
+          icon: ClipboardCheck,
+        },
+      ]
+
+    },
+    {
+      statsTitle: "Conduct & Character Assessments",
+      statsValue: filterbyPlan(isGlobalFilter, filterConductCharacterAssessmentsPlan, filterConductCharacterAssessmentsGlobalPlan),
+      // statsValue: filterConductCharacterAssessmentsPlan.length.toString(),
+      statsDescription: "Plans designed to guide student conduct and character development",
+      Icon: ClipboardCheck,
+      variant: "slate" as Variant,
+      statsCardDialogTitle: "Assessments evaluating student conduct and character",
+      statsCardDialogLabel: "View Details",
+      onReset: resetConductCharacterAssessmentFilters,
+      statsCardDialogChildren: [
+        {
+          label: "Subject",
+          value: filterConductCharacterAssessmentsBySubject,
+          onSelect: setFilterConductCharacterAssessmentsBySubject,
+          options: subjectLists.map((item) => item.subject),
+          placeholder: "Select subject",
+          icon: BookOpen,
+        },
+        {
+          label: "Class",
+          value: filterConductCharacterAssessmentsByClass,
+          onSelect: setFilterConductCharacterAssessmentsByClass,
+          options: yearClasses,
+          placeholder: "Select class/year",
+          icon: BookOpen,
+        },
+        {
+          label: "Term",
+          value: filterConductCharacterAssessmentsByTerm,
+          onSelect: setFilterConductCharacterAssessmentsByTerm,
+          options: termList,
+          placeholder: "Select term",
+          icon: ClipboardCheck,
+        },
+      ]
+
+    },
+    {
+      statsTitle: "Project (Tasks)",
+      statsValue: filterbyPlan(isGlobalFilter, filterProjectTaskPlan, filterGlobalProjectTaskPlan),
+      // statsValue: filterProjectTaskPlan.length.toString(),
+      statsDescription: "Task-oriented project plans created by teachers",
+      Icon: ClipboardCheck,
+      variant: "violet" as Variant,
+      statsCardDialogTitle: "Filter Project Task Plans",
+      statsCardDialogLabel: "View Details",
+      onReset: resetProjectTaskFilters,
+      statsCardDialogChildren: [
+        {
+          label: "Subject",
+          value: filterProjectTaskBySubject,
+          onSelect: setFilterProjectTaskBySubject,
+          options: subjectLists.map((item) => item.subject),
+          placeholder: "Select subject",
+          icon: BookOpen,
+        },
+        {
+          label: "Class",
+          value: filterProjectTaskByClass,
+          onSelect: setFilterProjectTaskByClass,
+          options: yearClasses,
+          placeholder: "Select class/year",
+          icon: BookOpen,
+        },
+        {
+          label: "Term",
+          value: filterProjectTaskByTerm,
+          onSelect: setFilterProjectTaskByTerm,
+          options: termList,
+          placeholder: "Select term",
+          icon: ClipboardCheck,
+        },
+      ]
+
+    },
+    {
+      statsTitle: "Project Facilitation Plans",
+      statsValue: filterbyPlan(isGlobalFilter, filterProjectFacilitationPlan, filterGlobalProjectFacilitationPlan),
+      // statsValue: filterProjectFacilitationPlan.length.toString(),
+      statsDescription: "Plans focused on facilitating and managing project tasks",
+      Icon: ClipboardCheck,
+      variant: "amber" as Variant,
+      statsCardDialogTitle: "Project Task Facilitation Plans",
+      statsCardDialogLabel: "View Details",
+      onReset: resetProjectFacilitationFilters,
+      statsCardDialogChildren: [
+        {
+          label: "Subject",
+          value: filterProjectFacilitationBySubject,
+          onSelect: setFilterProjectFacilitationBySubject,
+          options: subjectLists.map((item) => item.subject),
+          placeholder: "Select subject",
+          icon: BookOpen,
+        },
+        {
+          label: "Class",
+          value: filterProjectFacilitationByClass,
+          onSelect: setFilterProjectFacilitationByClass,
+          options: yearClasses,
+          placeholder: "Select class/year",
+          icon: BookOpen,
+        },
+        {
+          label: "Term",
+          value: filterProjectFacilitationByTerm,
+          onSelect: setFilterProjectFacilitationByTerm,
+          options: termList,
+          placeholder: "Select term",
+          icon: ClipboardCheck,
+        },
+      ]
+
+    },
+  ]
+
+  async function fetchAnalyticsData(): Promise<IPlan[]> {
+    const { data } = await axios.get(`${backendApi}/api/getPlanFiles`);
+
+    // Buckets for each plan type
+    const subjectAssessmentPlans: IPlan[] = [];
+    const subjectLessonPlans: IPlan[] = [];
+    const studentConductCharacterPlans: IPlan[] = [];
+    const studentConductCharacterAssessmentPlans: IPlan[] = [];
+    const projectTaskPlans: IPlan[] = [];
+    const projectTaskFacilitationPlans: IPlan[] = [];
+
+    // Group into buckets
+    data.data.forEach((plan: IPlan) => {
+      switch (plan.plan) {
+        case "subjectAssessmentPlan":
+          subjectAssessmentPlans.push(plan);
+          break;
+        case "subjectLessonPlan":
+          subjectLessonPlans.push(plan);
+          break;
+        case "studentConductCharacterPlan":
+          studentConductCharacterPlans.push(plan);
+          break;
+        case "studentConductCharacterAssessmentPlan":
+          studentConductCharacterAssessmentPlans.push(plan);
+          break;
+        case "projectTaskPlan":
+          projectTaskPlans.push(plan);
+          break;
+        case "projectTaskFacilitationPlan":
+          projectTaskFacilitationPlans.push(plan);
+          break;
+      }
+    });
+
+    // Update zustand store here
+    setSubjectAssessmentPlan(subjectAssessmentPlans);
+    setSubjectLessonPlan(subjectLessonPlans);
+    setConductCharacterLessonPlan(studentConductCharacterPlans);
+    setConductCharacterAssessmentsPlan(studentConductCharacterAssessmentPlans);
+    setProjectTaskPlan(projectTaskPlans);
+    setProjectFacilitationPlan(projectTaskFacilitationPlans);
+    return data.data;
+
+  }
+
+  const { isLoading, isError } = useQuery<IPlan[], Error>({
     queryKey: ["analyticsData"],
     queryFn: fetchAnalyticsData,
-  })
-
-  // ✅ Filtering logic
-  // const filteredData =
-  //   activeFilters.length > 0
-  //     ? analyticsData.filter((item: any) => {
-  //       // ✅ Match by plan type
-  //       const matchPlan = activeFilters.includes(item.plan)
-
-  //       // ✅ Match by dropdown values inside fields (like "Personal Development")
-  //       const matchField = item.fields?.some((field: string) =>
-  //         activeFilters.includes(field)
-  //       )
-
-  //       return matchPlan || matchField
-  //     })
-  //     : analyticsData
-
-  // ✅ Apply global filters along with activeFilters and time range
-  const filteredData = analyticsData.filter((item: any) => {
-    const matchPlanOrField =
-      activeFilters.length === 0 ||
-      activeFilters.includes(item.plan) ||
-      item.fields?.some((field: string) => activeFilters.includes(field));
-
-    // Extract country, discipline, subject, schoolLevel from fields
-    const itemCountry = item.fields?.[0] || "";
-    const itemDiscipline = item.fields?.[12] || ""; // based on your data mapping
-    const itemSubject = item.fields?.[11] || "";
-    const itemSchoolLevel = item.fields?.[4] || "";
-
-    const matchCountry = !filters.country || itemCountry === filters.country;
-    const matchDiscipline = !filters.discipline || itemDiscipline === filters.discipline;
-    const matchSubject = !filters.subject || itemSubject === filters.subject;
-    const matchSchoolLevel = !filters.schoolLevel || itemSchoolLevel === filters.schoolLevel;
-
-    return matchPlanOrField && matchCountry && matchDiscipline && matchSubject && matchSchoolLevel;
   });
-
-
-
-
-  console.log('filteredData', filteredData)
 
   if (isLoading) {
     return <Loader />
   }
 
-  if (error) {
-    return <p className="text-center text-red-500">Error loading analytics</p>
+  if (isError) {
+    return <Error />
   }
 
-  const {
-    lessonPlansBySubject,
-    lessonPlansByDiscipline,
-    lessonPlansBySchoolLevel,
-    assessmentsBySubject,
-    trendOverTime,
-  } = transformAnalyticsData(filteredData)
-  // } = transformAnalyticsData(analyticsData)
-
+  console.log(filterGlobalSubjectAssessmentPlan, filterGlobalSubjectLessonPlan)
   return (
-    <div className="flex flex-col gap-4 mt-4 w-full">
+    <>
       <GlobalFiltersBar />
-      <AnalyticsFilter />
-      {/* cards */}
-      <div className="p-3">
-        <Grid columns={3}>
-          {/* Total Teachers */}
-          <StatsCard
-            title="Total Teachers"
-            value={getTotalTeachers(
-              filterByTimeRange(filteredData, timeFilters.totalTeachers)
-            ).toString()}
-            description="Unique teachers contributing lesson plans and assessments"
-            icon={Users}
-            variant="amber"
-          >
-            <TimeFilterDropdown
-              value={timeFilters.totalTeachers}
-              onChange={(val) => setTimeFilter("totalTeachers", val)}
-            />
-          </StatsCard>
+      <Grid columns={2}>
+        <StatsCard
+          title="Total Teachers"
+          value={getTotalTeachers().toString()}
+          description="Unique teachers contributing lesson plans and assessments"
+          icon={Users}
+          variant="amber"
+        />
 
-          {/* Total Subject Assessments */}
-          <StatsCard
-            title="Total Subject Assessments"
-            value={getTotalByPlanType(
-              "subjectAssessmentPlan",
-              filterByTimeRange(filteredData, timeFilters.subjectAssessments)
-            ).toString()}
-            description="Number of subject-based assessments created"
-            icon={ClipboardCheck}
-            variant="blue"
-          >
-            <TimeFilterDropdown
-              value={timeFilters.subjectAssessments}
-              onChange={(val) => setTimeFilter("subjectAssessments", val)}
-            />
-          </StatsCard>
+        {analyticsCardList.map((item, index) =>
+          <AnalyticsCard
+            key={index}
+            onReset={item.onReset}
+            statsTitle={item.statsTitle}
+            statsValue={item.statsValue}
+            statsDescription={item.statsDescription}
+            Icon={item.Icon}
+            variant={item.variant}
+            statsCardDialogTitle={item.statsCardDialogTitle}
+            statsCardDialogLabel={item.statsCardDialogLabel}
+            statsCardDialogChildren={
+              <>
+                {item.statsCardDialogChildren.map((child, idx) =>
+                  <SelectWithIcon
+                    key={idx}
+                    label={child.label}
+                    value={child.value}
+                    onSelect={child.onSelect}
+                    options={child.options}
+                    placeholder={child.placeholder}
+                    icon={child.icon}
+                  />)}
+              </>
+            }
+          />)}
 
-          {/* Total Subject Lesson Plans */}
-          <StatsCard
-            title="Total Subject Lesson Plans"
-            value={getTotalByPlanType(
-              "subjectLessonPlan",
-              filterByTimeRange(filteredData, timeFilters.subjectLessonPlans)
-            ).toString()}
-            description="Lesson plans prepared for different subjects"
-            icon={BookOpen}
-            variant="emerald"
-          >
-            <TimeFilterDropdown
-              value={timeFilters.subjectLessonPlans}
-              onChange={(val) => setTimeFilter("subjectLessonPlans", val)}
-            />
-          </StatsCard>
+      </Grid >
 
-          {/* Conduct & Character Lesson Plans */}
-          <StatsCard
-            title="Conduct & Character Lesson Plans"
-            value={getTotalByPlanType(
-              "studentConductCharacterPlan",
-              filterByTimeRange(filteredData, timeFilters.conductLessonPlans)
-            ).toString()}
-            description="Plans designed to guide student conduct and character development"
-            icon={User}
-            variant="rose"
-          >
-            <TimeFilterDropdown
-              value={timeFilters.conductLessonPlans}
-              onChange={(val) => setTimeFilter("conductLessonPlans", val)}
-            />
-          </StatsCard>
+      <Grid columns={2}>
+        <BarChartCustom
+          title="Lesson Plans by Subject"
+          description="Top 10 subjects by lesson plan count (+ more)"
+          data={lessonPlansBySubject}
+          xKey="name"
+          yaxisDomain={[0, 10]}
+          yKey="count"
+          chartColor="#fac815"
+        />
+        <BarChartCustom
+          title="Lesson plans by Discipline"
+          description="Lesson plan counts grouped by six fixed disciplines."
+          data={lessonPlansByDiscipline}
+          xKey="name"
+          xAxisAngle={-15}
+          yKey="count"
+        />
+        <BarChartStacked
+          title="Lesson plans by School Level"
+          description="Monthly breakdown of lesson plans across Nursery, Primary, Secondary, and University."
+          data={chartData}
+          xKey="month"
+          stackKeys={["Nursery", "Primary", "Secondary", "University"]}
+          colors={["#F5C242", "#E04A2F", "#111111", "#707070"]}
+        />
+        <BarChartCustom
+          title="Assessments by Subject"
+          description="Top 10 subjects by assessment count (+ more)"
+          data={assessmentsBySubject}
+          xKey="name"
+          yKey="count"
+          yaxisDomain={[0, 10]}
+          chartColor="#fac815"
+        />
+        <LineChartCustom
+          title="Lesson Plans Trend"
+          // description="Monthly trend of lesson plans across school levels."
+          data={trendOverTime}
+          xKey="week"
+          lines={[
+            { key: "lessonPlans", color: "#F5C242" },
+            { key: "assessments", color: "#E04A2F" },
+          ]}
+        // height={350}
+        />
+      </Grid>
 
-          {/* Conduct & Character Assessments */}
-          <StatsCard
-            title="Conduct & Character Assessments"
-            value={getTotalByPlanType(
-              "studentConductCharacterAssessmentPlan",
-              filterByTimeRange(filteredData, timeFilters.conductAssessments)
-            ).toString()}
-            description="Assessments evaluating student conduct and character"
-            icon={ClipboardCheck}
-            variant="slate"
-          >
-            <TimeFilterDropdown
-              value={timeFilters.conductAssessments}
-              onChange={(val) => setTimeFilter("conductAssessments", val)}
-            />
-          </StatsCard>
 
-          {/* Project (Tasks) */}
-          <StatsCard
-            title="Project (Tasks)"
-            value={getTotalByPlanType(
-              "projectTaskPlan",
-              filterByTimeRange(filteredData, timeFilters.projectTasks)
-            ).toString()}
-            description="Task-oriented project plans created by teachers"
-            icon={ClipboardCheck}
-            variant="violet"
-          >
-            <TimeFilterDropdown
-              value={timeFilters.projectTasks}
-              onChange={(val) => setTimeFilter("projectTasks", val)}
-            />
-          </StatsCard>
-
-          {/* Project Facilitation Plans */}
-          <StatsCard
-            title="Project Facilitation Plans"
-            value={getTotalByPlanType(
-              "projectTaskFacilitationPlan",
-              filterByTimeRange(filteredData, timeFilters.projectFacilitation)
-            ).toString()}
-            description="Plans focused on facilitating and managing project tasks"
-            icon={ClipboardCheck}
-            variant="amber"
-          >
-            <TimeFilterDropdown
-              value={timeFilters.projectFacilitation}
-              onChange={(val) => setTimeFilter("projectFacilitation", val)}
-            />
-          </StatsCard>
-        </Grid>
-
-      </div>
-      {/* charts */}
-      <div>
-        <Grid columns={2}>
-          <BarChartCustom
-            title="Lesson Plans by Subject"
-            data={lessonPlansBySubject}
-            xKey="subject"
-            yKey="count"
-            color="#10b981" // Tailwind green-500
-          />
-
-          <BarChartCustom
-            title="Lesson Plans by Discipline"
-            data={lessonPlansByDiscipline}
-            xKey="discipline"
-            yKey="count"
-            color="#f59e0b" // Tailwind amber-500
-          />
-
-          <StackedBarChart
-            title="Lesson Plans by School Level"
-            data={lessonPlansBySchoolLevel}
-            xKey="level"
-            stacks={[
-              { key: "Nursery", color: "#f59e0b" },
-              { key: "Primary", color: "#3b82f6" },
-              { key: "Secondary", color: "#ef4444" },
-            ]}
-          />
-
-          <BarChartCustom
-            title="Assessments by Subject"
-            data={assessmentsBySubject}
-            xKey="subject"
-            yKey="count"
-            color="#6366f1" // Tailwind indigo-500
-          />
-
-          <LineChartCustom
-            title="Lesson Plans vs Assessments (Last 12 Weeks)"
-            data={trendOverTime}
-            xKey="week"
-            lines={[
-              { key: "lessonPlans", color: "#10b981" },
-              { key: "assessments", color: "#6366f1" },
-            ]}
-          />
-        </Grid>
-
-      </div>
-
-    </div>
+    </>
   )
 }

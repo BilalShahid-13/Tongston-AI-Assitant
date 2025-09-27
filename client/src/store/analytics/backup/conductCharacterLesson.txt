@@ -1,0 +1,97 @@
+import { create } from "zustand";
+import type { IPlan } from "@/types";
+
+interface ConductCharacterLessonState {
+  conductCharacterLessonPlan: IPlan[];
+  filterConductCharacterLessonPlan: IPlan[];
+
+  filterConductCharacterLessonBySubject: string;
+  filterConductCharacterLessonByClass: string;
+  filterConductCharacterLessonByTerm: string;
+  country: string
+  discipline: string;
+
+  setConductCharacterLessonPlan: (plans: IPlan[]) => void;
+  setFilterConductCharacterLessonBySubject: (subject: string) => void;
+  setFilterConductCharacterLessonByClass: (classLevel: string) => void;
+  setFilterConductCharacterLessonByTerm: (term: string) => void;
+  setCountry: (country: string) => void
+  setDiscipline: (discipline: string) => void;
+  resetFilters: () => void;
+}
+
+export const useConductCharacterLessonStore = create<ConductCharacterLessonState>((set, get) => ({
+  conductCharacterLessonPlan: [],
+  filterConductCharacterLessonPlan: [],
+  filterConductCharacterLessonBySubject: "",
+  filterConductCharacterLessonByClass: "",
+  filterConductCharacterLessonByTerm: "",
+  country: "",
+  discipline: "",
+
+
+  setConductCharacterLessonPlan: (plans) =>
+    set({
+      conductCharacterLessonPlan: plans,
+      filterConductCharacterLessonPlan: plans,
+    }),
+
+  setFilterConductCharacterLessonBySubject: (subject) => {
+    const filtered = get().conductCharacterLessonPlan.filter(
+      (plan: any) => plan.fields?.subject === subject
+    );
+    set({
+      filterConductCharacterLessonPlan: filtered,
+      filterConductCharacterLessonBySubject: subject,
+    });
+  },
+
+  setFilterConductCharacterLessonByClass: (classLevel) => {
+    const filtered = get().conductCharacterLessonPlan.filter(
+      (plan: any) => plan.fields?.yearClass === classLevel
+    );
+    set({
+      filterConductCharacterLessonPlan: filtered,
+      filterConductCharacterLessonByClass: classLevel,
+    });
+  },
+
+  setFilterConductCharacterLessonByTerm: (term) => {
+    const filtered = get().conductCharacterLessonPlan.filter(
+      (plan: any) => plan.fields?.term === term
+    );
+    set({
+      filterConductCharacterLessonPlan: filtered,
+      filterConductCharacterLessonByTerm: term,
+    });
+  },
+
+  setCountry: (country: string) => {
+    const filtered = get().conductCharacterLessonPlan.filter(
+      (plan: any) => plan.fields?.location === country
+    );
+    set({
+      filterConductCharacterLessonPlan: filtered,
+      country,
+    });
+  },
+
+  setDiscipline: (discipline: string) => {
+    const filtered = get().conductCharacterLessonPlan.filter(
+      (plan: any) => plan.fields?.subjectDiscipline.toLowerCase() === discipline.toLowerCase()
+    );
+    set({
+      filterConductCharacterLessonPlan: filtered,
+      discipline,
+    });
+  },
+
+  resetFilters: () => {
+    set((state) => ({
+      filterConductCharacterLessonPlan: state.conductCharacterLessonPlan,
+      filterConductCharacterLessonBySubject: "",
+      filterConductCharacterLessonByClass: "",
+      filterConductCharacterLessonByTerm: "",
+    }));
+  },
+}));

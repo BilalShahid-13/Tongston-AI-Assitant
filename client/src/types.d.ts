@@ -144,3 +144,54 @@ export interface AnalyticsItem {
   updatedAt: string
   __v: number
 }
+
+
+export interface IPlan {
+  _id: string
+  userId: {
+    _id: string
+    username: string
+    subject: string
+    role: string
+  }
+  fields: string[]
+  answer: string
+  plan:
+  | "subjectAssessmentPlan"
+  | "subjectLessonPlan"
+  | "studentConductCharacterPlan"
+  | "studentConductCharacterAssessmentPlan"
+  | "projectTaskPlan"
+  | "projectTaskFacilitationPlan"
+  metaData: string
+  createdAt: string
+  updatedAt: string
+  __v: number
+}
+
+export type Variant = "blue" | "violet" | "emerald" | "amber" | "rose" | "slate";
+
+
+export interface AnalyticsCardChild {
+  label: string
+  value: string
+  onSelect: (value: any) => void
+  options: string[]
+  placeholder: string
+  icon: LucideIcon
+}
+
+export interface AnalyticsCardItem {
+  statsTitle: string
+  statsValue: string
+  statsDescription: string
+  Icon: LucideIcon
+  variant: Variant
+  statsCardDialogTitle: string
+  statsCardDialogLabel: string
+  onReset: () => void
+  statsCardDialogChildren: AnalyticsCardChild[]
+}
+
+
+export type TimeRange = "daily" | "weekly" | "monthly" | "quarterly" | "yearly" | "";

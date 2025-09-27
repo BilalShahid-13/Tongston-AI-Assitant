@@ -1,0 +1,96 @@
+import { create } from "zustand";
+import type { IPlan } from "@/types";
+
+interface ProjectTaskState {
+  projectTaskPlan: IPlan[];
+  filterProjectTaskPlan: IPlan[];
+
+  filterProjectTaskBySubject: string;
+  filterProjectTaskByClass: string;
+  filterProjectTaskByTerm: string;
+  country:string
+    discipline: string;
+
+  setProjectTaskPlan: (plans: IPlan[]) => void;
+  setFilterProjectTaskBySubject: (subject: string) => void;
+  setFilterProjectTaskByClass: (classLevel: string) => void;
+  setFilterProjectTaskByTerm: (term: string) => void;
+  setCountry: (country:string) => void
+    setDiscipline: (discipline: string) => void;
+  resetFilters: () => void;
+}
+
+export const useProjectTaskStore = create<ProjectTaskState>((set, get) => ({
+  projectTaskPlan: [],
+  filterProjectTaskPlan: [],
+  filterProjectTaskBySubject: "",
+  filterProjectTaskByClass: "",
+  filterProjectTaskByTerm: "",
+  country:"",
+    discipline:"",
+
+  setProjectTaskPlan: (plans) =>
+    set({
+      projectTaskPlan: plans,
+      filterProjectTaskPlan: plans,
+    }),
+
+  setFilterProjectTaskBySubject: (subject) => {
+    const filtered = get().projectTaskPlan.filter(
+      (plan:any) => plan.fields?.subject === subject
+    );
+    set({
+      filterProjectTaskPlan: filtered,
+      filterProjectTaskBySubject: subject,
+    });
+  },
+
+  setFilterProjectTaskByClass: (classLevel) => {
+    const filtered = get().projectTaskPlan.filter(
+      (plan:any) => plan.fields?.yearClass === classLevel
+    );
+    set({
+      filterProjectTaskPlan: filtered,
+      filterProjectTaskByClass: classLevel,
+    });
+  },
+
+  setFilterProjectTaskByTerm: (term) => {
+    const filtered = get().projectTaskPlan.filter(
+      (plan:any) => plan.fields?.term === term
+    );
+    set({
+      filterProjectTaskPlan: filtered,
+      filterProjectTaskByTerm: term,
+    });
+  },
+
+   setCountry: (country: string) => {
+    const filtered = get().projectTaskPlan.filter(
+      (plan: any) => plan.fields?.location === country
+    );
+    set({
+      filterProjectTaskPlan: filtered,
+      country,
+    });
+  },
+
+  setDiscipline: (discipline:string) => {
+    const filtered = get().projectTaskPlan.filter(
+      (plan: any) => plan.fields?.subjectDiscipline.toLowerCase() === discipline.toLowerCase()
+    );
+    set({
+      filterProjectTaskPlan: filtered,
+      discipline,
+    });
+  },
+
+  resetFilters: () => {
+    set((state) => ({
+      filterProjectTaskPlan: state.projectTaskPlan,
+      filterProjectTaskBySubject: "",
+      filterProjectTaskByClass: "",
+      filterProjectTaskByTerm: "",
+    }));
+  },
+}));

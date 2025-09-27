@@ -1,49 +1,98 @@
+"use client"
+
+import { TrendingUp } from "lucide-react"
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Cell } from "recharts"
+
 import {
-  BarChart,
-  Bar,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts"
-import { BaseChart } from "./BaseChart"
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import type { ChartConfig } from "@/components/ui/chart"
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart"
 
 interface BarChartCustomProps {
   title: string
-  data: any[]
+  description?: string
+  data: { name: string; count: number }[]
   xKey: string
   yKey: string
-  color?: string
+  showYAxis?: boolean // NEW PROP
+  chartColor?: string
+  yaxisDomain?: [number, number]
+  xAxisAngle?: number
+}
+
+const schoolLevelColors: Record<string, string> = {
+  Nursery: "#F5C242",     // yellow
+  Primary: "#E04A2F",     // red
+  Secondary: "#111111",   // black/dark
+  University: "#707070",  // grey
 }
 
 export function BarChartCustom({
   title,
+  description,
   data,
   xKey,
   yKey,
-  color = "#3b82f6", // default Tailwind blue-500
+  showYAxis = true, // default show
+  chartColor,
+  yaxisDomain,
+  xAxisAngle = 0
 }: BarChartCustomProps) {
+  // config for ChartContainer
+  const chartConfig: ChartConfig = {
+    [yKey]: {
+      label: yKey,
+      color: "var(--chart-1)", // fallback
+    },
+  }
+
   return (
-    <BaseChart title={title}>
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis
-            dataKey={xKey}
-            type="category"
-            interval={0}              // show all categories
-            angle={-30}               // rotate labels
-            textAnchor="end"          // align properly
-            height={60}               // extra space for rotated text
-          />
-          <YAxis allowDecimals={false} />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey={yKey} fill={color} />
-        </BarChart>
-      </ResponsiveContainer>
-    </BaseChart>
+    <Card >
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+        {description && <CardDescription>{description}</CardDescription>}
+      </CardHeader>
+      <CardContent>
+        <ChartContainer config={chartConfig}>
+          <BarChart accessibilityLayer data={data} >
+            <CartesianGrid vertical={false} />
+            <XAxis
+              dataKey={xKey}
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+              interval={0}
+              angle={xAxisAngle}
+              dy={10} // pushes labels downward
+              textAnchor="middle"
+            />
+
+            {showYAxis && <YAxis domain={yaxisDomain} allowDecimals={false} />}
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent />}
+            />
+            <Bar dataKey={yKey} radius={8}>
+              {data.map((entry, index) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={chartColor ? chartColor : schoolLevelColors[entry.name] || "#CCCCCC"} // fallback grey
+                />
+              ))}
+            </Bar>
+          </BarChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
   )
 }

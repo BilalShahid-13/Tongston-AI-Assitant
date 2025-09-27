@@ -1,0 +1,97 @@
+import { create } from "zustand";
+import type { IPlan } from "@/types";
+
+interface SubjectAssessmentState {
+  subjectAssessmentPlan: IPlan[];
+  filterSubjectAssessmentPlan: IPlan[];
+
+  filterSubjectAssessmentBySubject: string;
+  filterSubjectAssessmentByClass: string;
+  filterSubjectAssessmentByTerm: string;
+  country: string;
+  discipline: string;
+
+  setSubjectAssessmentPlan: (plans: IPlan[]) => void;
+  setFilterSubjectAssessmentBySubject: (subject: string) => void;
+  setFilterSubjectAssessmentByClass: (classLevel: string) => void;
+  setFilterSubjectAssessmentByTerm: (term: string) => void;
+  setCountry: (country: string) => void;
+  setDiscipline: (discipline: string) => void;
+  resetFilters: () => void;
+}
+
+export const useSubjectAssessmentStore = create<SubjectAssessmentState>((set, get) => ({
+  subjectAssessmentPlan: [],
+  filterSubjectAssessmentPlan: [],
+  filterSubjectAssessmentBySubject: "",
+  filterSubjectAssessmentByClass: "",
+  filterSubjectAssessmentByTerm: "",
+  country: "",
+  discipline: "",
+
+  setSubjectAssessmentPlan: (plans) =>
+    set({
+      subjectAssessmentPlan: plans,
+      filterSubjectAssessmentPlan: plans,
+    }),
+
+  setFilterSubjectAssessmentBySubject: (subject) => {
+    const filtered = get().subjectAssessmentPlan.filter(
+      (plan: any) => plan.fields?.subject === subject
+    );
+    console.log('filtered subjectAssessmentPlan', filtered);
+    set({
+      filterSubjectAssessmentPlan: filtered,
+      filterSubjectAssessmentBySubject: subject,
+    });
+  },
+
+  setFilterSubjectAssessmentByClass: (classLevel) => {
+    const filtered = get().subjectAssessmentPlan.filter(
+      (plan: any) => plan.fields?.yearClass === classLevel
+    );
+    set({
+      filterSubjectAssessmentPlan: filtered,
+      filterSubjectAssessmentByClass: classLevel,
+    });
+  },
+
+  setFilterSubjectAssessmentByTerm: (term) => {
+    const filtered = get().subjectAssessmentPlan.filter(
+      (plan: any) => plan.fields?.term === term
+    );
+    set({
+      filterSubjectAssessmentPlan: filtered,
+      filterSubjectAssessmentByTerm: term,
+    });
+  },
+
+  setCountry: (country: string) => {
+    const filtered = get().subjectAssessmentPlan.filter(
+      (plan: any) => plan.fields?.location === country
+    );
+    set({
+      filterSubjectAssessmentPlan: filtered,
+      country,
+    });
+  },
+
+  setDiscipline: (discipline: string) => {
+    const filtered = get().subjectAssessmentPlan.filter(
+      (plan: any) => plan.fields?.subjectDiscipline.toLowerCase() === discipline.toLowerCase()
+    );
+    set({
+      filterSubjectAssessmentPlan: filtered,
+      discipline,
+    });
+  },
+
+  resetFilters: () => {
+    set((state) => ({
+      filterSubjectAssessmentPlan: state.subjectAssessmentPlan,
+      filterSubjectAssessmentBySubject: "",
+      filterSubjectAssessmentByClass: "",
+      filterSubjectAssessmentByTerm: "",
+    }));
+  },
+}));

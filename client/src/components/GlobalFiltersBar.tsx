@@ -1,105 +1,304 @@
-import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { allCountryNames, subjectLists, yearClassMappings } from "@/constants/lessonPlanConstant";
-import { useAnalyticsStore } from "@/store/analyticsStore";
-import { BookOpen, Calendar, ClipboardCheck, MapPin, User } from "lucide-react";
-import React from "react";
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { allCountryNames, subjectLists, yearClassMappings } from '@/constants/lessonPlanConstant';
+import { useGlobalFiltersStore } from '@/store/analytics/globalFilters';
+import type { TimeRange } from '@/types';
+import { AnimatePresence, motion } from 'framer-motion';
+import {
+  BookOpen,
+  Calendar,
+  Filter,
+  Globe,
+  GraduationCap,
+  X
+} from 'lucide-react';
+import React, { useState } from 'react';
 
-interface FilterSelectProps<T = string> {
-  value: T;
-  onChange: (val: T) => void;
-  placeholder: string;
-  icon: React.ReactNode;
-  options: T[];
-  className?: string;
+
+// Time range options with proper display mapping
+const timeRangeOptions = [
+  { value: "daily", label: "Daily" },
+  { value: "weekly", label: "Weekly" },
+  { value: "monthly", label: "Monthly" },
+  { value: "quarterly", label: "Quarterly" },
+  { value: "yearly", label: "Yearly" }
+];
+
+// Helper function to get display label for time range
+const getTimeRangeLabel = (value: string): string => {
+  const option = timeRangeOptions.find(opt => opt.value === value);
+  return option ? option.label : value;
+};
+
+// Extract unique disciplines
+const disciplines = [...new Set(subjectLists.map(item => item.discipline))].sort();
+
+// Simple Select Component with Icon and Label
+interface SelectOption {
+  value: string;
+  label: string;
 }
 
-export const FilterSelect = <T extends string>({
+interface SelectWithIconProps {
+  label: string;
+  value: string;
+  onSelect: (value: string) => void;
+  options: (string | SelectOption)[];
+  placeholder: string;
+  icon?: React.ElementType;
+  displayValue?: (value: string) => string;
+}
+
+export const SelectWithIcon: React.FC<SelectWithIconProps> = ({
+  label,
   value,
-  onChange,
-  placeholder,
-  icon,
+  onSelect,
   options,
-  className,
-}: FilterSelectProps<T>) => {
+  placeholder,
+  icon: Icon,
+}) => {
   return (
-    <Select value={value} onValueChange={onChange}>
-      <SelectTrigger className={`w-40 flex items-center gap-2 ${className || ""}`}>
-        {icon}
-        <SelectValue placeholder={placeholder} />
-      </SelectTrigger>
-      <SelectContent>
-        {options.map((option) => (
-          <SelectItem key={option} value={option}>
-            {option}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <div className="space-y-2">
+      <div className="flex items-center gap-2">
+        {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
+        <Label className="text-sm font-medium">{label}</Label>
+      </div>
+      <Select value={value} onValueChange={onSelect}>
+        <SelectTrigger className='w-full'>
+          <SelectValue placeholder={placeholder} />
+        </SelectTrigger>
+        <SelectContent>
+          {options.map((option,index) => {
+            const optionValue = typeof option === 'object' ? option.value : option;
+            const optionLabel = typeof option === 'object' ? option.label : option;
+            return (
+              <SelectItem key={index} value={optionValue}
+                className='capitalize'>
+                {optionLabel}
+              </SelectItem>
+            );
+          })}
+        </SelectContent>
+      </Select>
+    </div>
   );
 };
 
+// Main Filter Component
+type FilterKeys = "timeRange" | "country" | "discipline" | "subject" | "schoolLevel";
 
-export const GlobalFiltersBar: React.FC = () => {
-  const { filters, setFilters, clearFilters } = useAnalyticsStore()
+interface FiltersState {
+  timeRange: TimeRange;
+  country: string;
+  discipline: string;
+  subject: string;
+  schoolLevel: string;
+}
 
-  // Get subjects filtered by discipline
-  const filteredSubjects = filters.discipline
-    ? subjectLists
-      .filter((item) => item.discipline === filters.discipline)
-      .map((item) => item.subject)
-    : [...new Set(subjectLists.map((item) => item.subject))]
+export default function GlobalFiltersBar() {
+  const [filters, setFilters] = useState<FiltersState>({
+    timeRange: "",
+    country: "",
+    discipline: "",
+    subject: "",
+    schoolLevel: ""
+  });
 
-  const handleSubjectChange = (val: string) => {
-    const relatedDiscipline = subjectLists.find((item) => item.subject === val)?.discipline
-    setFilters({ subject: val, discipline: relatedDiscipline || "" })
-  }
+  const { setCountry, setDiscipline, country,
+    resetFilters } = useGlobalFiltersStore()
+
+  const updateFilter = (key: FilterKeys, value: string) => {
+    setFilters(prev => ({ ...prev, [key]: value }));
+
+    const actions = useGlobalFiltersStore.getState();
+    switch (key) {
+      case "country": actions.setCountry(value); break;
+      case "discipline": actions.setDiscipline(value); break;
+      case "subject": actions.setSubject(value); break;
+      case "schoolLevel": actions.setSchoolLevel(value); break;
+      case "timeRange": actions.setTimeRange(value as TimeRange); break;
+    }
+  };
+
+  const clearAllFilters = () => {
+    setFilters({
+      timeRange: "",
+      country: "",
+      discipline: "",
+      subject: "",
+      schoolLevel: ""
+    });
+
+    resetFilters()
+  };
+
+  const getSubjectsForDiscipline = (): string[] => {
+    if (!filters.discipline) return subjectLists.map(item => item.subject);
+    return subjectLists
+      .filter(item => item.discipline === filters.discipline)
+      .map(item => item.subject);
+  };
+
+  const activeFiltersCount = Object.values(filters).filter(Boolean).length;
 
   return (
-    <div className="flex flex-wrap gap-3 bg-white/80 backdrop-blur-md p-4 rounded-xl shadow-md items-center">
-      <FilterSelect
-        value={filters.dateRange}
-        onChange={(val) => setFilters({ dateRange: val })}
-        placeholder="Date Range"
-        icon={<Calendar className="w-4 h-4 text-gray-500" />}
-        options={["Day", "Week", "Month", "Quarter", "Year"]}
-      />
+    <div className="bg-background p-2">
+      <div className="mx-auto">
+        {country}
+        <Card className='h-auto'>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Filter className="h-6 w-6 text-primary" />
+                <CardTitle className="text-2xl">Global Data Filters</CardTitle>
+                {activeFiltersCount > 0 && (
+                  <Badge variant="secondary">
+                    {activeFiltersCount} active
+                  </Badge>
+                )}
+              </div>
 
-      <FilterSelect
-        value={filters.country}
-        onChange={(val) => setFilters({ country: val })}
-        placeholder="Country"
-        icon={<MapPin className="w-4 h-4 text-gray-500" />}
-        options={allCountryNames}
-      />
+              {activeFiltersCount > 0 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={clearAllFilters}
+                  className="flex items-center gap-2"
+                >
+                  <X className="h-4 w-4" />
+                  Clear All
+                </Button>
+              )}
+            </div>
+          </CardHeader>
 
-      <FilterSelect
-        value={filters.discipline}
-        onChange={(val) => setFilters({ discipline: val })}
-        placeholder="Discipline"
-        icon={<BookOpen className="w-4 h-4 text-gray-500" />}
-        options={[...new Set(subjectLists.map((item) => item.discipline))]}
-      />
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-5">
+              {/* Time Range Filter */}
+              <SelectWithIcon
+                label="Time Range"
+                value={filters.timeRange}
+                onSelect={(value) => updateFilter('timeRange', value)}
+                options={timeRangeOptions}
+                placeholder="Select time range"
+                icon={Calendar}
+              />
 
-      <FilterSelect
-        value={filters.subject}
-        onChange={handleSubjectChange}
-        placeholder="Subject"
-        icon={<ClipboardCheck className="w-4 h-4 text-gray-500" />}
-        options={filteredSubjects}
-      />
+              {/* Country Filter */}
+              <SelectWithIcon
+                label="Country"
+                value={filters.country}
+                onSelect={(value) => {
+                  setCountry(value);
+                  updateFilter('country', value)
+                }}
+                options={allCountryNames}
+                placeholder="Select country"
+                icon={Globe}
+              />
 
-      <FilterSelect
-        value={filters.schoolLevel}
-        onChange={(val) => setFilters({ schoolLevel: val })}
-        placeholder="School Level"
-        icon={<User className="w-4 h-4 text-gray-500" />}
-        options={[...new Set(yearClassMappings.map((item) => item.normalized))]}
-      />
+              {/* Discipline Filter */}
+              <SelectWithIcon
+                label="Discipline"
+                value={filters.discipline}
+                onSelect={(value) => {
+                  updateFilter('discipline', value);
+                  setDiscipline(value);
+                }}
+                options={disciplines}
+                placeholder="Select discipline"
+                icon={BookOpen}
+              />
 
-      <Button variant="outline" onClick={() => clearFilters()}>
-        Reset Filters
-      </Button>
+              {/* Subject Filter */}
+              <SelectWithIcon
+                label="Subject"
+                value={filters.subject}
+                onSelect={(value) => updateFilter('subject', value)}
+                options={getSubjectsForDiscipline()}
+                placeholder="Select subject"
+                icon={BookOpen}
+              />
+
+              {/* School Level Filter */}
+              <SelectWithIcon
+                label="School Level"
+                value={filters.schoolLevel}
+                onSelect={(value) => updateFilter('schoolLevel', value)}
+                options={yearClassMappings.map(item => item.normalized)}
+                placeholder="Select school level"
+                icon={GraduationCap}
+              />
+            </div>
+
+            {/* Active Filters Display */}
+            {/** 👇 AnimatePresence handles enter/exit animations */}
+            <AnimatePresence>
+              {activeFiltersCount > 0 && (
+                <motion.div
+                  key="active-filters-card"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.25, ease: "easeInOut" }}
+                >
+                  <Card>
+                    <CardContent className="pt-2">
+                      <div className="space-y-3">
+                        <h3 className="text-sm font-medium text-muted-foreground">
+                          Active Filters:
+                        </h3>
+                        <div className="flex flex-wrap gap-2">
+                          {Object.entries(filters).map(([key, value]) => {
+                            if (!value) return null;
+                            const labels: Record<FilterKeys, string> = {
+                              timeRange: "Time Range",
+                              country: "Country",
+                              discipline: "Discipline",
+                              subject: "Subject",
+                              schoolLevel: "School Level",
+                            };
+
+                            return (
+                              <Badge
+                                key={key}
+                                variant="secondary"
+                                className="flex items-center gap-2 px-3 py-1"
+                              >
+                                <span className="font-medium">{labels[key as FilterKeys]}:</span>
+                                <span className="truncate max-w-32">
+                                  {key === "timeRange" ? getTimeRangeLabel(value) : value}
+                                </span>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-4 w-4 p-0 hover:bg-secondary"
+                                  onClick={() => updateFilter(key as FilterKeys, "")}
+                                >
+                                  <X className="h-3 w-3" />
+                                </Button>
+                              </Badge>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </CardContent>
+        </Card>
+      </div>
     </div>
-  )
+  );
 }

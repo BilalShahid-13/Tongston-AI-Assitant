@@ -34,14 +34,16 @@ export function Layout() {
       />
       <AnimatePresence mode="wait">
         <SidebarContent className="w-full">
-          {isPending ? <Loader /> : <motion.div
-            key={currentPath}
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Outlet />
-          </motion.div>}
+          {isPending ? <Loader /> :
+            <motion.div
+              key={currentPath}
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Outlet />
+            </motion.div>
+          }
         </SidebarContent>
       </AnimatePresence>
 

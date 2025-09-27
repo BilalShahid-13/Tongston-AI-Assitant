@@ -494,134 +494,125 @@ export const yearClassMappings = [
 export const subjectLists = [
   {
     subject: "Business Studies & Commerce",
-    discipline: "Business & Entrepreneurship",
+    discipline: "BUSINESS & ENTREPRENEURSHIP",
   },
   {
     subject: "Economics (Micro & Macro)",
-    discipline: "Business & Entrepreneurship",
+    discipline: "BUSINESS & ENTREPRENEURSHIP",
   },
   {
     subject: "Trade (Salesmanship - Marketing & Sales)",
-    discipline: "Business & Entrepreneurship",
+    discipline: "BUSINESS & ENTREPRENEURSHIP",
   },
   {
     subject: "Finance & Accounting",
-    discipline: "Business & Entrepreneurship",
+    discipline: "BUSINESS & ENTREPRENEURSHIP",
   },
   {
-    subject: "Trade / TVET",
-    discipline: "Vocational & Technical Education",
+    subject: "Trade/TVET",
+    discipline: "BUSINESS & ENTREPRENEURSHIP",
   },
   {
     subject: "Numbers, Numeration & Quantitative Reasoning",
-    discipline: "Mathematics",
+    discipline: "MATHEMATICS",
   },
   {
     subject: "Algebra",
-    discipline: "Mathematics",
+    discipline: "MATHEMATICS",
   },
   {
     subject: "Geometry & Measurements",
-    discipline: "Mathematics",
+    discipline: "MATHEMATICS",
   },
   {
     subject: "Data & Statistics",
-    discipline: "Mathematics",
+    discipline: "MATHEMATICS",
   },
   {
     subject: "Word Problems",
-    discipline: "Mathematics",
+    discipline: "MATHEMATICS",
   },
   {
     subject: "Computer & ICT",
-    discipline: "Technology & Computing",
+    discipline: "SCIENCE & TECHNOLOGY",
   },
   {
     subject: "Agriculture & Mining",
-    discipline: "Agriculture & Environmental Studies",
+    discipline: "SCIENCE & TECHNOLOGY",
   },
   {
     subject: "Physics & Mechanics",
-    discipline: "Science",
+    discipline: "SCIENCE & TECHNOLOGY",
   },
   {
     subject: "Chemistry & Chemicals",
-    discipline: "Science",
+    discipline: "SCIENCE & TECHNOLOGY",
   },
   {
     subject: "Biology & Health",
-    discipline: "Science",
+    discipline: "SCIENCE & TECHNOLOGY",
   },
   {
     subject: "Literature, Grammar & Verbal Reasoning",
-    discipline: "Language & Communication",
+    discipline: "ENGLISH",
   },
   {
     subject: "Listening",
-    discipline: "Language & Communication",
+    discipline: "ENGLISH",
   },
   {
     subject: "Speaking",
-    discipline: "Language & Communication",
+    discipline: "ENGLISH",
   },
   {
     subject: "Reading",
-    discipline: "Language & Communication",
+    discipline: "ENGLISH",
   },
   {
     subject: "Writing",
-    discipline: "Language & Communication",
+    discipline: "ENGLISH",
   },
   {
     subject: "Government & Civic Education",
-    discipline: "Civics & Social Studies",
+    discipline: "CITIZENSHIP",
   },
   {
     subject: "Humanities (Geography & History)",
-    discipline: "Civics & Social Studies",
+    discipline: "CITIZENSHIP",
   },
   {
     subject: "Theology & Religious Studies",
-    discipline: "Civics & Social Studies",
+    discipline: "CITIZENSHIP",
   },
   {
     subject: "National Languages, Cultures & Social Studies",
-    discipline: "Civics & Social Studies",
+    discipline: "CITIZENSHIP",
   },
   {
     subject: "International Languages, Cultures & Social Studies",
-    discipline: "Civics & Social Studies",
+    discipline: "CITIZENSHIP",
   },
   {
     subject: "Creative (Fine) Art",
-    discipline: "Creative Arts & Design",
+    discipline: "ART",
   },
   {
-    subject: "CAD & TD (Computer-Aided-Design/Technical-Drawing)",
-    discipline: "Creative Arts & Design",
-  },
-  {
-    subject: "CAD (Computer-Aided-Design)",
-    discipline: "Creative Arts & Design",
-  },
-  {
-    subject: "TD (Technical-Drawing)",
-    discipline: "Creative Arts & Design",
+    subject: "CAD & TD (Computer-Aided Design / Technical Drawing)",
+    discipline: "ART",
   },
   {
     subject: "Multimedia Content Creation & Publishing",
-    discipline: "Creative Arts & Design",
-  },
-  {
-    subject: "Design-Thinking & Innovation",
-    discipline: "Creative Arts & Design",
+    discipline: "ART",
   },
   {
     subject: "Presentation & Public-Speaking",
-    discipline: "Language & Communication",
+    discipline: "ART",
+  },
+  {
+    subject: "Design-Thinking & Innovation",
+    discipline: "ART",
   },
 ];
-
 export const nurserySchool = [
   "Nursery 1/Kindergarten 1/Preparatory 1/Preparatory 2",
   "Nursery 2/Kindergarten 2",
@@ -1118,3 +1109,17 @@ export const settings = [
   "Rural",
   "Peri-Urban"
 ]
+
+
+export const termList =
+  ["Personal Development",
+    "Professional Development",
+    "Public Development"]
+
+
+export const dateOptions = [
+  { value: "daily", label: "Daily" },
+  { value: "monthly", label: "Monthly" },
+  { value: "quarterly", label: "Quarterly" },
+  { value: "yearly", label: "Yearly" },
+];

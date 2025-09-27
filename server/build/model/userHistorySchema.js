@@ -44,7 +44,7 @@ const userHistorySchema = new mongoose_1.Schema({
         required: false,
     },
     fields: {
-        type: [String],
+        type: Object,
         required: false,
     },
     answer: {
