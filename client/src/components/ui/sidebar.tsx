@@ -1,11 +1,9 @@
-import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
-import { cva } from "class-variance-authority"
 import type { VariantProps } from "class-variance-authority"
-import { PanelLeftIcon } from "lucide-react"
+import { cva } from "class-variance-authority"
+import { Menu } from "lucide-react"
+import * as React from "react"
 
-import { useIsMobile } from "@/hooks/use-mobile"
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
@@ -23,6 +21,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { useIsMobile } from "@/hooks/use-mobile"
+import { cn } from "@/lib/utils"
 import { useSidebarStore } from "@/store/sidebarStore"
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
@@ -289,7 +289,8 @@ function SidebarTrigger({
       }}
       {...props}
     >
-      <PanelLeftIcon />
+      {/* <PanelLeftIcon /> */}
+      <Menu />
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   )
@@ -526,7 +527,7 @@ function SidebarMenuButton({
 } & VariantProps<typeof sidebarMenuButtonVariants>) {
   const Comp = asChild ? Slot : "button"
   const { isMobile, state } = useSidebar()
-  const {isOpen} = useSidebarStore()
+  const { isOpen } = useSidebarStore()
   const button = (
     <Comp
       data-slot="sidebar-menu-button"
@@ -738,5 +739,5 @@ export {
   SidebarRail,
   SidebarSeparator,
   SidebarTrigger,
-  useSidebar,
+  useSidebar
 }

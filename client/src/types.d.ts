@@ -37,7 +37,7 @@ export interface TabContentProps {
 }
 export interface breadcrumbProps {
   section: string;
-  currentPage?: string;
+  currentPage?: string | undefined;
   className?: string;
 }
 
@@ -92,12 +92,40 @@ export interface IHistory {
 }
 
 export interface LessonPlanData {
-  id?: string | undefined;
+  id?: string; // maps to _id
+  userId?: {
+    _id: string;
+    username: string;
+    subject: string;
+    role: string;
+  };
+  fields?: {
+    location?: string;
+    curriculum?: string;
+    yearClass?: string;
+    schoolLevel?: string;
+    subSchoolLevel?: string;
+    studentAge?: string;
+    term?: string;
+    termTheme?: string;
+    week?: string;
+    topic?: string;
+    subject?: string;
+    subjectDiscipline?: string;
+    bloomLevel?: string;
+    classSize?: string;
+    timeAvailable?: string;
+    technologyAccess?: string;
+    teachingAids?: string[];
+  };
   answer: string;
-  metaData: string[];
+  plan?: string;
+  metaData: string | string[]; // could be either
   createdAt?: string;
+  updatedAt?: string;
   isFavorite?: boolean;
 }
+
 
 // admin
 export type FAQ = {

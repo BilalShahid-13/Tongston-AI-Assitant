@@ -143,9 +143,12 @@ export default function DashboardSection() {
   return (
     <>
         <BreadCrumb section="AI Assistant" />
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-12">
         <div className="
-        bg-gradient-to-r from-[var(--k12-secondary)] from-10% to-[var(--k12-secondary)] to-90% flex flex-col gap-4 text-zinc-800 p-8 rounded-lg shadow-lg max-sm:gap-4 max-sm:p-6">
+        bg-gradient-to-r from-[var(--k12-secondary)]
+        from-10% to-[var(--k12-secondary)]
+         to-90% flex flex-col gap-12 text-zinc-800 p-8
+          rounded-lg shadow-lg max-sm:gap-4 max-sm:p-6">
 
           <div className="flex items-center gap-4 mb-4">
             <div className="bg-white/90 dark:bg-white/10 backdrop-blur-sm p-3 rounded-full shadow-md">
@@ -180,13 +183,11 @@ export default function DashboardSection() {
             question banks.
           </p>
 
-          <div className="flex flex-col gap-4 w-full">
-          </div>
         </div>
 
         {/* Features Section */}
         <div className="space-y-8 flex flex-col justify-center items-center">
-          <div className="text-center w-full max-w-4xl">
+          <div className="text-center w-full max-w-4xl flex flex-col gap-3 px-1">
             <h3 className="text-2xl font-bold text-zinc-800 dark:text-neutral-300 mb-2">
               Comprehensive Educational Tools
               </h3>
@@ -244,15 +245,15 @@ export default function DashboardSection() {
                 <div
                   key={index}
                   className="text-center p-4 rounded-lg bg-gradient-to-br
-                   from-[var(--k12-tertiary)]/50 to-[var(--k12-tertiary)]/50
-                   hover:from-[var(--k12-tertiary)]/60 hover:to-[var(--k12-tertiary)]/30
+                   from-[var(--k12-tertiary)]/60 to-[var(--k12-tertiary)]/70
+                   hover:from-[var(--k12-tertiary)]/80 hover:to-[var(--k12-tertiary)]/30
                    transition-all duration-300 hover:scale-105"
                 >
                   <div className="flex justify-center mb-3">
                     <div className="p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-sm">{resource.icon}</div>
                   </div>
                   <h4 className="font-semibold text-zinc-800 dark:text-neutral-100 mb-2 text-sm">{resource.title}</h4>
-                  <p className="text-xs text-zinc-600 dark:text-neutral-200">{resource.description}</p>
+                  <p className="text-xs text-zinc-900 dark:text-neutral-200">{resource.description}</p>
                 </div>
               ))}
             </div>

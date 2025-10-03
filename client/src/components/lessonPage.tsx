@@ -47,7 +47,7 @@ export default function LessonPage() {
 
   // Extract lesson info from markdown content
   const extractInfo = (content: string) => {
-    const lines = content.split("\n")
+    const lines = content.split("\n");
     const info = {
       subject: "",
       yearClass: "",
@@ -55,32 +55,33 @@ export default function LessonPage() {
       location: "",
       topic: "",
       time: "",
-      classSize: "",
-    }
+      classSize: ""
+    };
 
-    lines.forEach((line) => {
-      if (line.includes("**Subject & Discipline**:")) {
-        info.subject = line.split(":")[1]?.trim() || ""
-      } else if (line.includes("**Year/Class**:")) {
-        info.yearClass = line.split(":")[1]?.trim() || ""
-      } else if (line.includes("**Student Average Age**:")) {
-        info.age = line.split(":")[1]?.trim() || ""
-      } else if (line.includes("**Location**:")) {
-        info.location = line.split(":")[1]?.trim() || ""
-      } else if (line.includes("**Topic/Sub-topic**:")) {
-        info.topic = line.split(":")[1]?.trim() || ""
-      } else if (line.includes("**Time Available**:")) {
-        info.time = line.split(":")[1]?.trim() || ""
-      } else if (line.includes("**Class Size**:")) {
-        info.classSize = line.split(":")[1]?.trim() || ""
+    lines.forEach(line => {
+      const normalized = line.toLowerCase();
+
+      if (normalized.includes("year/class")) {
+        info.yearClass = line.split(":")[1]?.trim() || "";
+      } else if (normalized.includes("average-age")) {
+        info.age = line.split(":")[1]?.trim() || "";
+      } else if (normalized.includes("location")) {
+        info.location = line.split(":")[1]?.trim() || "";
+      } else if (normalized.includes("subject")) {
+        info.subject = line.split(":")[1]?.trim() || "";
+      } else if (normalized.includes("topic")) {
+        info.topic = line.split(":")[1]?.trim() || "";
+      } else if (normalized.includes("time available")) {
+        info.time = line.split(":")[1]?.trim() || "";
+      } else if (normalized.includes("class size")) {
+        info.classSize = line.split(":")[1]?.trim() || "";
       }
-    })
+    });
 
-    return info
-  }
+    return info;
+  };
 
   const lessonInfo = extractInfo(currentLesson.answer)
-
   const handleBack = () => {
     clearCurrentLesson();
     navigate({ to: "/myFiles" })
@@ -90,7 +91,7 @@ export default function LessonPage() {
     <div className="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-zinc-900 dark:to-zinc-800">
       <BreadCrumb
         section="My Files"
-        currentPage={lessonInfo.topic || "Lesson Plan"}
+        currentPage={currentLesson?.metaData.toString()}
         className="text-white font-medium"
       />
 
@@ -121,14 +122,14 @@ export default function LessonPage() {
           <div className="bg-white dark:bg-zinc-800 rounded-lg shadow-lg ">
             {/* Title Header */}
             <div className="bg-gradient-to-r from-[var(--k12-primary)] via-[var(--k12-secondary)]
-             to-[#ff8c00] text-white p-6">
+             to-[#ff8c00] text-zinc-800 p-6">
               <div className="flex items-center gap-3 mb-2">
                 <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
                   <FileText className="h-6 w-6" />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold">{lessonInfo.topic || "Lesson Plan"}</h1>
-                  <p className="text-orange-100 text-lg">{lessonInfo.subject}</p>
+                  <h1 className="text-3xl font-bold">{currentLesson.metaData || "Lesson Plan"}</h1>
+                  <p className=" text-lg">{lessonInfo.subject}</p>
                 </div>
               </div>
             </div>

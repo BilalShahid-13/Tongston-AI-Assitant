@@ -1,11 +1,10 @@
 import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis } from "recharts"
-
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle
+  CardTitle,
 } from "@/components/ui/card"
 import type { ChartConfig } from "@/components/ui/chart"
 import {
@@ -14,23 +13,26 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 
+type DomainValue = number | "auto" | "dataMin" | "dataMax"
+type DomainTuple = [DomainValue, DomainValue]
+
 interface BarChartCustomProps {
   title: string
   description?: string
-  data: { name: string; count: number }[]
+  data: { name: string; count?: number }[] // count is optional too
   xKey: string
-  yKey: string
-  showYAxis?: boolean // NEW PROP
+  yKey?: string  // now optional
+  showYAxis?: boolean
   chartColor?: string
-  yaxisDomain?: [number, number]
+  yaxisDomain?: DomainTuple  // 👈 now accepts both
   xAxisAngle?: number
 }
 
 const schoolLevelColors: Record<string, string> = {
-  Nursery: "#F5C242",     // yellow
-  Primary: "#E04A2F",     // red
-  Secondary: "#111111",   // black/dark
-  University: "#707070",  // grey
+  Nursery: "#F5C242",
+  Primary: "#E04A2F",
+  Secondary: "#111111",
+  University: "#707070",
 }
 
 export function BarChartCustom({
@@ -39,28 +41,31 @@ export function BarChartCustom({
   data,
   xKey,
   yKey,
-  showYAxis = true, // default show
+  showYAxis = true,
   chartColor,
   yaxisDomain,
-  xAxisAngle = 0
+  xAxisAngle = 0,
 }: BarChartCustomProps) {
-  // config for ChartContainer
-  const chartConfig: ChartConfig = {
-    [yKey]: {
-      label: yKey,
-      color: "var(--chart-1)", // fallback
-    },
-  }
+  const chartConfig: ChartConfig = yKey
+    ? {
+      [yKey]: {
+        label: yKey,
+        color: "var(--chart-1)",
+      },
+    }
+    : {}
 
   return (
-    <Card >
+    <Card>
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
+        <div>
+          <CardTitle>{title}</CardTitle>
         {description && <CardDescription>{description}</CardDescription>}
+        </div>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
-          <BarChart accessibilityLayer data={data} >
+          <BarChart accessibilityLayer data={data}>
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey={xKey}
@@ -69,23 +74,35 @@ export function BarChartCustom({
               axisLine={false}
               interval={0}
               angle={xAxisAngle}
-              dy={10} // pushes labels downward
+              dy={10}
               textAnchor="middle"
             />
 
-            {showYAxis && <YAxis domain={yaxisDomain} allowDecimals={false} />}
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent />}
-            />
-            <Bar dataKey={yKey} radius={8}>
-              {data.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={chartColor ? chartColor : schoolLevelColors[entry.name] || "#CCCCCC"} // fallback grey
-                />
-              ))}
-            </Bar>
+            {showYAxis && yKey && (
+              <YAxis
+                // domain={["auto","auto"]} // only applies if passed
+                domain={yaxisDomain ?? ["auto", "auto"]}
+                allowDecimals={false}
+              />
+            )}
+
+
+            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+
+            {yKey && (
+              <Bar dataKey={yKey} radius={8}>
+                {data.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={
+                      chartColor
+                        ? chartColor
+                        : schoolLevelColors[entry.name] || "#CCCCCC"
+                    }
+                  />
+                ))}
+              </Bar>
+            )}
           </BarChart>
         </ChartContainer>
       </CardContent>

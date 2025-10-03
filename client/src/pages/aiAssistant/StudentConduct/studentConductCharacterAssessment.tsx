@@ -42,7 +42,7 @@ export default function StudentConductCharacterAssessment() {
   const chatbotRef = useRef<HTMLDivElement>(null);
   const [data, setData] = useState<string | null>("");
   const navigate = useNavigate();
-  const {currentLesson,setCurrentLesson} = useLessonStore();
+  const { currentLesson, setCurrentLesson } = useLessonStore();
 
   const onSubmit = async (data: IStudentConductCharacterAssessmentsForm) => {
     console.log("Form Data:", data);
@@ -562,10 +562,12 @@ export default function StudentConductCharacterAssessment() {
           // isOpen={currentLesson}
           title="Ai Assistant"
           className={`transition-opacity duration-700 ease-in-out
-                                    max-h-screen
-                                     ${currentLesson ? "opacity-100" : "opacity-0"
-            }`}>
-          <Chatbot chats={data} />
+          max-h-screen mt-4 flex flex-col gap-4
+           ${currentLesson ? "opacity-100" : "opacity-0"
+            }`} >
+          <ScrollArea className="h-[75vh]">
+            <Chatbot chats={data} />
+          </ScrollArea>
         </PlanCard>
       </ContainerPlan>
     </>

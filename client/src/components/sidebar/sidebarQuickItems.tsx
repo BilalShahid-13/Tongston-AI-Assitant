@@ -1,7 +1,7 @@
 import { sidebarQuickAccess } from "@/lib/constant";
-import { Link, useLocation } from "@tanstack/react-router";
-import { SidebarMenu, SidebarMenuItem } from "../ui/sidebar";
+import { useLocation, useNavigate } from "@tanstack/react-router";
 import { motion } from 'framer-motion';
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "../ui/sidebar";
 
 const gradientMap: Record<string, string> = {
   blue: "bg-gradient-to-r from-blue-400 to-blue-500",
@@ -10,6 +10,7 @@ const gradientMap: Record<string, string> = {
 };
 const SidebarQuickAccess = () => {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -18,16 +19,16 @@ const SidebarQuickAccess = () => {
           const isActive = pathname === item.route;
           return (
             <SidebarMenuItem key={index} className="relative overflow-hidden">
-              <Link
-                to={item.route}
+              <SidebarMenuButton
+                onClick={() => navigate({ to: item.route })}
                 className={`relative tabStyle ${isActive
                   ? 'text-zinc-800 font-semibold'
                   : 'text-slate-700 dark:text-slate-300 hover:bg-yellow-300 dark:hover:bg-yellow-400 dark:hover:text-zinc-700'
-                  } transition-all duration-300 z-10 flex items-center justify-start gap-2 px-3 py-2 rounded-lg`}
+                  } transition-all duration-300 z-10 flex items-center justify-start gap-2 py-2 rounded-lg`}
               >
                 {item.icon && <item.icon className="h-4 w-4" />}
                 <span>{item.name}</span>
-              </Link>
+              </SidebarMenuButton>
 
               {isActive && (
                 <motion.div

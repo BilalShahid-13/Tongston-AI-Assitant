@@ -20,37 +20,40 @@ export function MyFilesCard({ data, onView }: LessonPlanCardProps) {
 
   // Extract key information from the markdown content
   const extractInfo = (content: string) => {
-    const lines = content.split('\n');
+    const lines = content.split("\n");
     const info = {
-      subject: '',
-      yearClass: '',
-      age: '',
-      location: '',
-      topic: '',
-      time: '',
-      classSize: ''
+      subject: "",
+      yearClass: "",
+      age: "",
+      location: "",
+      topic: "",
+      time: "",
+      classSize: ""
     };
 
     lines.forEach(line => {
-      if (line.includes('**Subject & Discipline**:')) {
-        info.subject = line.split(':')[1]?.trim() || '';
-      } else if (line.includes('**Year/Class**:')) {
-        info.yearClass = line.split(':')[1]?.trim() || '';
-      } else if (line.includes('**Student Average Age**:')) {
-        info.age = line.split(':')[1]?.trim() || '';
-      } else if (line.includes('**Location**:')) {
-        info.location = line.split(':')[1]?.trim() || '';
-      } else if (line.includes('**Topic/Sub-topic**:')) {
-        info.topic = line.split(':')[1]?.trim() || '';
-      } else if (line.includes('**Time Available**:')) {
-        info.time = line.split(':')[1]?.trim() || '';
-      } else if (line.includes('**Class Size**:')) {
-        info.classSize = line.split(':')[1]?.trim() || '';
+      const normalized = line.toLowerCase();
+
+      if (normalized.includes("year/class")) {
+        info.yearClass = line.split(":")[1]?.trim() || "";
+      } else if (normalized.includes("average-age")) {
+        info.age = line.split(":")[1]?.trim() || "";
+      } else if (normalized.includes("location")) {
+        info.location = line.split(":")[1]?.trim() || "";
+      } else if (normalized.includes("subject")) {
+        info.subject = line.split(":")[1]?.trim() || "";
+      } else if (normalized.includes("topic")) {
+        info.topic = line.split(":")[1]?.trim() || "";
+      } else if (normalized.includes("time available")) {
+        info.time = line.split(":")[1]?.trim() || "";
+      } else if (normalized.includes("class size")) {
+        info.classSize = line.split(":")[1]?.trim() || "";
       }
     });
 
     return info;
   };
+
 
   const handleOpenView = () => {
     setCurrentLesson(data);
@@ -63,13 +66,13 @@ export function MyFilesCard({ data, onView }: LessonPlanCardProps) {
   }
 
   const lessonInfo = extractInfo(data.answer);
-
+  console.log(lessonInfo, data)
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="w-full max-w-4xl mx-auto shadow-md"
+      className="w-full max-w-7xl mx-auto shadow-md"
     >
       <Card className="
       bg-gradient-to-br from-white
@@ -99,7 +102,7 @@ export function MyFilesCard({ data, onView }: LessonPlanCardProps) {
                   </motion.div>
                   <div>
                     <h2 className="text-2xl font-bold text-white drop-shadow-sm">
-                      {lessonInfo.topic || 'Lesson Plan'}
+                      {data.metaData}
                     </h2>
                     <p className="text-orange-100 text-sm font-medium">
                       {lessonInfo.subject}
@@ -173,9 +176,11 @@ export function MyFilesCard({ data, onView }: LessonPlanCardProps) {
                 className="flex items-center gap-2 p-3 bg-white/10 rounded-lg backdrop-blur-sm border border-white/20"
               >
                 <GraduationCap className="h-4 w-4 text-orange-200" />
-                <div className="text-xs">
+                <div className="text-xs min-w-0"> {/* min-w-0 is important inside flex */}
                   <p className="text-orange-200">Class</p>
-                  <p className="font-semibold truncate">{lessonInfo.yearClass}</p>
+                  <p className="font-semibold truncate max-w-md overflow-hidden whitespace-nowrap">
+                    {data?.fields?.yearClass}
+                  </p>
                 </div>
               </motion.div>
 
@@ -186,7 +191,7 @@ export function MyFilesCard({ data, onView }: LessonPlanCardProps) {
                 <Clock className="h-4 w-4 text-orange-200" />
                 <div className="text-xs">
                   <p className="text-orange-200">Duration</p>
-                  <p className="font-semibold">{lessonInfo.time}</p>
+                  <p className="font-semibold">{data?.fields?.timeAvailable}</p>
                 </div>
               </motion.div>
 
@@ -197,7 +202,7 @@ export function MyFilesCard({ data, onView }: LessonPlanCardProps) {
                 <Users className="h-4 w-4 text-orange-200" />
                 <div className="text-xs">
                   <p className="text-orange-200">Students</p>
-                  <p className="font-semibold">{lessonInfo.classSize}</p>
+                  <p className="font-semibold">{data?.fields?.classSize}</p>
                 </div>
               </motion.div>
 
@@ -208,7 +213,7 @@ export function MyFilesCard({ data, onView }: LessonPlanCardProps) {
                 <MapPin className="h-4 w-4 text-orange-200" />
                 <div className="text-xs">
                   <p className="text-orange-200">Location</p>
-                  <p className="font-semibold">{lessonInfo.location}</p>
+                  <p className="font-semibold">{data?.fields?.location}</p>
                 </div>
               </motion.div>
             </div>

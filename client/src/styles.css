@@ -172,7 +172,7 @@ code {
 
 .tabStyle {
   @apply flex flex-row gap-4 justify-start
-    items-center w-full mx-0 py-3 cursor-pointer;
+    items-center w-full mx-0 py-6 cursor-pointer;
 }
 
 .no-scrollbar {

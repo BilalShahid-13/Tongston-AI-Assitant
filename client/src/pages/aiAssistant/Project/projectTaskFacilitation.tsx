@@ -41,7 +41,7 @@ export default function ProjectTaskFacilitation() {
   const chatbotRef = useRef<HTMLDivElement>(null);
   const [data, setData] = useState<string | null>("");
   const navigate = useNavigate();
-  const {currentLesson,setCurrentLesson} = useLessonStore();
+  const { currentLesson, setCurrentLesson } = useLessonStore();
 
   useEffect(() => {
     setOtherTeachingAids(form);
@@ -373,11 +373,12 @@ export default function ProjectTaskFacilitation() {
           ref={chatbotRef}
           title="Ai Assistant"
           className={`transition-opacity duration-700 ease-in-out
-                                    max-h-screen
-                                     ${currentLesson ? "opacity-100" : "opacity-0"
-            }`}>
-          <Chatbot chats={data} />
-        </PlanCard>
+          max-h-screen mt-4 flex flex-col gap-4
+           ${currentLesson ? "opacity-100" : "opacity-0"
+            }`} >
+          <ScrollArea className="h-[75vh]">
+            <Chatbot chats={data} />
+          </ScrollArea>             </PlanCard>
       </ContainerPlan>
 
     </>

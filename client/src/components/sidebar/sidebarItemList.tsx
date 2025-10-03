@@ -1,32 +1,39 @@
 import { useIsMobile } from '@/hooks/use-mobile';
 import { sidebarItems } from '@/lib/constant';
-import { Link, useLocation } from '@tanstack/react-router';
+import { useLocation, useNavigate } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
-import { SidebarMenu, SidebarMenuItem, useSidebar } from '../ui/sidebar';
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '../ui/sidebar';
 
 export const SidebarItemList = () => {
   const { pathname } = useLocation();
   const isMobile = useIsMobile()
-  const { setOpenMobile } = useSidebar()
-
+  const { setOpenMobile, open } = useSidebar()
+  const navigate = useNavigate();
+  console.log(open)
   return (
     <SidebarMenu>
       {sidebarItems.map((item) => {
         const isActive = pathname === item.route;
         return (
-          <SidebarMenuItem key={item.route} className="relative overflow-hidden">
-            <Link
-              onClick={() => isMobile && setOpenMobile(false)}
-              to={item.route}
-              id={item.id}
+          <SidebarMenuItem key={item.route}>
+            <SidebarMenuButton
+              onClick={() => {
+                isMobile && setOpenMobile(false)
+                navigate({ to: item.route })
+              }}
               className={`relative tabStyle ${isActive
                 ? 'text-zinc-800 font-semibold'
-                : 'text-slate-700 dark:text-slate-300 hover:bg-yellow-300 dark:hover:bg-yellow-400 dark:hover:text-zinc-700'
+                : `text-slate-700 dark:text-slate-300 hover:bg-yellow-300
+                 dark:hover:bg-yellow-400 dark:hover:text-zinc-700`
                 } transition-all duration-300 z-10 flex items-center justify-start gap-2 px-3 py-2 rounded-lg`}
             >
-              {item.icon && <item.icon className="h-4 w-4" />}
+              {item.icon && (
+                <item.icon
+                  className={"w-24 h-24"} // larger when collapsed
+                />
+              )}
               <span>{item.name}</span>
-            </Link>
+            </SidebarMenuButton>
 
             {isActive && (
               <motion.div

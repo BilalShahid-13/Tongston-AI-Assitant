@@ -366,10 +366,12 @@ export default function ProjectTask() {
           ref={chatbotRef}
           title="Ai Assistant"
           className={`transition-opacity duration-700 ease-in-out
-                                    max-h-screen
-                                     ${currentLesson ? "opacity-100" : "opacity-0"
-            }`}>
-          <Chatbot chats={data} />
+          max-h-screen mt-4 flex flex-col gap-4
+           ${currentLesson ? "opacity-100" : "opacity-0"
+            }`} >
+          <ScrollArea className="h-[75vh]">
+            <Chatbot chats={data} />
+          </ScrollArea>
         </PlanCard>
 
       </ContainerPlan>

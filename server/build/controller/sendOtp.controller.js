@@ -5,8 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendOtp = sendOtp;
 const nodemailer_1 = require("../config/nodemailer");
-const otp_1 = __importDefault(require("../model/otp"));
-const connectDb_1 = require("../lib/connectDb");
+const redis_1 = __importDefault(require("../config/redis"));
 function generateHtmlEmail(otp) {
     return `
   <div style="font-family: 'Arial', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #fff8e6; border-radius: 12px; border: 1px solid #ffe5b4;">
@@ -62,17 +61,18 @@ async function sendOtp(req, res) {
         const otp = Math.floor(1000 + Math.random() * 9000).toString();
         // Set expiration time (10 minutes)
         const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
-        (0, connectDb_1.connectMongo)();
+        // connectMongo();
         // Remove any existing OTPs for this email (optional, to avoid multiple valid codes)
-        await otp_1.default.deleteMany({ email });
+        // await OtpModel.deleteMany({ email });
         // Save OTP in DB
-        await otp_1.default.create({
-            email,
-            otp,
-            createdAt: new Date(),
-            expiresAt,
-            verified: false,
-        });
+        // await OtpModel.create({
+        //   email,
+        //   otp,
+        //   createdAt: new Date(),
+        //   expiresAt,
+        //   verified: false,
+        // });
+        await redis_1.default.set(`otp:${email}`, otp, "EX", 600);
         await (0, nodemailer_1.sendMail)("Your OTP Code", generateHtmlEmail(otp), email);
         res.status(200).json({ message: "OTP sent successfully" });
     }

@@ -1,6 +1,8 @@
 import AnalyticsCard from "@/components/analyticsCard";
 import { BarChartCustom } from "@/components/charts/BarChartCustom";
-import { Grid } from "@/components/GenralComponents";
+import { BarChartStacked } from "@/components/charts/BarChartStack";
+import { DashboardCustomSelect } from "@/components/dashboardCustomSelect";
+import { Grid, Row } from "@/components/GenralComponents";
 import GlobalFiltersBar, { SelectWithIcon } from "@/components/GlobalFiltersBar";
 import { Error, Loader } from "@/components/Loader";
 import { subjectLists, termList, yearClasses } from "@/constants/lessonPlanConstant";
@@ -13,13 +15,13 @@ import { useProjectTaskStore } from "@/store/analytics/projectTask";
 import { useSubjectAssessmentStore } from "@/store/analytics/subjectAssessment";
 import { useSubjectLessonStore } from "@/store/analytics/subjectLesson";
 import type { AnalyticsCardItem, IPlan, Variant } from "@/types";
-import { filterbyPlan, transformAnalyticsData } from "@/utils/analyticsTransform";
+import { filterbyPlan } from "@/utils/analyticsTransform";
+import { useAnalyticsTransform } from "@/utils/useAnalyticsTransform";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { BookOpen, ClipboardCheck, User, Users } from "lucide-react";
+import { useState } from "react";
 import { StatsCard } from "./StatsCard";
-import { BarChartStacked } from "@/components/charts/BarChartStack";
-import { LineChartCustom } from "@/components/charts/LineChartCustom";
 
 
 
@@ -103,8 +105,9 @@ export default function Dashboard() {
     chartData,
     lessonPlansBySubject,
     lessonPlansByDiscipline,
-    assessmentsBySubject,
-    trendOverTime, } = transformAnalyticsData(filterGlobalSubjectLessonPlan, filterGlobalSubjectAssessmentPlan)
+    // assessmentsBySubject,
+    // trendOverTime,
+  } = useAnalyticsTransform(filterGlobalSubjectLessonPlan, filterGlobalSubjectAssessmentPlan)
 
   function getTotalTeachers() {
     // Combine all plans into one array
@@ -123,7 +126,6 @@ export default function Dashboard() {
   const analyticsCardList: AnalyticsCardItem[] = [
     {
       statsTitle: "Total Subject Assessments",
-      // statsValue: filterSubjectAssessmentPlan.length.toString(),
       statsValue: filterbyPlan(isGlobalFilter, filterSubjectAssessmentPlan, filterGlobalSubjectAssessmentPlan),
       statsDescription: "Number of subject-based assessments created",
       Icon: ClipboardCheck,
@@ -399,6 +401,7 @@ export default function Dashboard() {
     queryKey: ["analyticsData"],
     queryFn: fetchAnalyticsData,
   });
+  const [selectedChart, setSelectedChart] = useState("discipline");
 
   if (isLoading) {
     return <Loader />
@@ -408,7 +411,80 @@ export default function Dashboard() {
     return <Error />
   }
 
-  console.log(filterGlobalSubjectAssessmentPlan, filterGlobalSubjectLessonPlan)
+  const lessonPlanChartList = [
+    {
+      type: "bar", // custom flag if you want
+      title: "Lesson Plans by Discipline",
+      description: "Lesson plan counts grouped by six fixed disciplines.",
+      data: lessonPlansByDiscipline,
+      xKey: "name",
+      key: "discipline",
+      yKey: "count",
+      yaxisDomain: ["auto", "auto"] as const,
+      chartColor: "#fac815",
+    },
+    {
+      type: "stacked", // custom flag if you want
+      title: "Lesson Plans by School Level",
+      description: "Monthly breakdown of lesson plans across Nursery, Primary, Secondary, and University.",
+      data: chartData,
+      key: "schoolLevel",
+
+      xKey: "month",
+      stackKeys: ["Nursery", "Primary", "Secondary", "University"],
+      colors: ["#F5C242", "#E04A2F", "#111111", "#707070"],
+    },
+    {
+      type: "bar",
+      title: "Lesson Plans by Subject",
+      description: "Top 10 subjects by lesson plan count (+ more)",
+      data: lessonPlansBySubject,
+      key: "subject",
+      xKey: "name",
+      yKey: "count",
+      yaxisDomain: [0, 10] as const,
+      chartColor: "#fac815",
+    },
+  ];
+
+  // const subjectAssessmentChartList = [
+  //   {
+  //     type: "bar", // custom flag if you want
+  //     title: "Lesson Plans by Discipline",
+  //     description: "Lesson plan counts grouped by six fixed disciplines.",
+  //     data: lessonPlansByDiscipline,
+  //     xKey: "name",
+  //     key: "discipline",
+  //     yKey: "count",
+  //     yaxisDomain: ["auto", "auto"] as const,
+  //     chartColor: "#fac815",
+  //   },
+  //   {
+  //     type: "stacked", // custom flag if you want
+  //     title: "Lesson Plans by School Level",
+  //     description: "Monthly breakdown of lesson plans across Nursery, Primary, Secondary, and University.",
+  //     data: chartData,
+  //     key: "schoolLevel",
+
+  //     xKey: "month",
+  //     stackKeys: ["Nursery", "Primary", "Secondary", "University"],
+  //     colors: ["#F5C242", "#E04A2F", "#111111", "#707070"],
+  //   },
+  //   {
+  //     type: "bar",
+  //     title: "Lesson Plans by Subject",
+  //     description: "Top 10 subjects by lesson plan count (+ more)",
+  //     data: lessonPlansBySubject,
+  //     key: "subject",
+  //     xKey: "name",
+  //     yKey: "count",
+  //     yaxisDomain: [0, 10] as const,
+  //     chartColor: "#fac815",
+  //   },
+  // ];
+
+  const lessonPlanChart = lessonPlanChartList.find((c) => c.key === selectedChart);
+
   return (
     <>
       <GlobalFiltersBar />
@@ -450,33 +526,50 @@ export default function Dashboard() {
 
       </Grid >
 
-      <Grid columns={2}>
-        <BarChartCustom
-          title="Lesson Plans by Subject"
-          description="Top 10 subjects by lesson plan count (+ more)"
-          data={lessonPlansBySubject}
-          xKey="name"
-          yaxisDomain={[0, 10]}
-          yKey="count"
-          chartColor="#fac815"
-        />
-        <BarChartCustom
-          title="Lesson plans by Discipline"
-          description="Lesson plan counts grouped by six fixed disciplines."
-          data={lessonPlansByDiscipline}
-          xKey="name"
-          xAxisAngle={-15}
-          yKey="count"
-        />
-        <BarChartStacked
-          title="Lesson plans by School Level"
-          description="Monthly breakdown of lesson plans across Nursery, Primary, Secondary, and University."
-          data={chartData}
-          xKey="month"
-          stackKeys={["Nursery", "Primary", "Secondary", "University"]}
-          colors={["#F5C242", "#E04A2F", "#111111", "#707070"]}
-        />
-        <BarChartCustom
+      <Row className="flex justify-center items-center">
+        {/* Render Selected Chart */}
+        <div className="relative flex flex-col">
+          <div className="flex justify-end">
+            <DashboardCustomSelect
+              value={selectedChart}
+              onValueChange={setSelectedChart}
+              items={lessonPlanChartList.map((c) => ({ label: c.key, value: c.key }))}
+            />
+          </div>
+          {lessonPlanChart && (
+            <div className="w-6xl">
+              {lessonPlanChart.type === "bar" && (
+                <BarChartCustom
+                  title={lessonPlanChart.title}
+                  description={lessonPlanChart.description}
+                  data={lessonPlanChart.data}
+                  xKey={lessonPlanChart.xKey}
+                  yKey={lessonPlanChart.yKey}
+                  yaxisDomain={
+                    lessonPlanChart.yaxisDomain ? ([...lessonPlanChart.yaxisDomain] as [any, any]) : undefined
+                  }
+                  chartColor={lessonPlanChart.chartColor}
+                />
+              )}
+              {lessonPlanChart.type === "stacked" && (
+                <BarChartStacked
+                  title={lessonPlanChart.title}
+                  description={lessonPlanChart.description}
+                  data={lessonPlanChart.data}
+                  xKey={lessonPlanChart.xKey}
+                  stackKeys={lessonPlanChart.stackKeys ?? []}
+                  colors={lessonPlanChart.colors}
+                />
+              )}
+            </div>
+          )}
+        </div>
+
+
+
+
+        {/* assessment */}
+        {/* <BarChartCustom
           title="Assessments by Subject"
           description="Top 10 subjects by assessment count (+ more)"
           data={assessmentsBySubject}
@@ -484,8 +577,8 @@ export default function Dashboard() {
           yKey="count"
           yaxisDomain={[0, 10]}
           chartColor="#fac815"
-        />
-        <LineChartCustom
+        /> */}
+        {/* <LineChartCustom
           title="Lesson Plans Trend"
           // description="Monthly trend of lesson plans across school levels."
           data={trendOverTime}
@@ -494,9 +587,8 @@ export default function Dashboard() {
             { key: "lessonPlans", color: "#F5C242" },
             { key: "assessments", color: "#E04A2F" },
           ]}
-        // height={350}
-        />
-      </Grid>
+        /> */}
+      </Row>
 
 
     </>

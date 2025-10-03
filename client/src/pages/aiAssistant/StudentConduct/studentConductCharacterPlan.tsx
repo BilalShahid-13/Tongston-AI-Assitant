@@ -12,7 +12,6 @@ import { allCities, allCountryNames, assesmentWeightLists, bloomTaxonomyLevel, c
 import { KPIList } from "@/constants/studentConductCharacterPlanConstant";
 import { useOnError } from "@/hooks/useOnError";
 import { studentConductCharacterPlanSchema, type IStudentConductCharacterPlan } from "@/schema/studentConductCharater.schema";
-import { useLessonStore } from "@/store/lessonStore";
 import { useProjectTaskFacilitationStore } from "@/store/projectTaskFacilitationStore";
 import { onSubmitFn } from "@/utils/onSubmit";
 import { resetPlanValues } from "@/utils/resetPlanValues";
@@ -29,6 +28,7 @@ export default function StudentConductCharacterPlan() {
   const chatbotRef = useRef<HTMLDivElement>(null);
   const [data, setData] = useState<string | null>("");
 
+
   const form: UseFormReturn<IStudentConductCharacterPlan> = useForm<IStudentConductCharacterPlan>({
     resolver: zodResolver(studentConductCharacterPlanSchema),
     defaultValues: {
@@ -40,17 +40,19 @@ export default function StudentConductCharacterPlan() {
   });
   const { handleCities, cities, handleYearClass, handleTerm, setOtherTeachingAids } = useProjectTaskFacilitationStore();
   const navigate = useNavigate();
-  const { currentLesson, setCurrentLesson } = useLessonStore();
-
+  // const { currentLesson, setCurrentLesson } = useLessonStore();
+  const [showPlan, setShowPlan] = useState(false);
 
   const onSubmit = async (data: IStudentConductCharacterPlan) => {
     console.log("Form Data:IStudentConductCharacterPlan", data);
+    setShowPlan(true);
     setData("");
     const res = await onSubmitFn({
       payload: data,
       api: "student/ConductCharacter",
       setStatusMessage,
-      setShowPlan: setCurrentLesson,
+      setShowPlan: setShowPlan,
+      // setShowPlan: setCurrentLesson,
       setData,
       navigate,
       setLoading
@@ -71,7 +73,8 @@ export default function StudentConductCharacterPlan() {
     <>
       <ScrollAnimate scrollRef={scrollRef} />
       <ContainerPlan
-        showPanel={currentLesson}
+        showPanel={showPlan}
+      // showPanel={currentLesson}
       >
         <PlanCard title="Student Conduct and Character Lesson Plan"
           // isOpen={false}
@@ -221,6 +224,7 @@ export default function StudentConductCharacterPlan() {
                       form={form}
                       name="KPI"
                       className="w-full"
+                      isRequired={true}
                       placeholder="Select a KPI"
                       fieldName="Student Conduct & Character Criterion/Indicator/KPI"
                       list={KPIList} />
@@ -233,12 +237,14 @@ export default function StudentConductCharacterPlan() {
                     <CustomSelectField
                       form={form}
                       name="bloomLevel"
+                      isRequired={true}
                       placeholder="Select a Bloom Taxonomy Level"
                       fieldName="Student Conduct & Character KPI Level of Difficulty for the Learning / Lesson Objectives"
                       list={bloomTaxonomyLevel} />
                     <CustomInputField
                       fieldName="Student Conduct & Character KPI Learning / Lesson Objectives"
                       form={form}
+                      isRequired={true}
                       placeholder="Enter Student Conduct & Character KPI Learning / Lesson Objectives"
                       isDisabled={false}
                       name="studentConductLessonObjectives"
@@ -507,9 +513,11 @@ export default function StudentConductCharacterPlan() {
           title="Ai Assistant"
           className={`transition-opacity duration-700 ease-in-out
                             max-h-screen
-                             ${currentLesson ? "opacity-100" : "opacity-0"
+                             ${showPlan ? "opacity-100" : "opacity-0"
             }`}>
-          <Chatbot chats={data} />
+          <ScrollArea className="h-[75vh]">
+            <Chatbot chats={data} />
+          </ScrollArea>
         </PlanCard>
       </ContainerPlan>
 

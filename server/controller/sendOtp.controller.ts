@@ -1,8 +1,7 @@
 // otpService.ts
 import { Request, Response } from "express";
 import { sendMail } from "../config/nodemailer";
-import OtpModel from "../model/otp";
-import { connectMongo } from "../lib/connectDb";
+import redis from "../config/redis";
 
 function generateHtmlEmail(otp: string): string {
   return `
@@ -63,18 +62,20 @@ export async function sendOtp(req: Request, res: Response): Promise<void> {
 
     // Set expiration time (10 minutes)
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
-    connectMongo();
+    // connectMongo();
     // Remove any existing OTPs for this email (optional, to avoid multiple valid codes)
-    await OtpModel.deleteMany({ email });
+    // await OtpModel.deleteMany({ email });
 
     // Save OTP in DB
-    await OtpModel.create({
-      email,
-      otp,
-      createdAt: new Date(),
-      expiresAt,
-      verified: false,
-    });
+    // await OtpModel.create({
+    //   email,
+    //   otp,
+    //   createdAt: new Date(),
+    //   expiresAt,
+    //   verified: false,
+    // });
+    await redis.set(`otp:${email}`, otp, "EX", 600);
+
 
     await sendMail("Your OTP Code", generateHtmlEmail(otp), email);
 
