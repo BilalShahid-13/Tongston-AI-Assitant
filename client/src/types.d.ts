@@ -223,3 +223,71 @@ export interface AnalyticsCardItem {
 
 
 export type TimeRange = "daily" | "weekly" | "monthly" | "quarterly" | "yearly" | "";
+
+// analytics transform
+export type PlanType =
+  | "subjectAssessmentPlan"
+  | "subjectLessonPlan"
+  | "studentConductCharacterPlan"
+  | "studentConductCharacterAssessmentPlan"
+  | "projectTaskPlan"
+  | "projectTaskFacilitationPlan"
+
+type DomainValue = number | "auto" | "dataMin" | "dataMax"
+type DomainTuple =  [DomainValue, DomainValue]
+
+export interface BarChartCustomProps {
+  title: string
+  description?: string
+  data: { name: string; count?: number }[] // count is optional too
+  xKey: string
+  yKey?: string  // now optional
+  showYAxis?: boolean
+  chartColor?: string
+  yaxisDomain?: DomainTuple
+  // yaxisDomain?: [number | string | "auto" | "dataMin" | "dataMax", number | string | "auto" | "dataMin" | "dataMax"]
+  xAxisAngle?: number
+}
+
+export interface BarChartStackedProps {
+  title: string
+  description?: string
+  data: Record<string, any>[] // your dataset (array of objects)
+  xKey: string // X-axis label key (e.g. "month")
+  stackKeys: string[] // keys to stack (e.g. ["desktop", "mobile"])
+  colors?: string[] // optional custom colors per stack
+  showYAxis?: boolean
+}
+
+interface ChartDataItem {
+  name: string
+  count: number
+}
+
+// Bar Chart Type
+interface BarChartType {
+  type: "bar"
+  title: string
+  description: string
+  data: ChartDataItem[]
+  xKey: string
+  key: string
+  yKey: string
+  yaxisDomain: DomainTuple
+  chartColor: string
+}
+
+// Stacked Chart Type
+interface StackedChartType {
+  type: "stacked"
+  title: string
+  description: string
+  data: any[]
+  xKey: string
+  key: string
+  stackKeys: string[]
+  colors: string[]
+}
+
+// Union type for all chart types
+type CharListType = (BarChartType | StackedChartType)[]

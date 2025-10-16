@@ -1,119 +1,103 @@
 import type { IPlan, TimeRange } from "@/types"
 import { format, startOfQuarter, startOfWeek } from "date-fns"
+import { planBySubject } from "./analytics/planbySubject"
+import { planByDiscipline } from "./analytics/planbyDicipline"
+import { planBySchoolLevel } from "./analytics/planbySchooLevel"
 
-export function transformAnalyticsData(subjectLessonPlan: IPlan[], subjectAssessmentPlan: IPlan[]) {
+export function transformAnalyticsData(subjectLessonPlan: IPlan[], subjectAssessmentPlan: IPlan[], studentConductLessonPlan: IPlan[], studentConductAssessmentPlan: IPlan[], projectFacilitationPlan: IPlan[], projectTaskPlan: IPlan[]) {
   // ---- Lesson Plans by Subject ----
-  const subjectCounts: Record<string, number> = {}
-  subjectLessonPlan
-    .filter(item => item.plan === "subjectLessonPlan")
-    .forEach((item: any) => {
-      const subject =
-        item.fields?.subject ||
-        item.fields[12] || // fallback index for subject
-        "Unknown"
-      subjectCounts[subject] = (subjectCounts[subject] || 0) + 1
-    })
 
-  const sortedSubjects = Object.entries(subjectCounts).sort((a, b) => b[1] - a[1])
+  // ---- Lesson Plans by Discipline (fixed 6 buckets) ----
+  // const RAW_DISCIPLINE_LIST = [
+  //   "BUSINESS & ENTREPRENEURSHIP",
+  //   "MATHEMATICS",
+  //   "SCIENCE & TECHNOLOGY",
+  //   "ENGLISH",
+  //   "CITIZENSHIP",
+  //   "ART",
+  //   "Business & Entrepreneurship"
+  // ]
 
-  const top10 = sortedSubjects.slice(0, 10)
-  const moreCount = sortedSubjects.slice(10).reduce((sum, [, c]) => sum + c, 0)
-  if (moreCount > 0) top10.push(["More", moreCount])
+  // // Deduplicate by lowercased value
+  // const DISCIPLINE_LIST = Array.from(
+  //   new Map(
+  //     RAW_DISCIPLINE_LIST.map(d => [d.toLowerCase(), d])
+  //   ).values()
+  // )
 
-  const lessonPlansBySubject = top10.map(([subject, count]) => ({
-    name: subject,
-    count: count,
-  }))
-  const RAW_DISCIPLINE_LIST = [
-    "BUSINESS & ENTREPRENEURSHIP",
-    "MATHEMATICS",
-    "SCIENCE & TECHNOLOGY",
-    "ENGLISH",
-    "CITIZENSHIP",
-    "ART",
-    "Business & Entrepreneurship"
-  ]
+  // const disciplineCounts: Record<string, number | null> = Object.fromEntries(
+  //   DISCIPLINE_LIST.map(d => [d, 0])
+  // )
 
-  // Deduplicate by lowercased value
-  const DISCIPLINE_LIST = Array.from(
-    new Map(
-      RAW_DISCIPLINE_LIST.map(d => [d.toLowerCase(), d])
-    ).values()
-  )
+  // // Process lesson plans
+  // subjectLessonPlan
+  //   .filter(item => item.plan === "subjectLessonPlan")
+  //   .forEach(item => {
+  //     const disciplineRaw = item.fields?.[13]?.trim() || ""
+  //     const matchedDiscipline = DISCIPLINE_LIST.find(d =>
+  //       disciplineRaw.toLowerCase() === d.toLowerCase()
+  //     )
+  //     if (matchedDiscipline) {
+  //       disciplineCounts[matchedDiscipline] = (disciplineCounts[matchedDiscipline] || 0) + 1
+  //     } else {
+  //       // If no match, optionally set a fallback to null or increment a default
+  //       disciplineCounts["Business & Entrepreneurship"] =
+  //         (disciplineCounts["Business & Entrepreneurship"] ?? 0) + 1
+  //     }
+  //   })
 
-  const disciplineCounts: Record<string, number | null> = Object.fromEntries(
-    DISCIPLINE_LIST.map(d => [d, 0])
-  )
+  // // Final output
+  // const lessonPlansByDiscipline = DISCIPLINE_LIST.map(discipline => ({
+  //   name: discipline,
+  //   count: disciplineCounts[discipline] ?? 0
+  // }))
 
-  // Process lesson plans
-  subjectLessonPlan
-    .filter(item => item.plan === "subjectLessonPlan")
-    .forEach(item => {
-      const disciplineRaw = item.fields?.[13]?.trim() || ""
-      const matchedDiscipline = DISCIPLINE_LIST.find(d =>
-        disciplineRaw.toLowerCase() === d.toLowerCase()
-      )
-      if (matchedDiscipline) {
-        disciplineCounts[matchedDiscipline] = (disciplineCounts[matchedDiscipline] || 0) + 1
-      } else {
-        // If no match, optionally set a fallback to null or increment a default
-        disciplineCounts["Business & Entrepreneurship"] =
-          (disciplineCounts["Business & Entrepreneurship"] ?? 0) + 1
-      }
-    })
-
-  // Final output
-  const lessonPlansByDiscipline = DISCIPLINE_LIST.map(discipline => ({
-    name: discipline,
-    count: disciplineCounts[discipline] ?? 0
-  }))
-
-  console.log("lessonPlansByDiscipline", lessonPlansByDiscipline)
+  // console.log("lessonPlansByDiscipline", lessonPlansByDiscipline)
 
   // ---- Lesson Plans by School Level ----
   // ---- Lesson Plans by School Level ----
-  const schoolLevelBuckets = {
-    Nursery: ["Nursery"],
-    Primary: ["Primary"],
-    Secondary: ["Secondary"],
-  }
+  // const schoolLevelBuckets = {
+  //   Nursery: ["Nursery"],
+  //   Primary: ["Primary"],
+  //   Secondary: ["Secondary"],
+  // }
 
   // Reduce subjectLessonPlan into month + schoolLevel counts
-  const lessonPlansBySchoolLevel = subjectLessonPlan
-    .filter(item => item.plan === "subjectLessonPlan")
-    .reduce((acc: Record<string, any>, item: any) => {
-      const month = format(new Date(item.createdAt), "MMM") // e.g. "Sep"
-      const rawLevel = (item.fields?.schoolLevel || "").toLowerCase()
+  // const lessonPlansBySchoolLevel = subjectLessonPlan
+  //   .filter(item => item.plan === "subjectLessonPlan")
+  //   .reduce((acc: Record<string, any>, item: any) => {
+  //     const month = format(new Date(item.createdAt), "MMM") // e.g. "Sep"
+  //     const rawLevel = (item.fields?.schoolLevel || "").toLowerCase()
 
-      // ensure month bucket exists
-      if (!acc[month]) {
-        acc[month] = {
-          month,
-          Nursery: 0,
-          Primary: 0,
-          Secondary: 0,
-          University: 0,
-          Unknown: 0,
-        }
-      }
+  //     // ensure month bucket exists
+  //     if (!acc[month]) {
+  //       acc[month] = {
+  //         month,
+  //         Nursery: 0,
+  //         Primary: 0,
+  //         Secondary: 0,
+  //         University: 0,
+  //         Unknown: 0,
+  //       }
+  //     }
 
-      if (schoolLevelBuckets.Nursery.some(k => rawLevel.includes(k.toLowerCase()))) {
-        acc[month].Nursery += 1
-      } else if (schoolLevelBuckets.Primary.some(k => rawLevel.includes(k.toLowerCase()))) {
-        acc[month].Primary += 1
-      } else if (schoolLevelBuckets.Secondary.some(k => rawLevel.includes(k.toLowerCase()))) {
-        acc[month].Secondary += 1
-      } else if (rawLevel.includes("university")) {
-        acc[month].University += 1
-      } else {
-        acc[month].Unknown += 1
-      }
+  //     if (schoolLevelBuckets.Nursery.some(k => rawLevel.includes(k.toLowerCase()))) {
+  //       acc[month].Nursery += 1
+  //     } else if (schoolLevelBuckets.Primary.some(k => rawLevel.includes(k.toLowerCase()))) {
+  //       acc[month].Primary += 1
+  //     } else if (schoolLevelBuckets.Secondary.some(k => rawLevel.includes(k.toLowerCase()))) {
+  //       acc[month].Secondary += 1
+  //     } else if (rawLevel.includes("university")) {
+  //       acc[month].University += 1
+  //     } else {
+  //       acc[month].Unknown += 1
+  //     }
 
-      return acc
-    }, {})
+  //     return acc
+  //   }, {})
 
   // Convert object → array for chart
-  const chartData = Object.values(lessonPlansBySchoolLevel)
+  // const chartData = Object.values(lessonPlansBySchoolLevel)
 
 
   // const lessonPlansBySchoolLevel = [
@@ -136,21 +120,23 @@ export function transformAnalyticsData(subjectLessonPlan: IPlan[], subjectAssess
 
 
   // ---- Assessments by Subject ----
-  const assessmentCounts: Record<string, number> = {}
-  subjectAssessmentPlan
-    .filter(item => item.plan === "subjectAssessmentPlan")
+  // subjectAssessmentPlan assessmentsBySubject
+  const subjectCounts: Record<string, number> = {}
+  subjectLessonPlan
+    .filter(item => item.plan === "subjectLessonPlan")
     .forEach((item: any) => {
-      {
-        const subject =
-          item.fields?.subject
+      const subject =
+        item.fields?.subject ||
+        item.fields[12] || // fallback index for subject
         "Unknown"
-        assessmentCounts[subject] = (assessmentCounts[subject] || 0) + 1
-      }
+      subjectCounts[subject] = (subjectCounts[subject] || 0) + 1
     })
 
-  const assessmentsBySubject = Object.entries(assessmentCounts).map(
-    ([subject, count]) => ({ name: subject, count: count })
-  )
+  const sortedSubjects = Object.entries(subjectCounts).sort((a, b) => b[1] - a[1])
+
+  const top10 = sortedSubjects.slice(0, 10)
+  const moreCount = sortedSubjects.slice(10).reduce((sum, [, c]) => sum + c, 0)
+  if (moreCount > 0) top10.push(["More", moreCount])
 
   // ---- Trend Over Time (last 12 weeks) ----
   const weeklyCounts: Record<
@@ -176,12 +162,31 @@ export function transformAnalyticsData(subjectLessonPlan: IPlan[], subjectAssess
   }))
 
   return {
-    chartData,
-    lessonPlansBySubject,
-    lessonPlansByDiscipline,
-    lessonPlansBySchoolLevel,
-    assessmentsBySubject,
+    lessonPlansBySubject: planBySubject(subjectLessonPlan, "subjectLessonPlan"),
+    lessonPlansByDiscipline: planByDiscipline(subjectLessonPlan, "subjectLessonPlan"),
+    lessonPlansBySchoolLevel: planBySchoolLevel(subjectLessonPlan, "subjectLessonPlan"),
+    // assessment plan
+    assessmentPlansBySchoolLevel: planBySchoolLevel(subjectAssessmentPlan, "subjectAssessmentPlan"),
+    assessmentsBySubject: planBySubject(subjectAssessmentPlan, "subjectAssessmentPlan"),
+    assessmentbyDiscipline: planByDiscipline(subjectAssessmentPlan, "subjectAssessmentPlan"),
+    // student conduct lessaon plan
+    studentConductLessonPlanBySubject: planBySubject(studentConductLessonPlan, "studentConductCharacterPlan"),
+    studentConductLessonPlanByDiscipline: planByDiscipline(studentConductLessonPlan, "studentConductCharacterPlan"),
+    studentConductLessonPlanBySchoolLevel: planBySchoolLevel(studentConductLessonPlan, "studentConductCharacterPlan"),
+    // student conduct assessment plan
+    studentConductAssessmentPlanBySubject: planBySubject(studentConductAssessmentPlan, "studentConductCharacterPlan"),
+    studentConductAssessmentPlanByDiscipline: planByDiscipline(studentConductAssessmentPlan, "studentConductCharacterPlan"),
+    studentConductAssessmentPlanBySchoolLevel: planBySchoolLevel(studentConductAssessmentPlan, "studentConductCharacterPlan"),
+    // project facilitation plan
+    projectFacilitationPlanBySubject: planBySubject(projectFacilitationPlan, "projectTaskFacilitationPlan"),
+    projectFacilitationPlanByDiscipline: planByDiscipline(projectFacilitationPlan, "projectTaskFacilitationPlan"),
+    projectFacilitationPlanBySchoolLevel: planBySchoolLevel(projectFacilitationPlan, "projectTaskFacilitationPlan"),
+    // project task plan
+    projectTaskPlanBySubject: planBySubject(projectTaskPlan, "projectTaskPlan"),
+    projectTaskPlanByDiscipline: planByDiscipline(projectTaskPlan, "projectTaskPlan"),
+    projectTaskPlanBySchoolLevel: planBySchoolLevel(projectTaskPlan, "projectTaskPlan"),
     trendOverTime,
+
   }
 }
 

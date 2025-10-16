@@ -7,17 +7,8 @@ import {
   ChartLegend,
   ChartLegendContent,
 } from "@/components/ui/chart"
+import type { BarChartStackedProps } from "@/types"
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
-
-interface BarChartStackedProps {
-  title: string
-  description?: string
-  data: Record<string, any>[] // your dataset (array of objects)
-  xKey: string // X-axis label key (e.g. "month")
-  stackKeys: string[] // keys to stack (e.g. ["desktop", "mobile"])
-  colors?: string[] // optional custom colors per stack
-  showYAxis?: boolean
-}
 
 export function BarChartStacked({
   title,
@@ -29,7 +20,7 @@ export function BarChartStacked({
   showYAxis = true,
 }: BarChartStackedProps) {
   // config for legend
-  const chartConfig: ChartConfig = stackKeys.reduce((acc, key, i) => {
+  const chartConfig: ChartConfig = stackKeys.reduce((acc:any, key:any, i:any) => {
     acc[key] = { label: key, color: colors[i] || "var(--chart-1)" }
     return acc
   }, {} as ChartConfig)
@@ -53,7 +44,7 @@ export function BarChartStacked({
             {showYAxis && <YAxis allowDecimals={false} />}
             <ChartTooltip content={<ChartTooltipContent hideLabel />} />
             <ChartLegend content={<ChartLegendContent />} />
-            {stackKeys.map((key, i) => (
+            {stackKeys.map((key:any, i:any) => (
               <Bar
                 key={key}
                 dataKey={key}

@@ -12,27 +12,18 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-
-type DomainValue = number | "auto" | "dataMin" | "dataMax"
-type DomainTuple = [DomainValue, DomainValue]
-
-interface BarChartCustomProps {
-  title: string
-  description?: string
-  data: { name: string; count?: number }[] // count is optional too
-  xKey: string
-  yKey?: string  // now optional
-  showYAxis?: boolean
-  chartColor?: string
-  yaxisDomain?: DomainTuple  // 👈 now accepts both
-  xAxisAngle?: number
-}
+import type { BarChartCustomProps } from "@/types"
 
 const schoolLevelColors: Record<string, string> = {
   Nursery: "#F5C242",
   Primary: "#E04A2F",
   Secondary: "#111111",
   University: "#707070",
+}
+
+interface entryProp {
+  name: string;
+  count?: number | undefined;
 }
 
 export function BarChartCustom({
@@ -60,7 +51,7 @@ export function BarChartCustom({
       <CardHeader>
         <div>
           <CardTitle>{title}</CardTitle>
-        {description && <CardDescription>{description}</CardDescription>}
+          {description && <CardDescription>{description}</CardDescription>}
         </div>
       </CardHeader>
       <CardContent>
@@ -91,7 +82,7 @@ export function BarChartCustom({
 
             {yKey && (
               <Bar dataKey={yKey} radius={8}>
-                {data.map((entry, index) => (
+                {data.map((entry: entryProp, index: number) => (
                   <Cell
                     key={`cell-${index}`}
                     fill={
