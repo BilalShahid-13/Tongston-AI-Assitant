@@ -20,21 +20,25 @@ const textSplitter = new CharacterTextSplitter({
 
 export async function insertKnowledgeBase(req: Request, res: Response) {
   try {
+    console.log("📥 Received upload request");
+
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });
     }
 
-    const mimeType = (req.file as any).mimetype;
+    console.log("📄 File:", req.file.originalname, req.file.mimetype);
+
+    const mimeType = req.file.mimetype;
     const fileType = mimeType.split("/")[1];
     let extractedText = "";
 
-    if (fileType === "plain" || fileType === "txt") {
+    if (fileType === "plain" || mimeType === "text/plain") {
       extractedText = req.file.buffer.toString("utf-8");
-    } else if (fileType === "pdf") {
+    } else if (fileType === "pdf" || mimeType === "application/pdf") {
       extractedText = await pdfToText(req.file.buffer);
     } else if (
       fileType === "vnd.openxmlformats-officedocument.wordprocessingml.document" ||
-      fileType === "docx"
+      mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     ) {
       const result = await mammoth.extractRawText({ buffer: req.file.buffer });
       extractedText = result.value;
@@ -42,41 +46,64 @@ export async function insertKnowledgeBase(req: Request, res: Response) {
       return res.status(400).json({ error: "Unsupported file type" });
     }
 
-    await connectMongo();
-    const cloudinaryRes: any = await uploadToCloudinary(req.file.buffer, req.file.originalname, "/knowledgeBase");
+    console.log("✅ Text extracted, length:", extractedText.length);
 
-    // 3️⃣ Save file metadata
+    await connectMongo();
+
+    // ✅ Upload to Cloudinary
+    console.log("☁️ Uploading to Cloudinary...");
+    const cloudinaryRes = await uploadToCloudinary(
+      req.file.buffer,
+      req.file.originalname,
+      "knowledgeBase"
+    ) as UploadApiResponse; // ✅ Type it properly
+
+    console.log("✅ Cloudinary upload successful:", cloudinaryRes.secure_url);
+
+    // ✅ FIXED: Use correct cloudinary properties
     const fileDoc = await knowledgeBaseFile.create({
-      fileId: cloudinaryRes?.public_id,
-      fileUrl: cloudinaryRes?.secure_url,
+      fileId: cloudinaryRes.public_id,      // ✅ Correct
+      fileUrl: cloudinaryRes.secure_url,    // ✅ Correct
       fileType,
-      originalName: req.file.originalname
+      originalName: req.file.originalname   // ✅ From req.file, not cloudinaryRes
     });
 
-    // Step 2: Split into chunks
-    const chunks = await textSplitter.splitText(extractedText);
+    console.log("📦 File metadata saved, ID:", fileDoc._id);
 
-    // Step 3: Generate embeddings for all chunks
+    // Split into chunks
+    const chunks = await textSplitter.splitText(extractedText);
+    console.log("✂️ Created", chunks.length, "chunks");
+
+    // Generate embeddings
+    console.log("🤖 Generating embeddings...");
     const embeddingRes = await openai.embeddings.create({
       model: "text-embedding-3-small",
       input: chunks
     });
 
-    // Step 4: Prepare chunk docs
+    // Prepare chunk docs
     const chunkDocs = chunks.map((content, i) => ({
-      fileId: fileDoc._id, // reference to file metadata
+      fileId: fileDoc._id,
       chunkIndex: i,
       content,
       vector: embeddingRes.data[i].embedding
     }));
 
-    // Step 5: Insert chunks into the correct collection
+    // Insert chunks
     await faqKnowledgeBase.insertMany(chunkDocs);
+    console.log("✅ Inserted", chunkDocs.length, "chunks into database");
 
-    res.status(200).json({ message: "Success", inserted: chunkDocs.length });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(200).json({
+      message: "Success",
+      inserted: chunkDocs.length,
+      fileUrl: cloudinaryRes.secure_url
+    });
+  } catch (error: any) {
+    console.error("❌ Error in insertKnowledgeBase:", error);
+    res.status(500).json({
+      error: "Internal Server Error",
+      message: error.message
+    });
   }
 }
 
@@ -226,7 +253,7 @@ export async function extractGoogleDocsController(req: Request, res: Response) {
       try {
         await faqKnowledgeBase.insertMany(documentsToInsert);
         console.log(`Inserted ${documentsToInsert.length} embeddings into faqKnowledgeBase`);
-      } catch (dbErr:any) {
+      } catch (dbErr: any) {
         console.error("Database insertion error:", dbErr);
         return res.status(500).json({
           error: "Failed to insert embeddings into database",

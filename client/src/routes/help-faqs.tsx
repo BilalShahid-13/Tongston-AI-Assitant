@@ -1,5 +1,3 @@
-import { ReactTourProvider } from '@/components/reactTourComponents'
-import { helpWalkthroughSteps } from '@/lib/constant'
 import FaqCategoriesTab from '@/pages/helpFaqs/faqCategoriesTab'
 import { createFileRoute } from '@tanstack/react-router'
 
@@ -9,10 +7,10 @@ export const Route = createFileRoute('/help-faqs')({
 
 function RouteComponent() {
   return <>
-    <ReactTourProvider
+    {/* <ReactTourProvider
       walkthroughSteps={helpWalkthroughSteps}
-    >
+    > */}
     <FaqCategoriesTab />
-    </ReactTourProvider>
+    {/* </ReactTourProvider> */}
   </>
 }

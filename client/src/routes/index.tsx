@@ -1,6 +1,4 @@
 import DashboardSection from '@/components/dashboardSection'
-import { ReactTourProvider } from '@/components/reactTourComponents'
-import { homePageWalkthroughSteps } from '@/lib/constant'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/')({
@@ -10,10 +8,10 @@ export const Route = createFileRoute('/')({
 
 function RouteComponent() {
   return <>
-    <ReactTourProvider
+    {/* <ReactTourProvider
       walkthroughSteps={homePageWalkthroughSteps}
-    >
-      <DashboardSection />
-    </ReactTourProvider>
+    > */}
+    <DashboardSection />
+    {/* </ReactTourProvider> */}
   </>
 }

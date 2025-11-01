@@ -2,7 +2,8 @@ import type { IPlan, TimeRange } from "@/types"
 import { format, startOfQuarter, startOfWeek } from "date-fns"
 import { planBySubject } from "./analytics/planbySubject"
 import { planByDiscipline } from "./analytics/planbyDicipline"
-import { planBySchoolLevel } from "./analytics/planbySchooLevel"
+import { planBySchoolLevel, planBySchoolLevelByColumnChart } from "./analytics/planbySchooLevel"
+import { planByTerm } from "./analytics/planbyTerm"
 
 export function transformAnalyticsData(subjectLessonPlan: IPlan[], subjectAssessmentPlan: IPlan[], studentConductLessonPlan: IPlan[], studentConductAssessmentPlan: IPlan[], projectFacilitationPlan: IPlan[], projectTaskPlan: IPlan[]) {
   // ---- Lesson Plans by Subject ----
@@ -164,27 +165,27 @@ export function transformAnalyticsData(subjectLessonPlan: IPlan[], subjectAssess
   return {
     lessonPlansBySubject: planBySubject(subjectLessonPlan, "subjectLessonPlan"),
     lessonPlansByDiscipline: planByDiscipline(subjectLessonPlan, "subjectLessonPlan"),
-    lessonPlansBySchoolLevel: planBySchoolLevel(subjectLessonPlan, "subjectLessonPlan"),
+    lessonPlansBySchoolLevel: planBySchoolLevelByColumnChart(subjectLessonPlan, "subjectLessonPlan"),
     // assessment plan
-    assessmentPlansBySchoolLevel: planBySchoolLevel(subjectAssessmentPlan, "subjectAssessmentPlan"),
+    assessmentPlansBySchoolLevel: planBySchoolLevelByColumnChart(subjectAssessmentPlan, "subjectAssessmentPlan"),
     assessmentsBySubject: planBySubject(subjectAssessmentPlan, "subjectAssessmentPlan"),
     assessmentbyDiscipline: planByDiscipline(subjectAssessmentPlan, "subjectAssessmentPlan"),
     // student conduct lessaon plan
-    studentConductLessonPlanBySubject: planBySubject(studentConductLessonPlan, "studentConductCharacterPlan"),
+    studentConductLessonPlanByTerm: planByTerm(studentConductLessonPlan, "studentConductCharacterPlan"),
     studentConductLessonPlanByDiscipline: planByDiscipline(studentConductLessonPlan, "studentConductCharacterPlan"),
-    studentConductLessonPlanBySchoolLevel: planBySchoolLevel(studentConductLessonPlan, "studentConductCharacterPlan"),
+    studentConductLessonPlanBySchoolLevel: planBySchoolLevelByColumnChart(studentConductLessonPlan, "studentConductCharacterPlan"),
     // student conduct assessment plan
-    studentConductAssessmentPlanBySubject: planBySubject(studentConductAssessmentPlan, "studentConductCharacterPlan"),
+    studentConductAssessmentPlanByTerm: planByTerm(studentConductAssessmentPlan, "studentConductCharacterPlan"),
     studentConductAssessmentPlanByDiscipline: planByDiscipline(studentConductAssessmentPlan, "studentConductCharacterPlan"),
-    studentConductAssessmentPlanBySchoolLevel: planBySchoolLevel(studentConductAssessmentPlan, "studentConductCharacterPlan"),
+    studentConductAssessmentPlanBySchoolLevel: planBySchoolLevelByColumnChart(studentConductAssessmentPlan, "studentConductCharacterPlan"),
     // project facilitation plan
-    projectFacilitationPlanBySubject: planBySubject(projectFacilitationPlan, "projectTaskFacilitationPlan"),
+    projectFacilitationPlanByTerm: planByTerm(projectFacilitationPlan, "projectTaskFacilitationPlan"),
     projectFacilitationPlanByDiscipline: planByDiscipline(projectFacilitationPlan, "projectTaskFacilitationPlan"),
-    projectFacilitationPlanBySchoolLevel: planBySchoolLevel(projectFacilitationPlan, "projectTaskFacilitationPlan"),
+    projectFacilitationPlanBySchoolLevel: planBySchoolLevelByColumnChart(projectFacilitationPlan, "projectTaskFacilitationPlan"),
     // project task plan
-    projectTaskPlanBySubject: planBySubject(projectTaskPlan, "projectTaskPlan"),
+    projectTaskPlanByTerm: planByTerm(projectTaskPlan, "projectTaskPlan"),
     projectTaskPlanByDiscipline: planByDiscipline(projectTaskPlan, "projectTaskPlan"),
-    projectTaskPlanBySchoolLevel: planBySchoolLevel(projectTaskPlan, "projectTaskPlan"),
+    projectTaskPlanBySchoolLevel: planBySchoolLevelByColumnChart(projectTaskPlan, "projectTaskPlan"),
     trendOverTime,
 
   }
@@ -223,6 +224,7 @@ export function filterPlans(
     subject?: string;
     schoolLevel?: string;
     timeRange?: TimeRange;
+    termTheme?: string;
   }
 ) {
   // default timeRange = yearly
@@ -232,6 +234,7 @@ export function filterPlans(
     subject,
     schoolLevel,
     timeRange = "yearly",
+    termTheme
   } = filters;
 
   return plans.filter((plan: any) => {
@@ -269,7 +272,7 @@ export function filterPlans(
         plan.fields?.subjectDiscipline?.toLowerCase() === discipline.toLowerCase()) &&
       (!subject || plan.fields?.subject === subject) &&
       (!schoolLevel || plan.fields?.yearClass === schoolLevel) &&
-      matchesTime
+      matchesTime && (!termTheme || plan.fields?.termTheme === filters?.termTheme || !filters?.termTheme)
     );
   });
 }

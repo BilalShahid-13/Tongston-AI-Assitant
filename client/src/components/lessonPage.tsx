@@ -44,6 +44,26 @@ export default function LessonPage() {
     }
   }, [currentLesson]);
 
+  useEffect(() => {
+    const watermark = document.getElementById("lesson-watermark");
+
+    const setGrayscale = () => watermark?.classList.add("grayscale");
+    const removeGrayscale = () => watermark?.classList.remove("grayscale");
+
+    // Trigger grayscale on suspicious events
+    const blurHandler = () => setGrayscale();
+    const focusHandler = () => removeGrayscale();
+
+    window.addEventListener("blur", blurHandler);
+    window.addEventListener("focus", focusHandler);
+
+    return () => {
+      window.removeEventListener("blur", blurHandler);
+      window.removeEventListener("focus", focusHandler);
+    };
+  }, []);
+
+
 
   // Extract lesson info from markdown content
   const extractInfo = (content: string) => {
@@ -119,39 +139,46 @@ export default function LessonPage() {
           </div>
 
           {/* Lesson Plan Content */}
-          <div className="bg-white dark:bg-zinc-800 rounded-lg shadow-lg ">
+          <div className="relative bg-white dark:bg-zinc-800 rounded-lg shadow-lg">
             {/* Title Header */}
-            <div className="bg-gradient-to-r from-[var(--k12-primary)] via-[var(--k12-secondary)]
-             to-[#ff8c00] text-zinc-800 p-6">
+            <div
+              className="bg-gradient-to-r from-[var(--k12-primary)] via-[var(--k12-secondary)]
+      to-[#ff8c00] text-zinc-800 p-6"
+            >
               <div className="flex items-center gap-3 mb-2">
                 <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
                   <FileText className="h-6 w-6" />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold">{currentLesson.metaData || "Lesson Plan"}</h1>
-                  <p className=" text-lg">{lessonInfo.subject}</p>
+                  <h1 className="text-3xl font-bold">
+                    {currentLesson.metaData || "Lesson Plan"}
+                  </h1>
+                  <p className="text-lg">{lessonInfo.subject}</p>
                 </div>
               </div>
             </div>
 
             {/* Content */}
-            <div className="p-8 select-none relative">
-              <div className="absolute grid grid-cols-4 gap-32 z-0 justify-center items-center w-full h-full">
-                {Array.from({ length: watermarkCount }).map((_, i) => (
-                  <Watermark key={i} textSize="1rem" imageSize="40px" />
-                ))}
+            <div className="relative p-8 select-none overflow-hidden">
+              {/* ✅ Watermark centered over content only */}
+              <div className="absolute inset-0 flex justify-center items-center z-0">
+                <Watermark textSize="8rem" imageSize="25vw" />
               </div>
 
-              <div ref={contentRef} className="prose prose-lg max-w-none dark:prose-invert">
-                <Markdown>
-                  {currentLesson.answer}
-                </Markdown>
+              {/* Markdown content */}
+              <div
+                ref={contentRef}
+                className="prose prose-lg max-w-none dark:prose-invert relative z-10"
+              >
+                <Markdown>{currentLesson.answer}</Markdown>
               </div>
+
               <div className="print-blocked hidden">
                 Printing is disabled for this protected lesson.
               </div>
             </div>
           </div>
+
         </motion.div>
       </div>
     </div>

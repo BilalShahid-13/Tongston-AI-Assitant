@@ -77,36 +77,33 @@ export function AdminForm({ onUploadSuccess }: AdminFormProps) {
   // Existing file upload functionality
   async function onSubmit(values: AdminFormValues) {
     try {
-      const formData = new FormData()
+      const results = [];
 
-      // append category if you need it in backend
-      formData.append("folder", "knowledgeBase")
+      // ✅ Upload each file separately
+      for (const file of values.files) {
+        const formData = new FormData();
+        formData.append("folder", "knowledgeBase");
+        formData.append("file", file); // Only one file per request
 
-      // append each file
-      values.files.forEach((file) => {
-        formData.append("file", file) // backend expects "file" from multer.single("file")
-      })
+        const res = await axios.post(`${backendApi}/api/insertKnowledgeBase`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
 
-      const res = await axios.post(`${backendApi}/api/insertKnowledgeBase`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-
-      if (res.status === 200) {
-        if (onUploadSuccess) {
-          onUploadSuccess()
-        }
+        results.push(res.data);
       }
 
-      console.log("Server response:", res.data)
-      toast.success("Knowledge base updated!")
-      form.reset({
-        files: [],
-      })
+      if (onUploadSuccess) {
+        onUploadSuccess();
+      }
+
+      console.log("All files uploaded:", results);
+      toast.success(`${results.length} file(s) uploaded successfully!`);
+      form.reset({ files: [] });
     } catch (error: any) {
-      console.error(error)
-      toast.error(error.response?.data?.error || "Upload failed")
+      console.error(error);
+      toast.error(error.response?.data?.error || "Upload failed");
     }
   }
 

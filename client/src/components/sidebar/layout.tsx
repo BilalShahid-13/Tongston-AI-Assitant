@@ -21,7 +21,7 @@ export function Layout() {
       <SidebarTrigger
         variant="outline"
         className="absolute top-0 left-0 max-sm:ml-4 max-sm:mt-3
-        ml-[22rem] mt-[0.8rem]
+        ml-[2rem] mt-[0.8rem]
         max-sm:flex"
         size="lg"
       />

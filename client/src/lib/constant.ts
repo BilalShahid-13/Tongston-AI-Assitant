@@ -36,8 +36,8 @@ import {
   Users
 } from "lucide-react";
 
-export const backendApi = 'https://tongston-ai-assitant-rt92.vercel.app';
-// export const backendApi = 'http://localhost:5000';
+// export const backendApi = 'https://tongston-ai-assitant-rt92.vercel.app';
+export const backendApi = 'http://localhost:5000';
 export const feedbackGeneratorCount = 3;
 
 export const navbarItems = [
@@ -60,26 +60,26 @@ export const navbarItems = [
 ];
 
 export const sidebarItems = [
+  // {
+  //   name: "Dashboard",
+  //   id: "dashboard",
+  //   icon: LayoutDashboard,
+  //   route: "/"
+  //   // route: "/ai-assistant"
+  // },
   {
-    name: "Dashboard",
-    id: "dashboard",
-    icon: LayoutDashboard,
-    route: "/"
-    // route: "/ai-assistant"
-  },
-  {
-    name: "AI Assistant",
+    name: "AI Assist - Education & Learning",
     id: "ai-assistant",
     icon: Bot,
     route: "/ai-assistant"
     // route: "/ai-assistant"
   },
-  {
-    name: "Help & FAQs",
-    id: "help-faqs",
-    icon: CircleHelp,
-    route: "/help-faqs",
-  },
+  // {
+  //   name: "Help & FAQs",
+  //   id: "help-faqs",
+  //   icon: CircleHelp,
+  //   route: "/help-faqs",
+  // },
   {
     name: "Feedback",
     id: "feedback",
@@ -87,7 +87,7 @@ export const sidebarItems = [
     route: "/feedback",
   },
   {
-    name: "My Files",
+    name: "Files/Docs",
     id: "my-files",
     icon: Folder,
     route: "/myFiles",

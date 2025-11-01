@@ -80,20 +80,22 @@ export function BarChartCustom({
 
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
 
-            {yKey && (
-              <Bar dataKey={yKey} radius={8}>
-                {data.map((entry: entryProp, index: number) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={
-                      chartColor
-                        ? chartColor
-                        : schoolLevelColors[entry.name] || "#CCCCCC"
-                    }
-                  />
-                ))}
-              </Bar>
-            )}
+            {
+              Array.isArray(data) && data.length > 0 ?
+                yKey && (
+                  <Bar dataKey={yKey} radius={8}>
+                    {data?.map((entry: entryProp, index: number) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={
+                          chartColor
+                            ? chartColor
+                            : schoolLevelColors[entry.name] || "#CCCCCC"
+                        }
+                      />
+                    ))}
+                  </Bar>
+                ) : "No Data Available"}
           </BarChart>
         </ChartContainer>
       </CardContent>

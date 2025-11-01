@@ -9,8 +9,7 @@ export function planBySubject(subjectLessonPlan: IPlan[],
     ?.filter(item => item.plan === plan)
     ?.forEach((item: any) => {
       const subject =
-        item.fields?.subject ||
-        item.fields[12] || // fallback index for subject
+        item.fields?.subject
         "Unknown"
       subjectCounts[subject] = (subjectCounts[subject] || 0) + 1
     })

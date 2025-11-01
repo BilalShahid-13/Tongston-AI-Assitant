@@ -238,3 +238,8 @@ code {
 .print-notice {
   display: none;
 }
+
+
+.grayscale {
+  filter: grayscale(100%) contrast(120%) brightness(0.8);
+}

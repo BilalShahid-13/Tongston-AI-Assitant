@@ -50,7 +50,7 @@ export default function SettingsSwitches() {
       </div>
 
       {/* 🧭 Tour Toggle */}
-      <div className="flex items-center justify-between p-4 border rounded-md">
+      {/* <div className="flex items-center justify-between p-4 border rounded-md">
         <div>
           <Label htmlFor="tour" className="font-semibold cursor-pointer">Step by Step Walkthrough</Label>
           <p className="cursor-alias text-sm text-muted-foreground">
@@ -66,7 +66,7 @@ export default function SettingsSwitches() {
           }}
           aria-label="Toggle Tour"
         />
-      </div>
+      </div> */}
     </div>
   );
 }

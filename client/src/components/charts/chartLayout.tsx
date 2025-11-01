@@ -6,10 +6,11 @@ import { BarChartStacked } from "./BarChartStack"
 
 interface ChartLayoutProp {
   planChartList: CharListType // ✅ Changed from planChart to planChartList
+  defaultChart?: string
 }
 
-export default function ChartLayout({ planChartList }: ChartLayoutProp) {
-  const [selectedChart, setSelectedChart] = useState("discipline")
+export default function ChartLayout({ planChartList, defaultChart = "discipline" }: ChartLayoutProp) {
+  const [selectedChart, setSelectedChart] = useState(defaultChart)
 
   // ✅ Find the selected chart
   const planChart = planChartList.find((c) => c.key === selectedChart)

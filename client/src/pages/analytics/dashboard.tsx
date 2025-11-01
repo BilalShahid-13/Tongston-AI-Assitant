@@ -13,6 +13,7 @@ import { useProjectTaskStore } from "@/store/analytics/projectTask";
 import { useSubjectAssessmentStore } from "@/store/analytics/subjectAssessment";
 import { useSubjectLessonStore } from "@/store/analytics/subjectLesson";
 import type { AnalyticsCardItem, CharListType, IPlan, Variant } from "@/types";
+import { planBySchoolLevelByColumnChart } from "@/utils/analytics/planbySchooLevel";
 import { filterbyPlan } from "@/utils/analyticsTransform";
 import { useAnalyticsTransform } from "@/utils/useAnalyticsTransform";
 import { useQuery } from "@tanstack/react-query";
@@ -106,20 +107,20 @@ export default function Dashboard() {
     assessmentbyDiscipline,
     assessmentPlansBySchoolLevel,
     // student conduct plan
-    studentConductLessonPlanBySubject,
-    studentConductLessonPlanByDiscipline,
+    studentConductLessonPlanByTerm,
+    // studentConductLessonPlanByDiscipline,
     studentConductLessonPlanBySchoolLevel,
     // student conduct assessment plan
-    studentConductAssessmentPlanBySubject,
-    studentConductAssessmentPlanByDiscipline,
+    studentConductAssessmentPlanByTerm,
+    // studentConductAssessmentPlanByDiscipline,
     studentConductAssessmentPlanBySchoolLevel,
     // project facilitation plan
-    projectFacilitationPlanBySubject,
-    projectFacilitationPlanByDiscipline,
+    projectFacilitationPlanByTerm,
+    // projectFacilitationPlanByDiscipline,
     projectFacilitationPlanBySchoolLevel,
     // project task plan
-    projectTaskPlanBySubject,
-    projectTaskPlanByDiscipline,
+    projectTaskPlanByTerm,
+    // projectTaskPlanByDiscipline,
     projectTaskPlanBySchoolLevel
     // trendOverTime,
   } = useAnalyticsTransform(filterGlobalSubjectLessonPlan, filterGlobalSubjectAssessmentPlan, filterGlobalConductCharacterPlan, filterConductCharacterAssessmentsGlobalPlan, filterGlobalProjectFacilitationPlan, filterGlobalProjectTaskPlan)
@@ -412,6 +413,9 @@ export default function Dashboard() {
 
   }
 
+  console.log(
+    "subjectLesson", filterGlobalSubjectLessonPlan)
+
   const { isLoading, isError } = useQuery<IPlan[], Error>({
     queryKey: ["analyticsData"],
     queryFn: fetchAnalyticsData,
@@ -428,7 +432,7 @@ export default function Dashboard() {
   const lessonPlanChartList: CharListType = [
     {
       type: "bar", // custom flag if you want
-      title: "Lesson Plans by Discipline",
+      title: "Subject Lesson Plans by Discipline",
       description: "Lesson plan counts grouped by six fixed disciplines.",
       data: lessonPlansByDiscipline,
       xKey: "name",
@@ -438,19 +442,30 @@ export default function Dashboard() {
       chartColor: "#fac815",
     },
     {
-      type: "stacked", // custom flag if you want
-      title: "Lesson Plans by School Level",
-      description: "Monthly breakdown of lesson plans across Nursery, Primary, Secondary, and University.",
+      type: "bar", // custom flag if you want
+      title: "Subject Lesson Plans by School Level",
+      description: "Lesson plans across Nursery, Primary, Secondary",
       data: lessonPlansBySchoolLevel,
       key: "schoolLevel",
-
-      xKey: "month",
-      stackKeys: ["Nursery", "Primary", "Secondary", "University"],
-      colors: ["#F5C242", "#E04A2F", "#111111", "#707070"],
+      xKey: "name",
+      yKey: "count",
+      yaxisDomain: [0, "auto"] as const,
+      chartColor: "#fac815",
     },
+    // {
+    //   type: "stacked", // custom flag if you want
+    //   title: "Subject Lesson Plans by School Level",
+    //   description: "Monthly breakdown of lesson plans across Nursery, Primary, Secondary",
+    //   data: lessonPlansBySchoolLevel,
+    //   key: "schoolLevel",
+
+    //   xKey: "month",
+    //   stackKeys: ["Nursery", "Primary", "Secondary"],
+    //   colors: ["#F5C242", "#E04A2F", "#111111", "#707070"],
+    // },
     {
       type: "bar",
-      title: "Lesson Plans by Subject",
+      title: "Subject Lesson Plans by Subject",
       description: "Top 10 subjects by lesson plan count (+ more)",
       data: lessonPlansBySubject,
       key: "subject",
@@ -464,29 +479,29 @@ export default function Dashboard() {
   const subjectAssessmentChartList: CharListType = [
     {
       type: "bar", // custom flag if you want
-      title: "Assessments by Discipline",
-      description: "Assessment plan counts grouped by six fixed disciplines.",
+      title: "Subject Assessments by Discipline",
+      description: "Assessment plans counts grouped by six fixed disciplines.",
       data: assessmentbyDiscipline,
       xKey: "name",
-      key: "discipline",
       yKey: "count",
+      key: "discipline",
       yaxisDomain: ["auto", "auto"] as const,
       chartColor: "#fac815",
     },
     {
-      type: "stacked", // custom flag if you want
-      title: "Assessment Plans by School Level",
-      description: "Monthly breakdown of assessment plans across Nursery, Primary, Secondary, and University.",
+      type: "bar", // custom flag if you want
+      title: "Subject Assessment Plans by School Level",
+      description: "Assessment plans across Nursery, Primary, Secondary",
       data: assessmentPlansBySchoolLevel,
       key: "schoolLevel",
-
-      xKey: "month",
-      stackKeys: ["Nursery", "Primary", "Secondary", "University"],
-      colors: ["#F5C242", "#E04A2F", "#111111", "#707070"],
+      xKey: "name",
+      yKey: "count",
+      yaxisDomain: [0, "auto"] as const,
+      chartColor: "#fac815",
     },
     {
       type: "bar",
-      title: "Assessment plans by Discipline",
+      title: "Subject Assessment plans by Discipline",
       description: "Top 10 subjects by assessment plans count (+ more)",
       data: assessmentsBySubject,
       key: "subject",
@@ -499,147 +514,143 @@ export default function Dashboard() {
 
   const studentConductChartList: CharListType = [
     {
-      type: "bar", // custom flag if you want
-      title: "Student Conduct Character Lesson Plan by Discipline",
-      description: "Student Conduct Character Lesson plan counts grouped by six fixed disciplines.",
-      data: studentConductLessonPlanByDiscipline,
+      type: "bar",
+      title: "Student Conduct and Character Lesson Plan by Term",
+      description: "Student Conduct Character Lesson plan counts grouped by three term themes.",
+      data: studentConductLessonPlanByTerm,
       xKey: "name",
-      key: "discipline",
       yKey: "count",
+      key: "term",
       yaxisDomain: ["auto", "auto"] as const,
       chartColor: "#fac815",
     },
     {
-      type: "stacked", // custom flag if you want
-      title: "Student Conduct Character Lesson Plan by School Level",
-      description: "Monthly breakdown of student conduct character lesson plans across Nursery, Primary, Secondary, and University.",
+      type: "bar", // custom flag if you want
+      title: "Student Conduct and Character Lesson Plan by by School Level",
+      description: "Student conduct character lesson plans across Nursery, Primary, Secondary",
       data: studentConductLessonPlanBySchoolLevel,
       key: "schoolLevel",
-
-      xKey: "month",
-      stackKeys: ["Nursery", "Primary", "Secondary", "University"],
-      colors: ["#F5C242", "#E04A2F", "#111111", "#707070"],
-    },
-    {
-      type: "bar",
-      title: "Student Conduct Character Lesson plans by Discipline",
-      description: "Top 10 subjects by lesson plan count (+ more)",
-      data: studentConductLessonPlanBySubject,
-      key: "subject",
       xKey: "name",
       yKey: "count",
-      yaxisDomain: [0, 10] as const,
+      yaxisDomain: [0, "auto"] as const,
       chartColor: "#fac815",
     },
+    // {
+    //   type: "bar",
+    //   title: "Student Conduct and Character Lesson Plan by Discipline",
+    //   description: "Top 10 subjects by lesson plan count (+ more)",
+    //   data: studentConductLessonPlanBySubject,
+    //   key: "grade",
+    //   xKey: "name",
+    //   yKey: "count",
+    //   yaxisDomain: [0, 10] as const,
+    //   chartColor: "#fac815",
+    // },
   ];
   const studentConductAssessmentChartList: CharListType = [
     {
-      type: "bar", // custom flag if you want
-      title: "Student Conduct Character Assessment Plan by Discipline",
-      description: "Student Conduct Character Assessment Plan counts grouped by six fixed disciplines.",
-      data: studentConductAssessmentPlanByDiscipline,
+      type: "bar",
+      title: "Student Conduct and Character Assessment Plan by Term Theme",
+      description:
+        "Displays the number of Student Conduct and Character Assessment Plans categorized by three fixed term themes: Personal, Professional, and Public Development.",
+      data: studentConductAssessmentPlanByTerm,
       xKey: "name",
-      key: "discipline",
       yKey: "count",
+      key: "term",
       yaxisDomain: ["auto", "auto"] as const,
       chartColor: "#fac815",
     },
     {
-      type: "stacked", // custom flag if you want
+      type: "bar", // custom flag if you want
       title: "Student Conduct Character Assessment Plan by School Level",
-      description: "Monthly breakdown of student conduct character assessment plans across Nursery, Primary, Secondary, and University.",
+      description: "Student conduct character assessment plans across Nursery, Primary, Secondary",
       data: studentConductAssessmentPlanBySchoolLevel,
       key: "schoolLevel",
-
-      xKey: "month",
-      stackKeys: ["Nursery", "Primary", "Secondary", "University"],
-      colors: ["#F5C242", "#E04A2F", "#111111", "#707070"],
-    },
-    {
-      type: "bar",
-      title: "Student Conduct Character Assessment plans by Discipline",
-      description: "Top 10 subjects by student conduct character assessment plan count (+ more)",
-      data: studentConductAssessmentPlanBySubject,
-      key: "subject",
       xKey: "name",
-      yKey: "count",
-      yaxisDomain: [0, 10] as const,
+      yKey: "count", yaxisDomain: ["auto", "auto"] as const,
       chartColor: "#fac815",
     },
+    // {
+    //   type: "bar",
+    //   title: "Student Conduct Character Assessment plans by Discipline",
+    //   description: "Top 10 subjects by student conduct character assessment plan count (+ more)",
+    //   data: studentConductAssessmentPlanByDiscipline,
+    //   key: "grade",
+    //   xKey: "name",
+    //   yKey: "count",
+    //   yaxisDomain: [0, 10] as const,
+    //   chartColor: "#fac815",
+    // },
   ];
   const projectFacilitationChartList: CharListType = [
     {
       type: "bar", // custom flag if you want
-      title: "Project Facilitation Plan by Discipline",
-      description: "Project Facilitation Plan counts grouped by six fixed disciplines.",
-      data: projectFacilitationPlanByDiscipline,
+      title: "Project Facilitation Plan by Term",
+      description: "Project Facilitation Plans categorized by three fixed term themes: Personal, Professional, and Public Development.",
+      data: projectFacilitationPlanByTerm,
       xKey: "name",
-      key: "discipline",
+      key: "term",
       yKey: "count",
       yaxisDomain: ["auto", "auto"] as const,
       chartColor: "#fac815",
     },
     {
-      type: "stacked", // custom flag if you want
+      type: "bar", // custom flag if you want
       title: "Project Facilitation Plan by School Level",
-      description: "Monthly breakdown of project facilitation plan across Nursery, Primary, Secondary, and University.",
+      description: "Project facilitation plan across Nursery, Primary, Secondary",
       data: projectFacilitationPlanBySchoolLevel,
       key: "schoolLevel",
-
-      xKey: "month",
-      stackKeys: ["Nursery", "Primary", "Secondary", "University"],
-      colors: ["#F5C242", "#E04A2F", "#111111", "#707070"],
-    },
-    {
-      type: "bar",
-      title: "Project Facilitation Plans by Discipline",
-      description: "Top 10 subjects by project facilitation plan count (+ more)",
-      data: projectFacilitationPlanBySubject,
-      key: "subject",
-      xKey: "name",
       yKey: "count",
-      yaxisDomain: [0, 10] as const,
+      xKey: "name",
+      yaxisDomain: ["auto", "auto"] as const,
       chartColor: "#fac815",
     },
+    // {
+    //   type: "bar",
+    //   title: "Project Facilitation Plans by Discipline",
+    //   description: "Top 10 subjects by project facilitation plan count (+ more)",
+    //   data: projectFacilitationPlanByDiscipline,
+    //   key: "grade",
+    //   xKey: "name",
+    //   yKey: "count",
+    //   yaxisDomain: [0, 10] as const,
+    //   chartColor: "#fac815",
+    // },
   ];
   const projectTaskChartList: CharListType = [
     {
       type: "bar", // custom flag if you want
-      title: "Project Tasks by Discipline",
-      description: "Project Tasks counts grouped by six fixed disciplines.",
-      data: projectTaskPlanByDiscipline,
+      title: "Project Tasks by Term",
+      description: "Project Tasks categorized by three fixed term themes: Personal, Professional, and Public Development.",
+      data: projectTaskPlanByTerm,
       xKey: "name",
-      key: "discipline",
       yKey: "count",
+      key: "term",
       yaxisDomain: ["auto", "auto"] as const,
       chartColor: "#fac815",
     },
     {
-      type: "stacked", // custom flag if you want
+      type: "bar", // custom flag if you want
       title: "Project Tasks by School Level",
       description: "Monthly breakdown of project tasks across Nursery, Primary, Secondary, and University.",
       data: projectTaskPlanBySchoolLevel,
       key: "schoolLevel",
-
-      xKey: "month",
-      stackKeys: ["Nursery", "Primary", "Secondary", "University"],
-      colors: ["#F5C242", "#E04A2F", "#111111", "#707070"],
-    },
-    {
-      type: "bar",
-      title: "Project Tasks by Discipline",
-      description: "Top 10 subjects by project tasks count (+ more)",
-      data: projectTaskPlanBySubject,
-      key: "subject",
       xKey: "name",
-      yKey: "count",
-      yaxisDomain: [0, 10] as const,
+      yKey: "count", yaxisDomain: ["auto", "auto"] as const,
       chartColor: "#fac815",
     },
+    // {
+    //   type: "bar",
+    //   title: "Project Tasks by Discipline",
+    //   description: "Top 10 subjects by project tasks count (+ more)",
+    //   data: projectTaskPlanByDiscipline,
+    //   key: "grade",
+    //   xKey: "name",
+    //   yKey: "count",
+    //   yaxisDomain: [0, 10] as const,
+    //   chartColor: "#fac815",
+    // },
   ];
-
-  console.log('filterGlobalConductCharacterPlan', filterGlobalConductCharacterPlan,
-    'filterConductCharacterAssessmentsGlobalPlan', filterConductCharacterAssessmentsGlobalPlan)
 
   return (
     <>
@@ -686,11 +697,20 @@ export default function Dashboard() {
         {/* Render Selected Chart */}
         <div className="relative flex flex-col gap-4">
           <ChartLayout planChartList={lessonPlanChartList} />
+
           <ChartLayout planChartList={subjectAssessmentChartList} />
-          <ChartLayout planChartList={studentConductChartList} />
-          <ChartLayout planChartList={studentConductAssessmentChartList} />
-          <ChartLayout planChartList={projectFacilitationChartList} />
-          <ChartLayout planChartList={projectTaskChartList} />
+
+          <ChartLayout planChartList={studentConductChartList}
+            defaultChart={studentConductChartList[0].key} />
+
+          <ChartLayout planChartList={studentConductAssessmentChartList}
+            defaultChart={studentConductAssessmentChartList[0].key} />
+
+          <ChartLayout planChartList={projectFacilitationChartList}
+            defaultChart={projectFacilitationChartList[0].key} />
+
+          <ChartLayout planChartList={projectTaskChartList}
+            defaultChart={projectTaskChartList[0].key} />
         </div>
         <div>
         </div>

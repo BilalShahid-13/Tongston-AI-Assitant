@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { allCountryNames, subjectLists, yearClassMappings } from '@/constants/lessonPlanConstant';
+import { allCountryNames, subjectLists, termList, yearClassMappings } from '@/constants/lessonPlanConstant';
 import { useGlobalFiltersStore } from '@/store/analytics/globalFilters';
 import type { TimeRange } from '@/types';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -77,7 +77,7 @@ export const SelectWithIcon: React.FC<SelectWithIconProps> = ({
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>
-          {options.map((option,index) => {
+          {options.map((option, index) => {
             const optionValue = typeof option === 'object' ? option.value : option;
             const optionLabel = typeof option === 'object' ? option.label : option;
             return (
@@ -94,7 +94,7 @@ export const SelectWithIcon: React.FC<SelectWithIconProps> = ({
 };
 
 // Main Filter Component
-type FilterKeys = "timeRange" | "country" | "discipline" | "subject" | "schoolLevel";
+type FilterKeys = "timeRange" | "country" | "discipline" | "subject" | "schoolLevel" | "term";
 
 interface FiltersState {
   timeRange: TimeRange;
@@ -102,6 +102,7 @@ interface FiltersState {
   discipline: string;
   subject: string;
   schoolLevel: string;
+  term: string;
 }
 
 export default function GlobalFiltersBar() {
@@ -110,10 +111,11 @@ export default function GlobalFiltersBar() {
     country: "",
     discipline: "",
     subject: "",
-    schoolLevel: ""
+    schoolLevel: "",
+    term: ""
   });
 
-  const { setCountry, setDiscipline, country,
+  const { setCountry, setDiscipline, country, setTerm,
     resetFilters } = useGlobalFiltersStore()
 
   const updateFilter = (key: FilterKeys, value: string) => {
@@ -126,6 +128,8 @@ export default function GlobalFiltersBar() {
       case "subject": actions.setSubject(value); break;
       case "schoolLevel": actions.setSchoolLevel(value); break;
       case "timeRange": actions.setTimeRange(value as TimeRange); break;
+      case "term": actions.setTerm(value as TimeRange); break;
+
     }
   };
 
@@ -135,7 +139,8 @@ export default function GlobalFiltersBar() {
       country: "",
       discipline: "",
       subject: "",
-      schoolLevel: ""
+      schoolLevel: "",
+      term: "",
     });
 
     resetFilters()
@@ -233,9 +238,24 @@ export default function GlobalFiltersBar() {
               <SelectWithIcon
                 label="School Level"
                 value={filters.schoolLevel}
-                onSelect={(value) => updateFilter('schoolLevel', value)}
+                onSelect={(value) => {
+                  updateFilter('schoolLevel', value)
+                  // setSchoolLevel(value)
+                }}
                 options={yearClassMappings.map(item => item.normalized)}
                 placeholder="Select school level"
+                icon={GraduationCap}
+              />
+              {/* Term Filter */}
+              <SelectWithIcon
+                label="Term"
+                value={filters.term}
+                onSelect={(value) => {
+                  updateFilter('term', value)
+                  setTerm(value)
+                }}
+                options={termList.map(item => item)}
+                placeholder="Select term"
                 icon={GraduationCap}
               />
             </div>
@@ -266,6 +286,7 @@ export default function GlobalFiltersBar() {
                               discipline: "Discipline",
                               subject: "Subject",
                               schoolLevel: "School Level",
+                              term: "Term",
                             };
 
                             return (

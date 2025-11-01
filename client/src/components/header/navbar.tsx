@@ -11,13 +11,13 @@ const Navbar = () => {
           justify-start items-center
   ${isMobile ? "gap-0" : "gap-0"} gap-4`}
       >
-        <div className="max-sm:ml-12 flex flex-row items-center gap-2 justify-center">
+        {/* <div className="max-sm:ml-12 flex flex-row items-center gap-2 justify-center">
           <img className="w-8 h-8" src="/favicon.ico" />
           <h2 className="text-[var(--k12-secondary)]
            font-semibold text-xl max-sm:text-sm">
             T-World K-12 EntreEdu AI
           </h2>
-        </div>
+        </div> */}
       </div>
       <UserProfile />
     </nav>

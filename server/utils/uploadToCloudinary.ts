@@ -1,18 +1,32 @@
 import { UploadApiResponse } from "cloudinary";
 import cloudinary from "../config/cloudinary";
 
-export const uploadToCloudinary = (buffer: Buffer, filename: string, folder: string = "/") => {
+export const uploadToCloudinary = (
+  buffer: Buffer,
+  filename: string,
+  folder: string = "knowledgeBase"
+): Promise<UploadApiResponse> => {
   return new Promise((resolve, reject) => {
+    const nameWithoutExtension = filename.replace(/\.[^/.]+$/, '');
+
     const stream = cloudinary.uploader.upload_stream(
       {
-        public_id: `${folder}${Date.now()}-${filename.replace(/\s+/g, "_")}`,
+        folder: `tongston/${folder}`, // ✅ No leading slashes
+        public_id: `${Date.now()}-${nameWithoutExtension.replace(/\s+/g, "_")}`,
         resource_type: "auto"
       },
       (error, result) => {
-        if (error) reject(error);
-        else resolve(result as UploadApiResponse);
+        if (error) {
+          console.error("❌ Cloudinary upload error:", error);
+          reject(error);
+        } else if (result) {
+          resolve(result);
+        } else {
+          reject(new Error("Upload failed: No result returned"));
+        }
       }
     );
+
     stream.end(buffer);
   });
 };
