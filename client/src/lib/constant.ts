@@ -34,8 +34,8 @@ import {
   Users
 } from "lucide-react";
 
-// export const backendApi = 'https://tongston-ai-assitant-rt92.vercel.app';
-export const backendApi = 'http://localhost:5000';
+export const backendApi = 'https://tongston-ai-assitant-rt92-git-a-72a91e-bilalshahid-13s-projects.vercel.app';
+// export const backendApi = 'http://localhost:5000';
 export const feedbackGeneratorCount = 3;
 
 export const navbarItems = [
