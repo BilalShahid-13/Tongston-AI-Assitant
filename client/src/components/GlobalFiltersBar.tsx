@@ -10,18 +10,27 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { allCountryNames, subjectLists, termList, yearClassMappings } from '@/constants/lessonPlanConstant';
+import { useConductCharacterAssessmentsStore } from '@/store/analytics/conductCharacterAssessments';
+import { useConductCharacterLessonStore } from '@/store/analytics/conductCharacterLesson';
 import { useGlobalFiltersStore } from '@/store/analytics/globalFilters';
+import { useProjectFacilitationStore } from '@/store/analytics/projectFacilitation';
+import { useProjectTaskStore } from '@/store/analytics/projectTask';
+import { useSubjectLessonStore } from '@/store/analytics/subjectLesson';
+import { useSubjectAssessmentStore } from '@/store/analyticsStore';
 import type { TimeRange } from '@/types';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   BookOpen,
   Calendar,
+  CalendarDays,
   Filter,
   Globe,
   GraduationCap,
+  Lightbulb,
+  User,
   X
 } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 
 // Time range options with proper display mapping
@@ -82,7 +91,7 @@ export const SelectWithIcon: React.FC<SelectWithIconProps> = ({
             const optionLabel = typeof option === 'object' ? option.label : option;
             return (
               <SelectItem key={index} value={optionValue}
-                className='capitalize'>
+                className='capitalize max-w-sm'>
                 {optionLabel}
               </SelectItem>
             );
@@ -94,7 +103,7 @@ export const SelectWithIcon: React.FC<SelectWithIconProps> = ({
 };
 
 // Main Filter Component
-type FilterKeys = "timeRange" | "country" | "discipline" | "subject" | "schoolLevel" | "term";
+type FilterKeys = "timeRange" | "country" | "discipline" | "subject" | "schoolLevel" | "term" | "topic";
 
 interface FiltersState {
   timeRange: TimeRange;
@@ -103,6 +112,7 @@ interface FiltersState {
   subject: string;
   schoolLevel: string;
   term: string;
+  topic: string;
 }
 
 export default function GlobalFiltersBar() {
@@ -112,24 +122,60 @@ export default function GlobalFiltersBar() {
     discipline: "",
     subject: "",
     schoolLevel: "",
-    term: ""
+    term: "",
+    topic: "",
   });
 
-  const { setCountry, setDiscipline, country, setTerm,
-    resetFilters } = useGlobalFiltersStore()
+  const { setCountry, setDiscipline, setTerm, setTopic,
+    resetFilters } = useGlobalFiltersStore();
+
+
+  const subjectLessonPlan = useSubjectLessonStore(state => state.subjectLessonPlan);
+  const subjectAssessmentPlan = useSubjectAssessmentStore(state => state.subjectAssessmentPlan);
+  const conductCharacterLessonPlan = useConductCharacterLessonStore(state => state.conductCharacterLessonPlan);
+  const conductCharacterAssessmentsPlan = useConductCharacterAssessmentsStore(state => state.conductCharacterAssessmentsPlan);
+  const projectTaskPlan = useProjectTaskStore(state => state.projectTaskPlan);
+  const projectFacilitationPlan = useProjectFacilitationStore(state => state.projectFacilitationPlan);
+
+  const topicOptions = useMemo(() => {
+    const plans = [
+      subjectLessonPlan,
+      subjectAssessmentPlan,
+      conductCharacterLessonPlan,
+      conductCharacterAssessmentsPlan,
+      projectTaskPlan,
+      projectFacilitationPlan
+    ];
+
+    const topics = plans
+      .flat()
+      .map(p => p?.fields?.topic)
+      .filter(Boolean);
+
+    return [...new Set(topics)] as string[];
+  }, [
+    subjectLessonPlan,
+    subjectAssessmentPlan,
+    conductCharacterLessonPlan,
+    conductCharacterAssessmentsPlan,
+    projectTaskPlan,
+    projectFacilitationPlan
+  ]);
+
 
   const updateFilter = (key: FilterKeys, value: string) => {
     setFilters(prev => ({ ...prev, [key]: value }));
 
     const actions = useGlobalFiltersStore.getState();
+
     switch (key) {
       case "country": actions.setCountry(value); break;
       case "discipline": actions.setDiscipline(value); break;
       case "subject": actions.setSubject(value); break;
       case "schoolLevel": actions.setSchoolLevel(value); break;
       case "timeRange": actions.setTimeRange(value as TimeRange); break;
-      case "term": actions.setTerm(value as TimeRange); break;
-
+      case "term": actions.setTerm(value); break;
+      case "topic": actions.setTopic(value); break;
     }
   };
 
@@ -141,6 +187,7 @@ export default function GlobalFiltersBar() {
       subject: "",
       schoolLevel: "",
       term: "",
+      topic: "",
     });
 
     resetFilters()
@@ -158,7 +205,7 @@ export default function GlobalFiltersBar() {
   return (
     <div className="bg-background p-2">
       <div className="mx-auto">
-        {country}
+        {/* {country} */}
         <Card className='h-auto'>
           <CardHeader>
             <div className="flex items-center justify-between">
@@ -192,7 +239,7 @@ export default function GlobalFiltersBar() {
               <SelectWithIcon
                 label="Time Range"
                 value={filters.timeRange}
-                onSelect={(value) => updateFilter('timeRange', value)}
+                onSelect={(value) => updateFilter('timeRange', value)}  // ✅ Just this
                 options={timeRangeOptions}
                 placeholder="Select time range"
                 icon={Calendar}
@@ -256,7 +303,30 @@ export default function GlobalFiltersBar() {
                 }}
                 options={termList.map(item => item)}
                 placeholder="Select term"
-                icon={GraduationCap}
+                icon={CalendarDays}
+              />
+              {/* topic Filter */}
+              <SelectWithIcon
+                label="Topic"
+                value={filters.topic}
+                onSelect={(value) => {
+                  updateFilter('topic', value)
+                  setTopic(value)
+                }}
+                options={topicOptions}
+                placeholder="Select student"
+                icon={Lightbulb}
+              />
+              <SelectWithIcon
+                label="Student"
+                value={filters.topic}
+                onSelect={() => {
+                  // updateFilter('topic', value)
+                  // setTopic(value)
+                }}
+                options={["Student Option Coming Soon"]}
+                placeholder="Select student"
+                icon={User}
               />
             </div>
 
@@ -287,6 +357,7 @@ export default function GlobalFiltersBar() {
                               subject: "Subject",
                               schoolLevel: "School Level",
                               term: "Term",
+                              topic: "Topic",
                             };
 
                             return (

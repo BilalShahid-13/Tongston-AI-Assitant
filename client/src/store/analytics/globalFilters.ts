@@ -17,6 +17,7 @@ interface GlobalFiltersState {
   timeRange: TimeRange;
   isGlobalFilter: boolean;
   term: string;
+  topic: string;
 
   setCountry: (country: string) => void;
   setDiscipline: (discipline: string) => void;
@@ -24,13 +25,14 @@ interface GlobalFiltersState {
   setSchoolLevel: (schoolLevel: string) => void;
   setTimeRange: (timeRange: TimeRange) => void;
   setTerm: (term: string) => void;
+  setTopic: (topic: string) => void;
 
   resetFilters: () => void;
 }
 
 // 🔥 Apply global filters (central place)
 const applyGlobalFilters = (get: () => GlobalFiltersState) => {
-  const { country, discipline, subject, schoolLevel, timeRange, term } = get();
+  const { country, discipline, subject, schoolLevel, timeRange, term, topic } = get();
 
   const { subjectLessonPlan } = useSubjectLessonStore.getState();
   const { subjectAssessmentPlan } = useSubjectAssessmentStore.getState();
@@ -47,7 +49,8 @@ const applyGlobalFilters = (get: () => GlobalFiltersState) => {
     subject,
     schoolLevel,
     timeRange: timeRange,
-    termTheme: term
+    termTheme: term,
+    topic
   });
 
   const filteredAssessment = filterPlans(subjectAssessmentPlan, {
@@ -55,8 +58,9 @@ const applyGlobalFilters = (get: () => GlobalFiltersState) => {
     discipline,
     subject,
     schoolLevel,
-    timeRange: "yearly",
-    termTheme: term
+    timeRange: timeRange,
+    termTheme: term,
+    topic
   });
 
   const filteredConductCharacterLesson = filterPlans(conductCharacterLessonPlan, {
@@ -64,8 +68,9 @@ const applyGlobalFilters = (get: () => GlobalFiltersState) => {
     discipline,
     subject,
     schoolLevel,
-    timeRange: "yearly",
-    termTheme: term
+    timeRange: timeRange,
+    termTheme: term,
+    topic
   });
 
   const filteredConductCharacterAssessments = filterPlans(conductCharacterAssessmentsPlan, {
@@ -73,8 +78,9 @@ const applyGlobalFilters = (get: () => GlobalFiltersState) => {
     discipline,
     subject,
     schoolLevel,
-    timeRange: "yearly",
-    termTheme: term
+    timeRange: timeRange,
+    termTheme: term,
+    topic
 
   });
 
@@ -83,8 +89,9 @@ const applyGlobalFilters = (get: () => GlobalFiltersState) => {
     discipline,
     subject,
     schoolLevel,
-    timeRange: "yearly",
-    termTheme: term
+    timeRange: timeRange,
+    termTheme: term,
+    topic
   });
 
   const filteredProjectFacilitation = filterPlans(projectFacilitationPlan, {
@@ -92,8 +99,9 @@ const applyGlobalFilters = (get: () => GlobalFiltersState) => {
     discipline,
     subject,
     schoolLevel,
-    timeRange: "yearly",
-    termTheme: term
+    timeRange: timeRange,
+    termTheme: term,
+    topic
   });
 
   // ✅ update both stores
@@ -112,6 +120,7 @@ export const useGlobalFiltersStore = create<GlobalFiltersState>((set, get) => ({
   schoolLevel: "",
   timeRange: "",
   term: "",
+  topic: "",
   isGlobalFilter: false,
 
 
@@ -140,6 +149,11 @@ export const useGlobalFiltersStore = create<GlobalFiltersState>((set, get) => ({
     applyGlobalFilters(get);
   },
 
+  setTopic: (topic: string) => {
+    set({ topic, isGlobalFilter: true });
+    applyGlobalFilters(get);
+  },
+
   resetFilters: () => {
     set({
       country: "",
@@ -147,13 +161,24 @@ export const useGlobalFiltersStore = create<GlobalFiltersState>((set, get) => ({
       subject: "",
       schoolLevel: "",
       timeRange: "",
+      topic: "",
+      term: "",
       isGlobalFilter: false
     });
 
     // reset subjectLesson global filter
     const { subjectLessonPlan } = useSubjectLessonStore.getState();
+    const { subjectAssessmentPlan } = useSubjectAssessmentStore.getState();
+    const { conductCharacterLessonPlan } = useConductCharacterLessonStore.getState();
     useSubjectLessonStore.setState({
       filterGlobalSubjectLessonPlan: subjectLessonPlan,
     });
+    useSubjectAssessmentStore.setState({
+      filterGlobalSubjectAssessmentPlan: subjectAssessmentPlan,
+    });
+    useConductCharacterLessonStore.setState({
+      filterConductCharacterLessonPlan: conductCharacterLessonPlan,
+    });
+
   },
 }));

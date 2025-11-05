@@ -3,7 +3,7 @@ import { useMyFileStore } from "@/store/myFilesStore"
 import { useRouter } from "@tanstack/react-router"
 import { motion } from "framer-motion"
 import { ArrowLeft, FileText } from "lucide-react"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import BreadCrumb from "./breadcrumb"
 import Markdown from "./markdown"
 import Watermark from "./watermark"
@@ -12,7 +12,7 @@ export default function LessonPage() {
   const { navigate } = useRouter()
   const { currentLesson, clearCurrentLesson } = useMyFileStore()
   const contentRef = useRef<HTMLDivElement>(null);
-  const [watermarkCount, setWatermarkCount] = useState(0);
+  // const [watermarkCount, setWatermarkCount] = useState(0);
 
   useEffect(() => {
     if (!currentLesson) {
@@ -35,14 +35,14 @@ export default function LessonPage() {
     return () => document.removeEventListener("keydown", handler);
   }, []);
 
-  useEffect(() => {
-    if (contentRef.current) {
-      const height = contentRef.current.scrollHeight; // total content height
-      const watermarksNeeded = Math.ceil(height / 200) * 4;
-      // 200px per row, 4 columns
-      setWatermarkCount(watermarksNeeded);
-    }
-  }, [currentLesson]);
+  // useEffect(() => {
+  //   if (contentRef.current) {
+  //     // const height = contentRef.current.scrollHeight; // total content height
+  //     // const watermarksNeeded = Math.ceil(height / 200) * 4;
+  //     // 200px per row, 4 columns
+  //     // setWatermarkCount(watermarksNeeded);
+  //   }
+  // }, [currentLesson]);
 
   useEffect(() => {
     const watermark = document.getElementById("lesson-watermark");
@@ -162,7 +162,7 @@ export default function LessonPage() {
             <div className="relative p-8 select-none overflow-hidden">
               {/* ✅ Watermark centered over content only */}
               <div className="absolute inset-0 flex justify-center items-center z-0">
-                <Watermark textSize="8rem" imageSize="25vw" />
+                <Watermark textSize="8rem" imageSize="35vw" />
               </div>
 
               {/* Markdown content */}

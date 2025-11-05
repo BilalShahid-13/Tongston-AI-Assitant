@@ -1,15 +1,14 @@
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  DialogTrigger
 } from "@/components/ui/dialog";
 import { Eye, RotateCcw } from "lucide-react";
 import React, { useTransition } from "react";
-import { Button } from "@/components/ui/button";
 
 interface StatsCardDialogProps {
   label: string;

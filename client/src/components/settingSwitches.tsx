@@ -5,12 +5,12 @@ import { Label } from "./ui/label";
 
 export default function SettingsSwitches() {
   const [darkMode, setDarkMode] = useState(false);
-  const [tourEnabled, setTourEnabled] = useState(false);
+  // const [tourEnabled, setTourEnabled] = useState(false);
   const { setTheme } = useTheme();
 
   // 🧠 Sync theme and tourEnabled with localStorage on mount
   useEffect(() => {
-    const storedTour = localStorage.getItem("tourCompleted");
+    // const storedTour = localStorage.getItem("tourCompleted");
     const storedTheme = localStorage.getItem("theme");
 
     if (storedTheme === "dark") {
@@ -21,7 +21,7 @@ export default function SettingsSwitches() {
       setDarkMode(false);
     }
 
-    setTourEnabled(storedTour === "false"); // "false" means tour is enabled
+    // setTourEnabled(storedTour === "false"); // "false" means tour is enabled
   }, []);
 
   return (

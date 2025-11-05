@@ -1,19 +1,26 @@
 import { useIsMobile } from '@/hooks/use-mobile';
 import { sidebarItems } from '@/lib/constant';
-import { useLocation, useNavigate } from '@tanstack/react-router';
+import { useLocation, useNavigate, useRouterState } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '../ui/sidebar';
+import { useEffect, useState } from 'react';
 
 export const SidebarItemList = () => {
   const { pathname } = useLocation();
   const isMobile = useIsMobile()
-  const { setOpenMobile, open } = useSidebar()
+  const { setOpenMobile } = useSidebar()
   const navigate = useNavigate();
-  console.log(open)
+  const { location } = useRouterState();
+  const [isHomeLocation, setHomeLocation] = useState(false);
+
+  useEffect(() => {
+    setHomeLocation(location.pathname === "/");
+  }, [location])
+
   return (
     <SidebarMenu>
       {sidebarItems.map((item) => {
-        const isActive = pathname === item.route;
+        const isActive = pathname === item.route || (isHomeLocation && item.route === "/ai-assistant");
         return (
           <SidebarMenuItem key={item.route}>
             <SidebarMenuButton

@@ -1,4 +1,4 @@
-import DashboardSection from '@/components/dashboardSection'
+import AiAssistantHeader from '@/components/welcome/aiAssistantHeader'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/')({
@@ -11,7 +11,8 @@ function RouteComponent() {
     {/* <ReactTourProvider
       walkthroughSteps={homePageWalkthroughSteps}
     > */}
-    <DashboardSection />
+    {/* <DashboardSection /> */}
+    <AiAssistantHeader />
     {/* </ReactTourProvider> */}
   </>
 }

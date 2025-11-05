@@ -152,7 +152,7 @@ export const useAnalyticsStore = create<AnalyticsState>((set, get) => ({
 
   setFilterSubjectAssessmentBySubject: (subject) => {
     const filtered = get().subjectAssessmentPlan.filter(
-      (plan) => plan.fields?.[12] === subject
+      (plan) => plan.fields?.subject === subject
     )
 
     set(() => ({
@@ -164,7 +164,7 @@ export const useAnalyticsStore = create<AnalyticsState>((set, get) => ({
 
   setFilterSubjectAssessmentByClass: (classLevel) => {
     const filtered = get().subjectAssessmentPlan.filter(
-      (plan) => plan.fields?.[4] === classLevel
+      (plan) => plan.fields?.yearClass === classLevel
     )
     set(() => ({
       filterSubjectAssessmentPlan: filtered,
@@ -173,7 +173,7 @@ export const useAnalyticsStore = create<AnalyticsState>((set, get) => ({
   },
   setFilterSubjectAssessmentByTerm: (term) => {
     const filtered = get().subjectAssessmentPlan.filter(
-      (plan) => plan.fields?.[10] === term
+      (plan) => plan.fields?.term === term
     )
     set(() => ({ filterSubjectAssessmentPlan: filtered }))
   },
@@ -224,7 +224,7 @@ export const useSubjectAssessmentStore = create<SubjectAssessmentState>((set, ge
 
   setFilterSubjectAssessmentBySubject: (subject) => {
     const filtered = get().subjectAssessmentPlan.filter(
-      (plan) => plan.fields?.[12] === subject
+      (plan) => plan.fields?.subject === subject
     );
     set({
       filterSubjectAssessmentPlan: filtered,
@@ -235,7 +235,7 @@ export const useSubjectAssessmentStore = create<SubjectAssessmentState>((set, ge
 
   setFilterSubjectAssessmentByClass: (classLevel) => {
     const filtered = get().subjectAssessmentPlan.filter(
-      (plan) => plan.fields?.[4] === classLevel
+      (plan) => plan.fields?.yearClass === classLevel
     );
     set({
       filterSubjectAssessmentPlan: filtered,
@@ -245,7 +245,7 @@ export const useSubjectAssessmentStore = create<SubjectAssessmentState>((set, ge
 
   setFilterSubjectAssessmentByTerm: (term) => {
     const filtered = get().subjectAssessmentPlan.filter(
-      (plan) => plan.fields?.[10] === term
+      (plan) => plan.fields?.term === term
     );
     set({
       filterSubjectAssessmentPlan: filtered,

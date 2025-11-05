@@ -13,7 +13,6 @@ import { useProjectTaskStore } from "@/store/analytics/projectTask";
 import { useSubjectAssessmentStore } from "@/store/analytics/subjectAssessment";
 import { useSubjectLessonStore } from "@/store/analytics/subjectLesson";
 import type { AnalyticsCardItem, CharListType, IPlan, Variant } from "@/types";
-import { planBySchoolLevelByColumnChart } from "@/utils/analytics/planbySchooLevel";
 import { filterbyPlan } from "@/utils/analyticsTransform";
 import { useAnalyticsTransform } from "@/utils/useAnalyticsTransform";
 import { useQuery } from "@tanstack/react-query";
@@ -110,18 +109,22 @@ export default function Dashboard() {
     studentConductLessonPlanByTerm,
     // studentConductLessonPlanByDiscipline,
     studentConductLessonPlanBySchoolLevel,
+    studentConductAssessmentPlanByGrade,
     // student conduct assessment plan
     studentConductAssessmentPlanByTerm,
     // studentConductAssessmentPlanByDiscipline,
     studentConductAssessmentPlanBySchoolLevel,
+    studentConductLessonPlanByGrade,
     // project facilitation plan
     projectFacilitationPlanByTerm,
     // projectFacilitationPlanByDiscipline,
     projectFacilitationPlanBySchoolLevel,
+    projectFacilitationPlanByGrade,
     // project task plan
     projectTaskPlanByTerm,
     // projectTaskPlanByDiscipline,
-    projectTaskPlanBySchoolLevel
+    projectTaskPlanBySchoolLevel,
+    projectTaskPlanByGrade
     // trendOverTime,
   } = useAnalyticsTransform(filterGlobalSubjectLessonPlan, filterGlobalSubjectAssessmentPlan, filterGlobalConductCharacterPlan, filterConductCharacterAssessmentsGlobalPlan, filterGlobalProjectFacilitationPlan, filterGlobalProjectTaskPlan)
 
@@ -413,9 +416,6 @@ export default function Dashboard() {
 
   }
 
-  console.log(
-    "subjectLesson", filterGlobalSubjectLessonPlan)
-
   const { isLoading, isError } = useQuery<IPlan[], Error>({
     queryKey: ["analyticsData"],
     queryFn: fetchAnalyticsData,
@@ -521,7 +521,7 @@ export default function Dashboard() {
       xKey: "name",
       yKey: "count",
       key: "term",
-      yaxisDomain: ["auto", "auto"] as const,
+      yaxisDomain: [0, "auto"] as const,
       chartColor: "#fac815",
     },
     {
@@ -535,17 +535,17 @@ export default function Dashboard() {
       yaxisDomain: [0, "auto"] as const,
       chartColor: "#fac815",
     },
-    // {
-    //   type: "bar",
-    //   title: "Student Conduct and Character Lesson Plan by Discipline",
-    //   description: "Top 10 subjects by lesson plan count (+ more)",
-    //   data: studentConductLessonPlanBySubject,
-    //   key: "grade",
-    //   xKey: "name",
-    //   yKey: "count",
-    //   yaxisDomain: [0, 10] as const,
-    //   chartColor: "#fac815",
-    // },
+    {
+      type: "bar", // custom flag if you want
+      title: "Student Conduct and Character Lesson Plan by by Grade",
+      description: "Student conduct character lesson plans by Grade",
+      data: studentConductLessonPlanByGrade,
+      key: "grade",
+      xKey: "name",
+      yKey: "count",
+      yaxisDomain: [0, "auto"] as const,
+      chartColor: "#fac815",
+    },
   ];
   const studentConductAssessmentChartList: CharListType = [
     {
@@ -570,17 +570,17 @@ export default function Dashboard() {
       yKey: "count", yaxisDomain: ["auto", "auto"] as const,
       chartColor: "#fac815",
     },
-    // {
-    //   type: "bar",
-    //   title: "Student Conduct Character Assessment plans by Discipline",
-    //   description: "Top 10 subjects by student conduct character assessment plan count (+ more)",
-    //   data: studentConductAssessmentPlanByDiscipline,
-    //   key: "grade",
-    //   xKey: "name",
-    //   yKey: "count",
-    //   yaxisDomain: [0, 10] as const,
-    //   chartColor: "#fac815",
-    // },
+    {
+      type: "bar",
+      title: "Student Conduct Character Assessment plans by Grade",
+      description: "Student conduct character Assessment plans by Grade",
+      data: studentConductAssessmentPlanByGrade,
+      key: "grade",
+      xKey: "name",
+      yKey: "count",
+      yaxisDomain: [0, 10] as const,
+      chartColor: "#fac815",
+    },
   ];
   const projectFacilitationChartList: CharListType = [
     {
@@ -605,17 +605,17 @@ export default function Dashboard() {
       yaxisDomain: ["auto", "auto"] as const,
       chartColor: "#fac815",
     },
-    // {
-    //   type: "bar",
-    //   title: "Project Facilitation Plans by Discipline",
-    //   description: "Top 10 subjects by project facilitation plan count (+ more)",
-    //   data: projectFacilitationPlanByDiscipline,
-    //   key: "grade",
-    //   xKey: "name",
-    //   yKey: "count",
-    //   yaxisDomain: [0, 10] as const,
-    //   chartColor: "#fac815",
-    // },
+    {
+      type: "bar",
+      title: "Project Facilitation Plans by Discipline",
+      description: "Project Facilitation Plans by Grade",
+      data: projectFacilitationPlanByGrade,
+      key: "grade",
+      xKey: "name",
+      yKey: "count",
+      yaxisDomain: [0, 10] as const,
+      chartColor: "#fac815",
+    },
   ];
   const projectTaskChartList: CharListType = [
     {
@@ -639,17 +639,17 @@ export default function Dashboard() {
       yKey: "count", yaxisDomain: ["auto", "auto"] as const,
       chartColor: "#fac815",
     },
-    // {
-    //   type: "bar",
-    //   title: "Project Tasks by Discipline",
-    //   description: "Top 10 subjects by project tasks count (+ more)",
-    //   data: projectTaskPlanByDiscipline,
-    //   key: "grade",
-    //   xKey: "name",
-    //   yKey: "count",
-    //   yaxisDomain: [0, 10] as const,
-    //   chartColor: "#fac815",
-    // },
+    {
+      type: "bar",
+      title: "Project Tasks by Discipline",
+      description: "Project Facilitation Plans by Grade",
+      data: projectTaskPlanByGrade,
+      key: "grade",
+      xKey: "name",
+      yKey: "count",
+      yaxisDomain: [0, 10] as const,
+      chartColor: "#fac815",
+    },
   ];
 
   return (
@@ -701,7 +701,7 @@ export default function Dashboard() {
           <ChartLayout planChartList={subjectAssessmentChartList} />
 
           <ChartLayout planChartList={studentConductChartList}
-            defaultChart={studentConductChartList[0].key} />
+            defaultChart={studentConductChartList[2].key} />
 
           <ChartLayout planChartList={studentConductAssessmentChartList}
             defaultChart={studentConductAssessmentChartList[0].key} />

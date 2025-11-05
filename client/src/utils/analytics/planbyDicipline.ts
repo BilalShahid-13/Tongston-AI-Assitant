@@ -26,7 +26,7 @@ export function planByDiscipline(subjectLessonPlan: IPlan[], plan: PlanType): { 
   subjectLessonPlan
     .filter(item => item.plan === plan)
     .forEach(item => {
-      const disciplineRaw = item.fields?.[13]?.trim() || ""
+      const disciplineRaw = item.fields?.subjectDiscipline?.trim() || ""
       const matchedDiscipline = DISCIPLINE_LIST.find(d =>
         disciplineRaw.toLowerCase() === d.toLowerCase()
       )

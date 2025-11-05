@@ -173,6 +173,34 @@ export interface AnalyticsItem {
   __v: number
 }
 
+export interface IPlanFields {
+  location: string;
+  state: string;
+  cities: string;
+  setting: string;
+  mission: string;
+  vision: string;
+  coreValues: string;
+  curriculum: string;
+  yearClass: string;
+  schoolLevel: string;
+  subSchoolLevel: string;
+  studentAge: string;
+  classesSocioEconomic: string;
+  term: string;
+  termTheme: string;
+  week: string;
+  topic: string; // ✅ topic exists here
+  subject: string;
+  subjectDiscipline: string;
+  aim: string;
+  bloomLevel: string;
+  classSize: string;
+  timeAvailable: string;
+  technologyAccess: string;
+  sen: string[];
+  teachingAids: string[];
+}
 
 export interface IPlan {
   _id: string
@@ -182,7 +210,7 @@ export interface IPlan {
     subject: string
     role: string
   }
-  fields: string[]
+  fields: IPlanFields
   answer: string
   plan:
   | "subjectAssessmentPlan"

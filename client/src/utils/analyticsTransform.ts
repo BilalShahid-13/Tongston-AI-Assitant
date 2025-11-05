@@ -1,9 +1,10 @@
 import type { IPlan, TimeRange } from "@/types"
 import { format, startOfQuarter, startOfWeek } from "date-fns"
-import { planBySubject } from "./analytics/planbySubject"
 import { planByDiscipline } from "./analytics/planbyDicipline"
-import { planBySchoolLevel, planBySchoolLevelByColumnChart } from "./analytics/planbySchooLevel"
+import { planBySchoolLevelByColumnChart } from "./analytics/planbySchooLevel"
+import { planBySubject } from "./analytics/planbySubject"
 import { planByTerm } from "./analytics/planbyTerm"
+import planbyGrade from "./analytics/planbyGrade"
 
 export function transformAnalyticsData(subjectLessonPlan: IPlan[], subjectAssessmentPlan: IPlan[], studentConductLessonPlan: IPlan[], studentConductAssessmentPlan: IPlan[], projectFacilitationPlan: IPlan[], projectTaskPlan: IPlan[]) {
   // ---- Lesson Plans by Subject ----
@@ -174,18 +175,22 @@ export function transformAnalyticsData(subjectLessonPlan: IPlan[], subjectAssess
     studentConductLessonPlanByTerm: planByTerm(studentConductLessonPlan, "studentConductCharacterPlan"),
     studentConductLessonPlanByDiscipline: planByDiscipline(studentConductLessonPlan, "studentConductCharacterPlan"),
     studentConductLessonPlanBySchoolLevel: planBySchoolLevelByColumnChart(studentConductLessonPlan, "studentConductCharacterPlan"),
+    studentConductLessonPlanByGrade:planbyGrade(studentConductLessonPlan, "studentConductCharacterPlan"),
     // student conduct assessment plan
     studentConductAssessmentPlanByTerm: planByTerm(studentConductAssessmentPlan, "studentConductCharacterPlan"),
     studentConductAssessmentPlanByDiscipline: planByDiscipline(studentConductAssessmentPlan, "studentConductCharacterPlan"),
     studentConductAssessmentPlanBySchoolLevel: planBySchoolLevelByColumnChart(studentConductAssessmentPlan, "studentConductCharacterPlan"),
+    studentConductAssessmentPlanByGrade:planbyGrade(studentConductAssessmentPlan, "studentConductCharacterPlan"),
     // project facilitation plan
     projectFacilitationPlanByTerm: planByTerm(projectFacilitationPlan, "projectTaskFacilitationPlan"),
     projectFacilitationPlanByDiscipline: planByDiscipline(projectFacilitationPlan, "projectTaskFacilitationPlan"),
     projectFacilitationPlanBySchoolLevel: planBySchoolLevelByColumnChart(projectFacilitationPlan, "projectTaskFacilitationPlan"),
+    projectFacilitationPlanByGrade:planbyGrade(projectFacilitationPlan, "projectTaskFacilitationPlan"),
     // project task plan
     projectTaskPlanByTerm: planByTerm(projectTaskPlan, "projectTaskPlan"),
     projectTaskPlanByDiscipline: planByDiscipline(projectTaskPlan, "projectTaskPlan"),
     projectTaskPlanBySchoolLevel: planBySchoolLevelByColumnChart(projectTaskPlan, "projectTaskPlan"),
+    projectTaskPlanByGrade:planbyGrade(projectTaskPlan, "projectTaskPlan"),
     trendOverTime,
 
   }
@@ -225,6 +230,7 @@ export function filterPlans(
     schoolLevel?: string;
     timeRange?: TimeRange;
     termTheme?: string;
+    topic?: string;
   }
 ) {
   // default timeRange = yearly
@@ -234,12 +240,11 @@ export function filterPlans(
     subject,
     schoolLevel,
     timeRange = "yearly",
-    termTheme
+    termTheme,
   } = filters;
 
-  return plans.filter((plan: any) => {
-    const createdAt = plan.fields?.createdAt ? new Date(plan.fields.createdAt) : null;
-
+  return plans.filter((plan: IPlan) => {
+    const createdAt = plan.createdAt ? new Date(plan.createdAt) : null;
     // check time
     let matchesTime = true;
     if (createdAt && timeRange) {
@@ -265,14 +270,15 @@ export function filterPlans(
           break;
       }
     }
-
     return (
+      matchesTime &&
       (!country || plan.fields?.location === country) &&
       (!discipline ||
         plan.fields?.subjectDiscipline?.toLowerCase() === discipline.toLowerCase()) &&
       (!subject || plan.fields?.subject === subject) &&
       (!schoolLevel || plan.fields?.yearClass === schoolLevel) &&
-      matchesTime && (!termTheme || plan.fields?.termTheme === filters?.termTheme || !filters?.termTheme)
+      (!termTheme || plan.fields?.termTheme === filters?.termTheme || !filters?.termTheme) &&
+      (!filters.topic || plan.fields?.topic === filters?.topic)
     );
   });
 }
