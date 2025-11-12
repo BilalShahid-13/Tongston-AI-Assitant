@@ -35,8 +35,9 @@ export default function planbyGrade(subjectLessonPlan: IPlan[], plan: PlanType):
     })
 
   // Final output
-  return DISCIPLINE_LIST.map(discipline => ({
-    name: discipline,
+  return DISCIPLINE_LIST.map((discipline,index) => ({
+    name: `Grade ${index+1}`,
+    // name: discipline,
     count: disciplineCounts[discipline] ?? 0
   }))
 }

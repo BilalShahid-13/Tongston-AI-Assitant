@@ -1,10 +1,11 @@
 import type { IPlan, TimeRange } from "@/types"
+import { trendOverTime } from "../utils/analytics/trendOverTime"
 import { format, startOfQuarter, startOfWeek } from "date-fns"
 import { planByDiscipline } from "./analytics/planbyDicipline"
+import planbyGrade from "./analytics/planbyGrade"
 import { planBySchoolLevelByColumnChart } from "./analytics/planbySchooLevel"
 import { planBySubject } from "./analytics/planbySubject"
 import { planByTerm } from "./analytics/planbyTerm"
-import planbyGrade from "./analytics/planbyGrade"
 
 export function transformAnalyticsData(subjectLessonPlan: IPlan[], subjectAssessmentPlan: IPlan[], studentConductLessonPlan: IPlan[], studentConductAssessmentPlan: IPlan[], projectFacilitationPlan: IPlan[], projectTaskPlan: IPlan[]) {
   // ---- Lesson Plans by Subject ----
@@ -158,10 +159,17 @@ export function transformAnalyticsData(subjectLessonPlan: IPlan[], subjectAssess
     if (item.plan === "subjectAssessmentPlan") weeklyCounts[week].assessments++
   })
 
-  const trendOverTime = Object.entries(weeklyCounts).map(([week, counts]) => ({
-    week,
-    ...counts,
-  }))
+  // const trendOverTime = Object.entries(weeklyCounts).map(([week, counts]) => ({
+  //   week,
+  //   ...counts,
+  // }))
+  const subjectLessonTrendOverTime = trendOverTime(subjectLessonPlan);
+  const subjectAssessmentTrendOverTime = trendOverTime(subjectAssessmentPlan);
+  const studentConductLessonTrendOverTime = trendOverTime(studentConductLessonPlan);
+  console.log('studentConductLessonTrendOverTime',studentConductLessonTrendOverTime)
+  const studentConductAssessmentTrendOverTime = trendOverTime(studentConductAssessmentPlan);
+  const projectFacilitationTimeOverTime = trendOverTime(projectFacilitationPlan);
+  const projectTaskTimeOverTime = trendOverTime(projectTaskPlan);
 
   return {
     lessonPlansBySubject: planBySubject(subjectLessonPlan, "subjectLessonPlan"),
@@ -175,23 +183,29 @@ export function transformAnalyticsData(subjectLessonPlan: IPlan[], subjectAssess
     studentConductLessonPlanByTerm: planByTerm(studentConductLessonPlan, "studentConductCharacterPlan"),
     studentConductLessonPlanByDiscipline: planByDiscipline(studentConductLessonPlan, "studentConductCharacterPlan"),
     studentConductLessonPlanBySchoolLevel: planBySchoolLevelByColumnChart(studentConductLessonPlan, "studentConductCharacterPlan"),
-    studentConductLessonPlanByGrade:planbyGrade(studentConductLessonPlan, "studentConductCharacterPlan"),
+    studentConductLessonPlanByGrade: planbyGrade(studentConductLessonPlan, "studentConductCharacterPlan"),
     // student conduct assessment plan
     studentConductAssessmentPlanByTerm: planByTerm(studentConductAssessmentPlan, "studentConductCharacterPlan"),
     studentConductAssessmentPlanByDiscipline: planByDiscipline(studentConductAssessmentPlan, "studentConductCharacterPlan"),
     studentConductAssessmentPlanBySchoolLevel: planBySchoolLevelByColumnChart(studentConductAssessmentPlan, "studentConductCharacterPlan"),
-    studentConductAssessmentPlanByGrade:planbyGrade(studentConductAssessmentPlan, "studentConductCharacterPlan"),
+    studentConductAssessmentPlanByGrade: planbyGrade(studentConductAssessmentPlan, "studentConductCharacterPlan"),
     // project facilitation plan
-    projectFacilitationPlanByTerm: planByTerm(projectFacilitationPlan, "projectTaskFacilitationPlan"),
+    projectFacilitationPlanBySubject: planBySubject(projectFacilitationPlan, "projectTaskFacilitationPlan"),
     projectFacilitationPlanByDiscipline: planByDiscipline(projectFacilitationPlan, "projectTaskFacilitationPlan"),
     projectFacilitationPlanBySchoolLevel: planBySchoolLevelByColumnChart(projectFacilitationPlan, "projectTaskFacilitationPlan"),
-    projectFacilitationPlanByGrade:planbyGrade(projectFacilitationPlan, "projectTaskFacilitationPlan"),
+    // projectFacilitationPlanByGrade:planbyGrade(projectFacilitationPlan, "projectTaskFacilitationPlan"),
     // project task plan
-    projectTaskPlanByTerm: planByTerm(projectTaskPlan, "projectTaskPlan"),
+    projectTaskPlanBySubject: planBySubject(projectTaskPlan, "projectTaskPlan"),
     projectTaskPlanByDiscipline: planByDiscipline(projectTaskPlan, "projectTaskPlan"),
     projectTaskPlanBySchoolLevel: planBySchoolLevelByColumnChart(projectTaskPlan, "projectTaskPlan"),
-    projectTaskPlanByGrade:planbyGrade(projectTaskPlan, "projectTaskPlan"),
-    trendOverTime,
+    projectTaskPlanByGrade: planbyGrade(projectTaskPlan, "projectTaskPlan"),
+    // trendOverTime,
+    subjectLessonTrendOverTime: subjectLessonTrendOverTime,
+    subjectAssessmentTrendOverTime: subjectAssessmentTrendOverTime,
+    studentConductLessonTrendOverTime,
+    studentConductAssessmentTrendOverTime,
+    projectFacilitationTimeOverTime,
+    projectTaskTimeOverTime
 
   }
 }

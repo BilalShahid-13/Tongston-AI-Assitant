@@ -262,7 +262,7 @@ export type PlanType =
   | "projectTaskFacilitationPlan"
 
 type DomainValue = number | "auto" | "dataMin" | "dataMax"
-type DomainTuple =  [DomainValue, DomainValue]
+type DomainTuple = [DomainValue, DomainValue]
 
 export interface BarChartCustomProps {
   title: string
@@ -292,6 +292,12 @@ interface ChartDataItem {
   count: number
 }
 
+interface LineChartItem {
+  count: number;
+  plans: string[];
+  week: string;
+}
+
 // Bar Chart Type
 interface BarChartType {
   type: "bar"
@@ -317,5 +323,24 @@ interface StackedChartType {
   colors: string[]
 }
 
+interface LineChartType {
+  type: "line"
+  title: string
+  description: string
+  data: LineChartItem[]
+  xKey: string
+  key: string
+  yKey: string
+  lines: IChartLines[]
+  // yaxisDomain: [number | string | "auto" | "dataMin" | "dataMax", number | string | "auto" | "dataMin" | "dataMax"]
+  // yaxisDomain: DomainTuple
+  // chartColor: string
+}
+
+interface IChartLines {
+  key: string
+  color: string
+}
+
 // Union type for all chart types
-type CharListType = (BarChartType | StackedChartType)[]
+type CharListType = (BarChartType | StackedChartType | LineChartType)[]

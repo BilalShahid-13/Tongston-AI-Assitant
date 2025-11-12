@@ -6,6 +6,7 @@ interface LineChartCustomProps {
   data: any[]
   xKey: string
   lines: { key: string; color: string }[]
+  description:string
 }
 
 export function LineChartCustom({
@@ -13,10 +14,15 @@ export function LineChartCustom({
   data,
   xKey,
   lines,
+  description
 }: LineChartCustomProps) {
   return (
     <BaseChart title={title}>
       <LineChart data={data}>
+         <div className="max-w-4xl">
+          {/* <CardTitle>{title}</CardTitle> */}
+          {description && <p>{description}</p>}
+        </div>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey={xKey} />
         <YAxis />

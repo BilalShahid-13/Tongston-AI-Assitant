@@ -116,16 +116,22 @@ export default function Dashboard() {
     studentConductAssessmentPlanBySchoolLevel,
     studentConductLessonPlanByGrade,
     // project facilitation plan
-    projectFacilitationPlanByTerm,
+    projectFacilitationPlanByDiscipline,
+    projectFacilitationPlanBySubject,
     // projectFacilitationPlanByDiscipline,
     projectFacilitationPlanBySchoolLevel,
-    projectFacilitationPlanByGrade,
     // project task plan
-    projectTaskPlanByTerm,
-    // projectTaskPlanByDiscipline,
+    projectTaskPlanBySubject,
+    projectTaskPlanByDiscipline,
     projectTaskPlanBySchoolLevel,
-    projectTaskPlanByGrade
+    // projectTaskPlanByGrade
     // trendOverTime,
+    subjectLessonTrendOverTime,
+    subjectAssessmentTrendOverTime,
+    studentConductLessonTrendOverTime,
+    studentConductAssessmentTrendOverTime,
+    projectFacilitationTimeOverTime,
+    projectTaskTimeOverTime
   } = useAnalyticsTransform(filterGlobalSubjectLessonPlan, filterGlobalSubjectAssessmentPlan, filterGlobalConductCharacterPlan, filterConductCharacterAssessmentsGlobalPlan, filterGlobalProjectFacilitationPlan, filterGlobalProjectTaskPlan)
 
   function getTotalTeachers() {
@@ -428,6 +434,7 @@ export default function Dashboard() {
   if (isError) {
     return <Error />
   }
+  // console.log(subjectLessonTrendOverTime,subjectAssessmentTrendOverTime)
 
   const lessonPlanChartList: CharListType = [
     {
@@ -585,11 +592,11 @@ export default function Dashboard() {
   const projectFacilitationChartList: CharListType = [
     {
       type: "bar", // custom flag if you want
-      title: "Project Facilitation Plan by Term",
-      description: "Project Facilitation Plans categorized by three fixed term themes: Personal, Professional, and Public Development.",
-      data: projectFacilitationPlanByTerm,
+      title: "Project Facilitation Plan by Discipline",
+      description: "Lesson plan counts grouped by six fixed disciplines.",
+      data: projectFacilitationPlanByDiscipline,
       xKey: "name",
-      key: "term",
+      key: "discipline",
       yKey: "count",
       yaxisDomain: ["auto", "auto"] as const,
       chartColor: "#fac815",
@@ -607,10 +614,10 @@ export default function Dashboard() {
     },
     {
       type: "bar",
-      title: "Project Facilitation Plans by Discipline",
-      description: "Project Facilitation Plans by Grade",
-      data: projectFacilitationPlanByGrade,
-      key: "grade",
+      title: "Project Facilitation Plans by Subject",
+      description: "Top 10 subjects by lesson plan count (+ more)",
+      data: projectFacilitationPlanBySubject,
+      key: "subject",
       xKey: "name",
       yKey: "count",
       yaxisDomain: [0, 10] as const,
@@ -621,11 +628,11 @@ export default function Dashboard() {
     {
       type: "bar", // custom flag if you want
       title: "Project Tasks by Term",
-      description: "Project Tasks categorized by three fixed term themes: Personal, Professional, and Public Development.",
-      data: projectTaskPlanByTerm,
+      description: "Lesson plan counts grouped by six fixed disciplines.",
+      data: projectTaskPlanByDiscipline,
       xKey: "name",
       yKey: "count",
-      key: "term",
+      key: "discipline",
       yaxisDomain: ["auto", "auto"] as const,
       chartColor: "#fac815",
     },
@@ -642,16 +649,101 @@ export default function Dashboard() {
     {
       type: "bar",
       title: "Project Tasks by Discipline",
-      description: "Project Facilitation Plans by Grade",
-      data: projectTaskPlanByGrade,
-      key: "grade",
+      description: "Top 10 subjects by lesson plan count (+ more)",
+      data: projectTaskPlanBySubject,
+      key: "subject",
       xKey: "name",
       yKey: "count",
       yaxisDomain: [0, 10] as const,
       chartColor: "#fac815",
     },
   ];
-
+  const trendData: CharListType = [
+    {
+      type: "line", // custom flag if you want
+      title: "Subject Lesson Plan",
+      description: "Lesson plan counts grouped by six fixed disciplines.",
+      data: subjectLessonTrendOverTime,
+      xKey: "name",
+      yKey: "count",
+      key: "subjectLessonPlan",
+      lines: [
+        { key: "count", color: "#4f46e5" },   // Indigo
+        { key: "week", color: "#10b981" }, // Green
+        { key: "plans", color: "#3333" }, // Green
+      ]
+    },
+    {
+      type: "line", // custom flag if you want
+      title: "Subject Assessment Plan",
+      description: "Lesson plan counts grouped by six fixed disciplines.",
+      data: subjectAssessmentTrendOverTime,
+      xKey: "name",
+      yKey: "count",
+      key: "subjectAssessmentPlan",
+      lines: [
+        { key: "count", color: "#4f46e5" },   // Indigo
+        { key: "week", color: "#10b981" }, // Green
+        { key: "plans", color: "#3333" }, // Green
+      ]
+    },
+    {
+      type: "line", // custom flag if you want
+      title: "Student Conduct & Character Lesson Plans",
+      description: "student conduct and character lesson plan counts grouped by six fixed disciplines.",
+      data: studentConductLessonTrendOverTime,
+      xKey: "name",
+      yKey: "count",
+      key: "studentConductCharacterPlan",
+      lines: [
+        { key: "count", color: "#4f46e5" },   // Indigo
+        { key: "week", color: "#10b981" }, // Green
+        { key: "plans", color: "#3333" }, // Green
+      ]
+    },
+    {
+      type: "line", // custom flag if you want
+      title: "Student Conduct & Character Assessments",
+      description: "student conduct and character lesson plan counts grouped by six fixed disciplines.",
+      data: studentConductAssessmentTrendOverTime,
+      xKey: "name",
+      yKey: "count",
+      key: "studentConductCharacterAssessmentPlan",
+      lines: [
+        { key: "count", color: "#4f46e5" },   // Indigo
+        { key: "week", color: "#10b981" }, // Green
+        { key: "plans", color: "#3333" }, // Green
+      ]
+    },
+    {
+      type: "line", // custom flag if you want
+      title: "Project Facilitation Plan",
+      description: "student conduct and character lesson plan counts grouped by six fixed disciplines.",
+      data: projectFacilitationTimeOverTime,
+      xKey: "name",
+      yKey: "count",
+      key: "projectFacilitationPlan",
+      lines: [
+        { key: "count", color: "#4f46e5" },   // Indigo
+        { key: "week", color: "#10b981" }, // Green
+        { key: "plans", color: "#3333" }, // Green
+      ]
+    },
+    {
+      type: "line", // custom flag if you want
+      title: "Project Tasks",
+      description: "student conduct and character lesson plan counts grouped by six fixed disciplines.",
+      data: projectTaskTimeOverTime,
+      xKey: "name",
+      yKey: "count",
+      key: "projectTaskPlan",
+      lines: [
+        { key: "count", color: "#4f46e5" },   // Indigo
+        { key: "week", color: "#10b981" }, // Green
+        { key: "plans", color: "#3333" }, // Green
+      ]
+    },
+  ]
   return (
     <>
       <GlobalFiltersBar />
@@ -711,6 +803,17 @@ export default function Dashboard() {
 
           <ChartLayout planChartList={projectTaskChartList}
             defaultChart={projectTaskChartList[0].key} />
+
+          {/* line chaet */}
+          <ChartLayout planChartList={trendData}
+            defaultChart={trendData[0].key} />
+
+          {/* <LineChartCustom
+            title="Sales & Revenue Overview"
+            data={trendOverTime}
+            xKey="week"
+            lines={lines} // similar to sales line
+          /> */}
         </div>
         <div>
         </div>

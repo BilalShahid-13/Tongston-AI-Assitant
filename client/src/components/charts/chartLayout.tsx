@@ -3,6 +3,7 @@ import { useState } from "react"
 import { DashboardCustomSelect } from "../dashboardCustomSelect"
 import { BarChartCustom } from "./BarChartCustom"
 import { BarChartStacked } from "./BarChartStack"
+import { LineChartCustom } from "./LineChartCustom"
 
 interface ChartLayoutProp {
   planChartList: CharListType // ✅ Changed from planChart to planChartList
@@ -45,6 +46,15 @@ export default function ChartLayout({ planChartList, defaultChart = "discipline"
               xKey={planChart.xKey}
               stackKeys={planChart.stackKeys}
               colors={planChart.colors}
+            />
+          )}
+          {planChart.type === "line" && "lines" in planChart && (
+            <LineChartCustom
+              title={planChart.title}
+              description={planChart.description}
+              data={planChart.data}
+              xKey={planChart.xKey}
+              lines={planChart.lines} // similar to sales line
             />
           )}
         </div>
