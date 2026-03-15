@@ -1,0 +1,169 @@
+# 🤖 Tongston AI Assistant — Education & Learning Platform
+
+> An intelligent AI-powered assistant for K-12 educators — built with **React**, **TypeScript**, **Node.js**, **MongoDB Atlas Vector Search**, and **Google Gemini**, **Zustand** , **Redis**.
+
+![Platform Screenshot](./screenshot.png)
+
+---
+
+## 🧠 What It Does
+
+Tongston AI Assistant helps teachers instantly generate structured educational content using AI and a custom **RAG (Retrieval-Augmented Generation)** pipeline trained on a curated K-12 knowledge base.
+
+### ✨ Key Features
+
+- **Subject Lesson Plans** — Generate detailed lesson plans for 30+ subjects from nursery to Grade 12, including teacher & student activities, formative/summative assessments, and resources
+- **Subject Assessments** — Create continuous & end-of-term assessments aligned to the curriculum
+- **Student Conduct & Character** — Lesson plans and assessments for affective domain learning
+- **Project Tasks** — Entrepreneurial, project-based learning tasks and facilitation plans
+- **Lesson Plan Marking & Report Generator** — AI-assisted marking and report generation
+- **FAQ Chatbot** — Semantic search over internal documents using vector embeddings
+
+---
+
+## 🏗️ Architecture
+
+```
+Client (React + TypeScript + Vite)
+        ↕ REST + Server-Sent Events (SSE)
+Server (Node.js + Express + TypeScript)
+        ↕ RAG Pipeline
+  ┌─────────────────────────────────────┐
+  │  Query → Embed → Vector Search      │
+  │  MongoDB Atlas ($vectorSearch)      │
+  │  → Context → Gemini LLM → Stream   │
+  └─────────────────────────────────────┘
+```
+
+### RAG Pipeline
+
+1. **Ingestion** — PDFs are fetched from Google Drive, parsed, and chunked
+2. **Embedding** — Chunks are embedded using `gemini-embedding-001` (1536 dims) via `@google/genai`
+3. **Storage** — Vectors stored in MongoDB Atlas with a vector search index
+4. **Query** — User query is embedded → MongoDB `$vectorSearch` retrieves top 10 relevant chunks → passed as context to Gemini
+5. **Response** — Streamed back to the client via SSE
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | React 18, TypeScript, Vite, Tailwind CSS |
+| Backend | Node.js, Express, TypeScript |
+| AI / LLM | Google Gemini 2.5 Flash (`@google/genai`) |
+| Embeddings | `gemini-embedding-001` — 1536 dimensions |
+| Vector DB | MongoDB Atlas Vector Search |
+| Caching | Redis Cloud |
+| File Storage | Cloudinary |
+| File Parsing | Google Drive API, PDF-parse, Mammoth |
+| Deployment | Vercel (frontend + serverless backend) |
+
+---
+
+## 📁 Project Structure
+
+```
+ai-assistant/
+├── client/                  # React + TypeScript frontend
+│   ├── src/
+│   │   ├── components/      # Reusable UI components
+│   │   ├── pages/           # Route-level pages
+│   │   └── store/           # Redux Toolkit state management
+│   └── vite.config.ts
+│
+└── server/                  # Express + TypeScript backend
+    ├── controller/          # Route handlers (faq, plans, auth)
+    ├── lib/                 # Core config (openai.ts, connectDb.ts)
+    ├── model/               # Mongoose schemas
+    ├── routes/              # Express routers
+    └── utils/               # RAG pipeline (similaritySearch, extractFileId)
+```
+
+---
+
+## ⚙️ Setup & Installation
+
+### Prerequisites
+- Node.js 18+
+- MongoDB Atlas account (with Vector Search index)
+- Google AI Studio API key
+- Redis Cloud account
+
+### 1. Clone the repo
+
+```bash
+git clone https://github.com/your-username/tongston-ai-assistant.git
+cd tongston-ai-assistant
+```
+
+### 2. Install dependencies
+
+```bash
+# Backend
+cd server && npm install
+
+# Frontend
+cd ../client && npm install
+```
+
+### 3. Configure environment variables
+
+```bash
+# server/.env
+MONGODB_URI=mongodb+srv://...
+GEMINI_API_KEY=AIzaSy...
+REDIS_URL=redis://...
+CLOUDINARY_URL=cloudinary://...
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
+```
+
+### 4. Run locally
+
+```bash
+# Backend
+cd server && npm run start
+
+# Frontend
+cd client && npm run dev
+```
+
+---
+
+## 🔍 MongoDB Atlas Vector Search Index
+
+```json
+{
+  "fields": [
+    {
+      "type": "vector",
+      "path": "vector",
+      "numDimensions": 1536,
+      "similarity": "cosine"
+    }
+  ]
+}
+```
+
+---
+
+## 🚀 Deployment
+
+Deployed on **Vercel** with:
+- Frontend served as static build
+- Backend as Vercel Serverless Functions
+- Environment variables configured via Vercel Dashboard
+
+---
+
+## 👨‍💻 Author
+
+**Bilal Shahid** — Full-Stack Developer
+Specializing in Laravel, React/TypeScript, and AI/LLM integration
+
+---
+
+## 📄 License
+
+Private project — all rights reserved.
