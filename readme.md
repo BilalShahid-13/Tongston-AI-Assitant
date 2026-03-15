@@ -21,6 +21,24 @@ Tongston AI Assistant helps teachers instantly generate structured educational c
 
 ---
 
+## 🔐 Admin Panel — `/admin`
+ 
+A protected admin dashboard at [`/admin`](https://tongston-ai-assitant.vercel.app/admin) gives authorized users full control over the AI knowledge base and FAQs.
+ 
+### Authentication
+- **OTP-based login** — admin identity is verified via a one-time password before granting access
+ 
+### Knowledge Base Management
+- **Insert** new PDF documents from Google Drive into the vector store
+- **View** all indexed documents in the knowledge base
+- **Update** existing documents and re-embed with fresh vectors
+- **Delete** documents to remove outdated knowledge from the AI
+ 
+### FAQ Management
+- Full **CRUD** — create, read, update, and delete FAQ entries
+- FAQs are directly retrieved by the AI chatbot during similarity search, so changes take effect immediately
+ 
+
 ## 🏗️ Architecture
 
 ```
