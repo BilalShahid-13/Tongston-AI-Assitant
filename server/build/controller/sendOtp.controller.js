@@ -52,28 +52,29 @@ function generateHtmlEmail(otp) {
 }
 async function sendOtp(req, res) {
     try {
-        const { email } = req.body;
-        if (!email) {
-            res.status(400).json({ error: "Email is required" });
+        const { emails } = req.body;
+        if (!emails || !Array.isArray(emails) || emails.length === 0) {
+            res.status(400).json({ error: "Emails array is required" });
             return;
         }
-        // Generate 4-digit OTP
-        const otp = Math.floor(1000 + Math.random() * 9000).toString();
-        // Set expiration time (10 minutes)
-        const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
-        // connectMongo();
-        // Remove any existing OTPs for this email (optional, to avoid multiple valid codes)
-        // await OtpModel.deleteMany({ email });
-        // Save OTP in DB
-        // await OtpModel.create({
-        //   email,
-        //   otp,
-        //   createdAt: new Date(),
-        //   expiresAt,
-        //   verified: false,
-        // });
-        await redis_1.default.set(`otp:${email}`, otp, "EX", 600);
-        await (0, nodemailer_1.sendMail)("Your OTP Code", generateHtmlEmail(otp), email);
+        const results = [];
+        for (const email of emails) {
+            if (!email || typeof email !== "string")
+                continue;
+            const otp = Math.floor(1000 + Math.random() * 9000).toString();
+            const expiresAt = 10 * 60; // 10 minutes in seconds
+            try {
+                // Save in Redis (key per email)
+                await redis_1.default.set(`otp:${email}`, otp, "EX", expiresAt);
+                // Send email
+                await (0, nodemailer_1.sendMail)("Your OTP Code", generateHtmlEmail(otp), email);
+                results.push({ email, status: "sent" });
+            }
+            catch (err) {
+                console.error(`Error sending OTP to ${email}:`, err);
+                results.push({ email, status: "failed" });
+            }
+        }
         res.status(200).json({ message: "OTP sent successfully" });
     }
     catch (error) {

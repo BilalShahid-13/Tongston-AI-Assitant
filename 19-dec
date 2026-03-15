@@ -1,0 +1,25 @@
+It’s been a while since our
+ last meeting! I actually
+thought the development
+team might be on leave
+for December, which is
+why I hadn't sent a follow-up
+ earlier. But I'm glad we’re
+connecting now to get back on track.
+
+
+Hi Halima, before we start, I want to share my understanding of the requirements to make sure I'm on the right track:
+
+1. Feedback Section & Settings
+
+"I understand that the Feedback section is moving inside the Settings, near the Dark Mode toggle. You also mentioned adding some dropdowns, but I couldn't find the 'Available in the Platform' list. Could you please provide that list?"
+settings will be rename to preferences , and in preferences the dropdown will be the feedback,analytics
+in feeback Role dropdown will be the free text
+
+2. Web AI UI Updates
+
+"For the Web AI UI, I see there are about 10 cards to be added. I just want to confirm: should all of these be redesigned strictly according to the Figma file?"
+
+3. File Upload & Storage (The main confusion)
+
+"I’m a bit confused about the File Upload & Storage part. Is this just a UI update, or do I need to implement the full Public/Private functionality? Also, will the Admin need the ability to approve these files and add them to the Knowledge Base (KB)? I need a bit more clarity on the workflow for this part.

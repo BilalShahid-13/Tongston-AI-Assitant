@@ -2,12 +2,19 @@ import { Request, Response } from "express";
 import { connectMongo } from "../lib/connectDb";
 import FeedbackModel from "../model/feedback";
 
-export async function insertFeedback(req: Request, res: Response): Promise<void> {
+export async function insertFeedback(
+  req: Request,
+  res: Response,
+): Promise<void> {
   try {
     await connectMongo();
 
     const {
-      followUp,
+      followUp = false,
+      subject,
+      yearClassLevel,
+      role,
+      country,
       email,
       sectionReferringTo,
       otherSectionDetail,
@@ -24,7 +31,7 @@ export async function insertFeedback(req: Request, res: Response): Promise<void>
       suggestionAppearance,
       inspirationUrl,
     } = req.body;
-
+    console.log("followUp", followUp);
     const issueScreenshot =
       (req.files as any)?.issueScreenshot?.map((file: any) => ({
         filename: file.originalname || file.original_filename || "", // ensure always set
@@ -40,10 +47,13 @@ export async function insertFeedback(req: Request, res: Response): Promise<void>
         mimetype: file.mimetype,
         size: file.size,
       })) || [];
-
     const feedback = await FeedbackModel.create({
       followUp: followUp === "true" || followUp === true,
       email: email || null,
+      country,
+      subject,
+      yearClassLevel,
+      role,
       sectionReferringTo,
       otherSectionDetail,
       feedbackCategory,
@@ -72,19 +82,23 @@ export async function insertFeedback(req: Request, res: Response): Promise<void>
       data: feedback,
     });
   } catch (error: any) {
-    console.error("Error inserting feedback:", error);
+    // console.error("Error inserting feedback:", error);
     res.status(500).json({ success: false, error: error.message });
   }
 }
 
-
-export async function getFeedbackAdmin(req: Request, res: Response): Promise<void> {
+export async function getFeedbackAdmin(
+  req: Request,
+  res: Response,
+): Promise<void> {
   try {
     await connectMongo();
     const feedbacks = await FeedbackModel.find().sort({ createdAt: -1 });
-    res.status(200).json({ message: "Feedbacks fetched successfully", data: feedbacks });
+    res
+      .status(200)
+      .json({ message: "Feedbacks fetched successfully", data: feedbacks });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).json({ error: error });
   }
 }

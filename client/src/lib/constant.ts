@@ -1,13 +1,17 @@
-import AiAssitstant from "@/components/welcome/aiAssistantHeader";
-import { subjectLists, weekList, yearClasses } from "@/constants/lessonPlanConstant";
-import ProjectTask from "@/pages/aiAssistant/Project/projectTask";
-import ProjectTaskFacilitation from "@/pages/aiAssistant/Project/projectTaskFacilitation";
-import ReportGenerator from "@/pages/aiAssistant/reportGenerator";
-import StudentConductCharacterAssessment from "@/pages/aiAssistant/StudentConduct/studentConductCharacterAssessment";
-import StudentConductCharacterPlan from "@/pages/aiAssistant/StudentConduct/studentConductCharacterPlan";
-import Assessments from "@/pages/aiAssistant/Subject/assessments";
-import LessonPlans from "@/pages/aiAssistant/Subject/lessonPlans";
-import type { FAQ, IWalkthroughSteps, Level } from "@/types";
+import AiAssitstant from '@/components/welcome/aiAssistantHeader'
+import {
+  subjectLists,
+  weekList,
+  yearClasses,
+} from '@/constants/lessonPlanConstant'
+import ProjectTask from '@/pages/aiAssistant/Project/projectTask'
+import ProjectTaskFacilitation from '@/pages/aiAssistant/Project/projectTaskFacilitation'
+import ReportGenerator from '@/pages/aiAssistant/reportGenerator'
+import StudentConductCharacterAssessment from '@/pages/aiAssistant/StudentConduct/studentConductCharacterAssessment'
+import StudentConductCharacterPlan from '@/pages/aiAssistant/StudentConduct/studentConductCharacterPlan'
+import Assessments from '@/pages/aiAssistant/Subject/assessments'
+import LessonPlans from '@/pages/aiAssistant/Subject/lessonPlans'
+import type { FAQ, IWalkthroughSteps, Level } from '@/types'
 import {
   BookOpen,
   BookOpenText,
@@ -31,31 +35,31 @@ import {
   User,
   UserCheck,
   UserCog,
-  Users
-} from "lucide-react";
+  Users,
+} from 'lucide-react'
 
 export const backendApi = 'https://tongston-ai-assitant-rt92.vercel.app';
-// export const backendApi = 'http://localhost:5000';
-export const feedbackGeneratorCount = 3;
+// export const backendApi = 'http://localhost:5000'
+export const feedbackGeneratorCount = 3
 
 export const navbarItems = [
   {
-    name: "Dashboard",
+    name: 'Dashboard',
     // component:App,
   },
   {
-    name: "My Courses",
+    name: 'My Courses',
     // component:Dashboard
   },
   {
-    name: "Knowledge Bank",
+    name: 'Knowledge Bank',
     // component:Dashboard
   },
   {
-    name: "Reports",
+    name: 'Reports',
     // component:Dashboard
   },
-];
+]
 
 export const sidebarItems = [
   // {
@@ -66,10 +70,10 @@ export const sidebarItems = [
   //   // route: "/ai-assistant"
   // },
   {
-    name: "AI Assist - Education & Learning",
-    id: "ai-assistant",
+    name: 'AI Assist - Education & Learning',
+    id: 'ai-assistant',
     icon: Bot,
-    route: "/ai-assistant"
+    route: '/ai-assistant',
     // route: "/ai-assistant"
   },
   // {
@@ -79,385 +83,444 @@ export const sidebarItems = [
   //   route: "/help-faqs",
   // },
   {
-    name: "Feedback",
-    id: "feedback",
+    name: 'Feedback',
+    id: 'feedback',
     icon: MessageCircle,
-    route: "/feedback",
+    route: '/feedback',
   },
   {
-    name: "Files/Docs",
-    id: "my-files",
+    name: 'Files/Docs',
+    id: 'my-files',
     icon: Folder,
-    route: "/myFiles",
+    route: '/myFiles',
   },
   {
-    name: "Analytics",
-    id: "analytics",
+    name: 'Analytics',
+    id: 'analytics',
     icon: ChartBar,
-    route: "/analytics",
+    route: '/analytics',
   },
   {
-    name: "Settings",
-    id: "settings",
+    name: 'Settings',
+    id: 'settings',
     icon: Settings,
-    route: "/settings",
+    route: '/settings',
   },
-];
+]
 
 export const sidebarQuickAccess = [
   {
-    name: "Recent Lessons",
+    name: 'Recent Lessons',
     icon: FileText,
-    color: "blue",
-    route: "/recentLessons",
+    color: 'blue',
+    route: '/recentLessons',
   },
   {
-    name: "Assessments",
+    name: 'Assessments',
     icon: ClipboardCheck,
-    color: "green",
-    route: "/recentAssessment",
+    color: 'green',
+    route: '/recentAssessment',
   },
   {
-    name: "Student Conduct",
+    name: 'Student Conduct',
     icon: Users,
-    color: "yellow",
-    route: "/recentStudentConduct",
+    color: 'yellow',
+    route: '/recentStudentConduct',
   },
-];
+]
 
 export const sidebarTabsContentData = [
   {
-    value: "AI Assistant",
+    value: 'AI Assistant',
     component: AiAssitstant,
     // compoenent:
   },
   {
-    value: "Help & FAQs",
-    component: "",
+    value: 'Help & FAQs',
+    component: '',
   },
-] as const;
+] as const
 
 export const aiAssistantTabs = [
   // { name: "Overview", id: "overview", component: Overview, icon: LayoutDashboard },
-  { name: "Subject Lesson Plan", id: "subject-lesson-plan", component: LessonPlans, icon: BookOpenText },
-  { name: "Subject Assessments", id: "subject-assessments", component: Assessments, icon: ClipboardList },
-  { name: "Student Conduct and Character Lesson Plan", id: "student-conduct-and-character-lesson-plan", component: StudentConductCharacterPlan, icon: ScrollText },
-  { name: "Student Conduct and Character Assessments", id: "student-conduct-and-character-assessments", component: StudentConductCharacterAssessment, icon: UserCog },
-  { name: "Project tasks", component: ProjectTask, id: "project-tasks", icon: Hammer },
-  { name: "Project Tasks Lesson Facilitation Plan", id: "project-tasks-lesson-facilitation-plan", component: ProjectTaskFacilitation, icon: Hammer },
-  { name: "Lesson Plan Marking & Report Generator", id: "lesson-plan-marking", component: ReportGenerator, icon: FileText },
+  {
+    name: 'Subject Lesson Plan',
+    id: 'subject-lesson-plan',
+    component: LessonPlans,
+    icon: BookOpenText,
+  },
+  {
+    name: 'Subject Assessments',
+    id: 'subject-assessments',
+    component: Assessments,
+    icon: ClipboardList,
+  },
+  {
+    name: 'Student Conduct and Character Lesson Plan',
+    id: 'student-conduct-and-character-lesson-plan',
+    component: StudentConductCharacterPlan,
+    icon: ScrollText,
+  },
+  {
+    name: 'Student Conduct and Character Assessments',
+    id: 'student-conduct-and-character-assessments',
+    component: StudentConductCharacterAssessment,
+    icon: UserCog,
+  },
+  {
+    name: 'Project tasks',
+    component: ProjectTask,
+    id: 'project-tasks',
+    icon: Hammer,
+  },
+  {
+    name: 'Project Tasks Lesson Facilitation Plan',
+    id: 'project-tasks-lesson-facilitation-plan',
+    component: ProjectTaskFacilitation,
+    icon: Hammer,
+  },
+  {
+    name: 'Lesson Plan Marking & Report Generator',
+    id: 'lesson-plan-marking',
+    component: ReportGenerator,
+    icon: FileText,
+  },
 
   // { name: "Marking", component: Marking, icon: PencilRuler },
   // { name: "Help", component: Help, icon: LifeBuoy },
-] as const;
+] as const
 
 export const aiAssistantOverviewFeatures = [
   {
-    heading: "Lesson Planning",
+    heading: 'Lesson Planning',
     description:
       "Create subject-specific lesson plans aligned with Tongston's entrepreneurial education scheme.",
     icon: Presentation,
     tabValue: aiAssistantTabs[1].name,
-    CTA: "Start Planning a Lesson",
+    CTA: 'Start Planning a Lesson',
     color: {
-      highlighted: "bg-blue-500/40",
-      default: "text-blue-700",
+      highlighted: 'bg-blue-500/40',
+      default: 'text-blue-700',
     },
   },
   {
-    heading: "Assessments",
+    heading: 'Assessments',
     description:
-      "Design continuous and end-of-term assessments with marking guides and model answers.",
+      'Design continuous and end-of-term assessments with marking guides and model answers.',
     icon: ClipboardCheck,
     tabValue: aiAssistantTabs[2].name,
-    CTA: "Create Assessment",
+    CTA: 'Create Assessment',
     color: {
-      highlighted: "bg-green-500/40",
-      default: "text-green-700",
+      highlighted: 'bg-green-500/40',
+      default: 'text-green-700',
     },
   },
   {
-    heading: "Project Tasks",
+    heading: 'Project Tasks',
     description:
-      "Create entrepreneurial project-based learning tasks that build real-world skills.",
+      'Create entrepreneurial project-based learning tasks that build real-world skills.',
     icon: Projector,
-    CTA: "Launch New Project Tasks",
+    CTA: 'Launch New Project Tasks',
     tabValue: aiAssistantTabs[5].name,
     color: {
-      highlighted: "bg-yellow-500/40",
-      default: "text-yellow-700",
+      highlighted: 'bg-yellow-500/40',
+      default: 'text-yellow-700',
     },
   },
   {
-    heading: "Student Conduct and Character Lesson Plan",
+    heading: 'Student Conduct and Character Lesson Plan',
     description:
       "Generate student conduct & character assessments linkedin to Tongston's KPIs.",
     icon: UserCheck,
-    CTA: "Plan Conduct Lesson",
+    CTA: 'Plan Conduct Lesson',
     tabValue: aiAssistantTabs[3].name,
     color: {
-      highlighted: "bg-purple-500/40",
-      default: "text-purple-700",
+      highlighted: 'bg-purple-500/40',
+      default: 'text-purple-700',
     },
   },
   {
-    heading: "Marking & Reports",
+    heading: 'Marking & Reports',
     description:
-      "Mark lesson plans and generate comprehensive performance reports",
+      'Mark lesson plans and generate comprehensive performance reports',
     icon: CircleCheckBig,
-    CTA: "Start Marking",
+    CTA: 'Start Marking',
     tabValue: aiAssistantTabs[6].name,
     color: {
-      highlighted: "bg-red-500/40",
-      default: "text-red-700",
+      highlighted: 'bg-red-500/40',
+      default: 'text-red-700',
     },
-  }
-] as const;
+  },
+] as const
 
 export const aiAssistantRecentActivities = [
   {
-    name: "lesson plan generated",
+    name: 'lesson plan generated',
     icon: Presentation,
     color: {
-      highlighted: "bg-yellow-500/40",
-      default: "text-yellow-700",
+      highlighted: 'bg-yellow-500/40',
+      default: 'text-yellow-700',
     },
   },
   {
-    name: "assessments created",
+    name: 'assessments created',
     icon: ClipboardCheck,
     color: {
-      highlighted: "bg-teal-500/40",
-      default: "text-teal-700",
+      highlighted: 'bg-teal-500/40',
+      default: 'text-teal-700',
     },
   },
   {
-    name: "projects in progress",
+    name: 'projects in progress',
     icon: Projector,
     color: {
-      highlighted: "bg-orange-500/40",
-      default: "text-orange-700",
+      highlighted: 'bg-orange-500/40',
+      default: 'text-orange-700',
     },
   },
-] as const;
-
-const apisList = [
-  "search/lessonPlan",
-  "search/assessmentPlan",
-  "insertFeedback",
-  // fresh
-  "subject/lessonPlan",
-  "subject/assessmentPlan",
-  "student/ConductCharacter",
-  "student/ConductCharacterAssessment",
-  "projectTask",
-  "project/Facilitation",
-  "getReport"
 ] as const
 
+const apisList = [
+  'search/lessonPlan',
+  'search/assessmentPlan',
+  'insertFeedback',
+  // fresh
+  'subject/lessonPlan',
+  'subject/assessmentPlan',
+  'student/ConductCharacter',
+  'student/ConductCharacterAssessment',
+  'projectTask',
+  'project/Facilitation',
+  'getReport',
+] as const
 
 export const welcomeScreenList = [
-  "Create subject-specific lesson plans and teaching notes aligned with Tongston’s entrepreneurial education scheme of work, and other schemes.",
-  "Design subject-based continuous and end-of-term assessments, complete with marking guides and model answers.",
-  "Create entrepreneurial project-based learning tasks that build real-world skills across cross-disciplinary subjects.",
-  "Create entrepreneurial project-based weekly lesson facilitation plans and notes that enables teachers’ facilitate students building real-world skills across cross-disciplinary subjects through projects.",
-  "Create student conduct & character lesson plans and teaching notes aligned with Tongston’s entrepreneurial education model.",
-  "Generate student conduct & character continuous & end-of-term assessments linked to Tongston’s student conduct and character KPIs.",
-  "Mark lesson plans and generate reports.",
-  "Access a Question Bank with SUBJECT CONTINUOUS ASSESSMENT / END OF TERM ASSESSMENTS; STUDENT CONDUCT & CHARACTER KPIS CONTINUOUS ASSESSMENT / END OF TERM ASSESSMENTS & PROJECTS (TASKS).",
-  "Access Folders of LESSON PLAN MARKING REPORTS",
-  "Access Folders of STUDENT CONDUCT & CHARACTER KPIS LESSON PLAN & NOTES",
-  "Access Folders of PROJECTS (TASKS) WEEKLY LESSON FACILITATION PLAN & NOTES",
-  "Access Folders of SUBJECT LESSON PLAN & NOTES",
-  "Compile student performance reports for parent and school insights.",
-  "Access Folder of student performance reports."
+  'Create subject-specific lesson plans and teaching notes aligned with Tongston’s entrepreneurial education scheme of work, and other schemes.',
+  'Design subject-based continuous and end-of-term assessments, complete with marking guides and model answers.',
+  'Create entrepreneurial project-based learning tasks that build real-world skills across cross-disciplinary subjects.',
+  'Create entrepreneurial project-based weekly lesson facilitation plans and notes that enables teachers’ facilitate students building real-world skills across cross-disciplinary subjects through projects.',
+  'Create student conduct & character lesson plans and teaching notes aligned with Tongston’s entrepreneurial education model.',
+  'Generate student conduct & character continuous & end-of-term assessments linked to Tongston’s student conduct and character KPIs.',
+  'Mark lesson plans and generate reports.',
+  'Access a Question Bank with SUBJECT CONTINUOUS ASSESSMENT / END OF TERM ASSESSMENTS; STUDENT CONDUCT & CHARACTER KPIS CONTINUOUS ASSESSMENT / END OF TERM ASSESSMENTS & PROJECTS (TASKS).',
+  'Access Folders of LESSON PLAN MARKING REPORTS',
+  'Access Folders of STUDENT CONDUCT & CHARACTER KPIS LESSON PLAN & NOTES',
+  'Access Folders of PROJECTS (TASKS) WEEKLY LESSON FACILITATION PLAN & NOTES',
+  'Access Folders of SUBJECT LESSON PLAN & NOTES',
+  'Compile student performance reports for parent and school insights.',
+  'Access Folder of student performance reports.',
 ]
 
 export const faqCategories = [
   {
-    label: "Navigating the AI Generator",
-    id: "navigating-the-ai-generator"
+    label: 'Navigating the AI Generator',
+    id: 'navigating-the-ai-generator',
   },
-  { label: "Understanding the Outputs", id: "understanding-the-outputs" },
-  { label: "Troubleshooting", id: "troubleshooting" },
-  { label: "Using the LMS", id: "using-the-lms" },
-  { label: "For Teachers New to AI Tools", id: "for-teachers-new-to-ai-tools" },
-  { label: "Common Questions from Beginners", id: "common-questions-from-beginners" },
-  { label: "Generator Walkthrough FAQs", id: "generator-walkthrough-faqs" }
+  { label: 'Understanding the Outputs', id: 'understanding-the-outputs' },
+  { label: 'Troubleshooting', id: 'troubleshooting' },
+  { label: 'Using the LMS', id: 'using-the-lms' },
+  { label: 'For Teachers New to AI Tools', id: 'for-teachers-new-to-ai-tools' },
+  {
+    label: 'Common Questions from Beginners',
+    id: 'common-questions-from-beginners',
+  },
+  { label: 'Generator Walkthrough FAQs', id: 'generator-walkthrough-faqs' },
 ]
 
 export const faqList = [
   {
-    "category": "Navigating the AI Generator",
-    "faqs": [
+    category: 'Navigating the AI Generator',
+    faqs: [
       {
-        "prompt": "How do I start generating a lesson plan?",
-        "response": "Go to the Lesson Plan Generator page, fill in the dropdowns (class, subject, topic, etc.), then click “Generate.” The AI will build a full SMART lesson plan for you."
+        prompt: 'How do I start generating a lesson plan?',
+        response:
+          'Go to the Lesson Plan Generator page, fill in the dropdowns (class, subject, topic, etc.), then click “Generate.” The AI will build a full SMART lesson plan for you.',
       },
       {
-        "prompt": "What is a Suggestions for Refinement box?",
-        "response": "It’s a plain-text box beside each form field. Use it to give extra instructions to the AI — like “make this interactive” or “add visual activity.”"
+        prompt: 'What is a Suggestions for Refinement box?',
+        response:
+          'It’s a plain-text box beside each form field. Use it to give extra instructions to the AI — like “make this interactive” or “add visual activity.”',
       },
       {
-        "prompt": "Why is my Generate button not working?",
-        "response": "Ensure all required fields are filled — especially class, subject, and topic. Then click “Generate.” If it still fails, refresh the page and try again."
+        prompt: 'Why is my Generate button not working?',
+        response:
+          'Ensure all required fields are filled — especially class, subject, and topic. Then click “Generate.” If it still fails, refresh the page and try again.',
       },
       {
-        "prompt": "Where do I find my previous outputs?",
-        "response": "At the moment, previous outputs are not stored permanently. Make sure to download your PDF after generation. A dashboard for saved outputs is coming soon."
-      }
-    ]
+        prompt: 'Where do I find my previous outputs?',
+        response:
+          'At the moment, previous outputs are not stored permanently. Make sure to download your PDF after generation. A dashboard for saved outputs is coming soon.',
+      },
+    ],
   },
   {
-    "category": "Understanding the Outputs",
-    "faqs": [
+    category: 'Understanding the Outputs',
+    faqs: [
       {
-        "prompt": "What is included in a lesson plan?",
-        "response": "Each AI-generated lesson plan includes objectives, materials, introduction, teaching activities, student activities, assessment, and conclusion."
+        prompt: 'What is included in a lesson plan?',
+        response:
+          'Each AI-generated lesson plan includes objectives, materials, introduction, teaching activities, student activities, assessment, and conclusion.',
       },
       {
-        "prompt": "What is a project task?",
-        "response": "A project task is a real-world learning activity that blends multiple subjects. It helps students apply their skills entrepreneurially."
+        prompt: 'What is a project task?',
+        response:
+          'A project task is a real-world learning activity that blends multiple subjects. It helps students apply their skills entrepreneurially.',
       },
       {
-        "prompt": "Can I edit the generated PDF?",
-        "response": "No. PDFs are locked to protect the content. You can use the Suggestions for Refinement box to adjust the output and re-generate."
+        prompt: 'Can I edit the generated PDF?',
+        response:
+          'No. PDFs are locked to protect the content. You can use the Suggestions for Refinement box to adjust the output and re-generate.',
       },
       {
-        "prompt": "Why is the output too short?",
-        "response": "If the result is too brief, try selecting a higher Bloom’s Taxonomy level like “Analyze” or “Create,” or enter a more detailed topic."
-      }
-    ]
+        prompt: 'Why is the output too short?',
+        response:
+          'If the result is too brief, try selecting a higher Bloom’s Taxonomy level like “Analyze” or “Create,” or enter a more detailed topic.',
+      },
+    ],
   },
   {
-    "category": "Troubleshooting",
-    "faqs": [
+    category: 'Troubleshooting',
+    faqs: [
       {
-        "prompt": "The chatbot doesn’t understand my prompt",
-        "response": "Try simplifying your prompt or check if dropdowns are properly selected. You can also use the quick FAQ buttons for faster answers."
+        prompt: 'The chatbot doesn’t understand my prompt',
+        response:
+          'Try simplifying your prompt or check if dropdowns are properly selected. You can also use the quick FAQ buttons for faster answers.',
       },
       {
-        "prompt": "I’m getting a blank or empty output",
-        "response": "Please ensure all fields are filled. If the issue persists, refresh and try again. If unresolved, email t-world@tongston.com."
+        prompt: 'I’m getting a blank or empty output',
+        response:
+          'Please ensure all fields are filled. If the issue persists, refresh and try again. If unresolved, email t-world@tongston.com.',
       },
       {
-        "prompt": "How do I contact support?",
-        "response": "You can email t-world@tongston.com or click “Contact Support” in the chatbot. We’ll get back to you within 24–48 hours."
+        prompt: 'How do I contact support?',
+        response:
+          'You can email t-world@tongston.com or click “Contact Support” in the chatbot. We’ll get back to you within 24–48 hours.',
       },
       {
-        "prompt": "How do I give feedback on an output?",
-        "response": "After you generate content, scroll down and click thumbs up/down or a rating from 1–5 stars. Your feedback helps us improve the AI."
-      }
-    ]
+        prompt: 'How do I give feedback on an output?',
+        response:
+          'After you generate content, scroll down and click thumbs up/down or a rating from 1–5 stars. Your feedback helps us improve the AI.',
+      },
+    ],
   },
   {
-    "category": "Using the LMS",
-    "faqs": [
+    category: 'Using the LMS',
+    faqs: [
       {
-        "prompt": "How do I update my profile?",
-        "response": "Log in to your TEENS LMS dashboard, click “My Profile,” and update your subjects, classes, and certifications."
+        prompt: 'How do I update my profile?',
+        response:
+          'Log in to your TEENS LMS dashboard, click “My Profile,” and update your subjects, classes, and certifications.',
       },
       {
-        "prompt": "What is the AI Assistant tab?",
-        "response": "It’s where you generate lesson plans, assessments, character development templates, and more — all using Tongston’s AI."
+        prompt: 'What is the AI Assistant tab?',
+        response:
+          'It’s where you generate lesson plans, assessments, character development templates, and more — all using Tongston’s AI.',
       },
       {
-        "prompt": "Where can I learn how to teach better?",
-        "response": "Go to “My Courses” in your LMS. You’ll find CPD-accredited training courses to help you improve your teaching methods."
-      }
-    ]
+        prompt: 'Where can I learn how to teach better?',
+        response:
+          'Go to “My Courses” in your LMS. You’ll find CPD-accredited training courses to help you improve your teaching methods.',
+      },
+    ],
   },
   {
-    "category": "For Teachers New to AI Tools",
-    "faqs": [
+    category: 'For Teachers New to AI Tools',
+    faqs: [
       {
-        "prompt": "What is the AI Assistant used for?",
-        "response": "The AI Assistant helps you create lesson plans, assessments, project tasks, and character-building templates — all aligned with curriculum and entrepreneurship principles. It saves time and improves your teaching impact."
+        prompt: 'What is the AI Assistant used for?',
+        response:
+          'The AI Assistant helps you create lesson plans, assessments, project tasks, and character-building templates — all aligned with curriculum and entrepreneurship principles. It saves time and improves your teaching impact.',
       },
       {
-        "prompt": "I’ve never used AI before. Where do I start?",
-        "response": "Start by selecting a generator from the AI Assistant tab (e.g., Lesson Plan). Fill in the form with your class and subject info, then click Generate. The AI will create your content for you."
+        prompt: 'I’ve never used AI before. Where do I start?',
+        response:
+          'Start by selecting a generator from the AI Assistant tab (e.g., Lesson Plan). Fill in the form with your class and subject info, then click Generate. The AI will create your content for you.',
       },
       {
-        "prompt": "What do I need to prepare before using the AI?",
-        "response": "You need to know your subject, class/year, topic, and how long your lesson will be. You can also type your school’s curriculum and any other details."
+        prompt: 'What do I need to prepare before using the AI?',
+        response:
+          'You need to know your subject, class/year, topic, and how long your lesson will be. You can also type your school’s curriculum and any other details.',
       },
       {
-        "prompt": "Is this AI difficult to use?",
-        "response": "Not at all! You just fill a simple form and click Generate. The AI handles the rest. You can also adjust results using Suggestions for Refinement."
-      }
-    ]
+        prompt: 'Is this AI difficult to use?',
+        response:
+          'Not at all! You just fill a simple form and click Generate. The AI handles the rest. You can also adjust results using Suggestions for Refinement.',
+      },
+    ],
   },
   {
-    "category": "Common Questions from Beginners",
-    "faqs": [
+    category: 'Common Questions from Beginners',
+    faqs: [
       {
-        "prompt": "Is the AI replacing me as a teacher?",
-        "response": "No — the AI is here to support you. You are the expert. The AI helps you prepare faster and with better quality, but you remain in control."
+        prompt: 'Is the AI replacing me as a teacher?',
+        response:
+          'No — the AI is here to support you. You are the expert. The AI helps you prepare faster and with better quality, but you remain in control.',
       },
       {
-        "prompt": "How do I know if the AI content is correct?",
-        "response": "Every output is based on Tongston’s curriculum and benchmarked content. You should always review and adjust based on your classroom needs."
+        prompt: 'How do I know if the AI content is correct?',
+        response:
+          'Every output is based on Tongston’s curriculum and benchmarked content. You should always review and adjust based on your classroom needs.',
       },
       {
-        "prompt": "Can I use AI content in my classroom?",
-        "response": "Yes — all outputs are designed for immediate use in real lessons. Download them as PDFs and use them during class."
+        prompt: 'Can I use AI content in my classroom?',
+        response:
+          'Yes — all outputs are designed for immediate use in real lessons. Download them as PDFs and use them during class.',
       },
       {
-        "prompt": "What if I don’t understand the output?",
-        "response": "You can rephrase your input, use the refinement box, or click Help again. You can also email support for clarification."
-      }
-    ]
+        prompt: 'What if I don’t understand the output?',
+        response:
+          'You can rephrase your input, use the refinement box, or click Help again. You can also email support for clarification.',
+      },
+    ],
   },
   {
-    "category": "Generator Walkthrough FAQs",
-    "faqs": [
+    category: 'Generator Walkthrough FAQs',
+    faqs: [
       {
-        "prompt": "How do I generate a subject lesson plan?",
-        "response": [
-          "Go to the “Subject Lesson Plan & Notes Generator” tab.",
-          "Select your Class/Year level.",
-          "Choose your Subject Discipline and Subject.",
-          "Type your Topic (e.g., Photosynthesis).",
-          "Choose Lesson Duration",
-          "Choose Class Size.",
-          "Choose your Bloom’s Taxonomy level if you want to control difficulty.",
-          "Click Generate.",
-          "Your lesson will appear. Download as PDF or save it."
-        ]
+        prompt: 'How do I generate a subject lesson plan?',
+        response: [
+          'Go to the “Subject Lesson Plan & Notes Generator” tab.',
+          'Select your Class/Year level.',
+          'Choose your Subject Discipline and Subject.',
+          'Type your Topic (e.g., Photosynthesis).',
+          'Choose Lesson Duration',
+          'Choose Class Size.',
+          'Choose your Bloom’s Taxonomy level if you want to control difficulty.',
+          'Click Generate.',
+          'Your lesson will appear. Download as PDF or save it.',
+        ],
       },
       {
-        "prompt": "How do I create a subject assessment?",
-        "response": [
-          "Go to “Subject Continuous Assessment / End of Term Generator.”",
-          "Fill the same fields as lesson plans: Class, Subject, Topic, Curriculum.",
-          "Choose Number of Questions.",
-          "Click Generate to get your assessment, including correct answers and short justifications."
-        ]
+        prompt: 'How do I create a subject assessment?',
+        response: [
+          'Go to “Subject Continuous Assessment / End of Term Generator.”',
+          'Fill the same fields as lesson plans: Class, Subject, Topic, Curriculum.',
+          'Choose Number of Questions.',
+          'Click Generate to get your assessment, including correct answers and short justifications.',
+        ],
       },
       {
-        "prompt": "How do I generate student conduct lesson plans?",
-        "response": [
-          "Go to “Student Conduct & Character KPIs Lesson Plan Generator.”",
-          "Select the appropriate Class and Topic/KPI.",
-          "Choose Lesson Duration.",
-          "Click Generate.",
-          "AI creates activities, reflections, and behavioral strategies."
-        ]
+        prompt: 'How do I generate student conduct lesson plans?',
+        response: [
+          'Go to “Student Conduct & Character KPIs Lesson Plan Generator.”',
+          'Select the appropriate Class and Topic/KPI.',
+          'Choose Lesson Duration.',
+          'Click Generate.',
+          'AI creates activities, reflections, and behavioral strategies.',
+        ],
       },
       {
-        "prompt": "How do I generate a project task?",
-        "response": [
-          "Go to the “Project (Tasks) Generator.”",
-          "Select the Class and Subject.",
-          "Type the core topic or objective (e.g., Waste Management).",
-          "AI will design a real-world, interdisciplinary project.",
-          "Click Generate."
-        ]
-      }
-    ]
-
-  }
+        prompt: 'How do I generate a project task?',
+        response: [
+          'Go to the “Project (Tasks) Generator.”',
+          'Select the Class and Subject.',
+          'Type the core topic or objective (e.g., Waste Management).',
+          'AI will design a real-world, interdisciplinary project.',
+          'Click Generate.',
+        ],
+      },
+    ],
+  },
 ]
 
 export const homePageWalkthroughSteps: IWalkthroughSteps[] = [
@@ -467,24 +530,25 @@ export const homePageWalkthroughSteps: IWalkthroughSteps[] = [
   // },
   {
     content:
-      "Need guidance? Click here to explore Help & FAQs. This section answers common questions like how to generate lesson plans, assessments, and access reports.",
-    selector: "#help-faqs",
+      'Need guidance? Click here to explore Help & FAQs. This section answers common questions like how to generate lesson plans, assessments, and access reports.',
+    selector: '#help-faqs',
   },
   {
-    content: "Share your thoughts and help us improve the AI Assistant and platform experience.",
-    selector: "#feedback"
+    content:
+      'Share your thoughts and help us improve the AI Assistant and platform experience.',
+    selector: '#feedback',
   },
   {
     content: `Welcome to the AI Teaching Assistant! This tool helps you quickly create lesson plans, student assessments, project tasks, and conduct reports using AI. Whether you're planning a subject lesson, marking work, or tracking student behavior, everything you need is available in one place. Simply choose a section from the sidebar to begin.`,
-    selector: `#subject-lesson-plan`
+    selector: `#subject-lesson-plan`,
   },
   {
     content: `To create a subject lesson plan, go to the “Lesson Plan & Notes” section. Select the class, subject, topic, and curriculum type from the dropdowns. You’ll also be asked to choose the lesson duration and class size. Once you fill in the fields, click the generate button and your full lesson plan will be created. You can then download or save it for classroom use.`,
-    selector: `#subject-assessments`
+    selector: `#subject-assessments`,
   },
   {
     content: `To generate subject assessments, open the “Assessments” section. After selecting your class, subject, and topic, choose how many questions you want in the test. Click generate, and the AI will create a quiz with answers. You can edit or approve the questions, then save them to your question bank for future use.`,
-    selector: `#student-conduct-and-character-lesson-plan`
+    selector: `#student-conduct-and-character-lesson-plan`,
   },
   // {
   //   content: `🧑‍🎓In the “Character Lesson Plan” section, you can create lesson plans that help build student behavior and character. Choose the class level and topic, such as leadership or honesty, and set the lesson duration. After clicking generate, the AI will create structured activities and strategies. You can review and save the plan as needed.`,
@@ -497,7 +561,7 @@ export const homePageWalkthroughSteps: IWalkthroughSteps[] = [
   {
     content: `If you want to assign project-based learning, visit the “Project Tasks” section. Select the class and subject, then enter a real-world topic like environmental safety or innovation. Click generate and the AI will produce a hands-on project task. Save the task and assign it to groups or individual students based on your schedule.
 `,
-    selector: `#project-tasks`
+    selector: `#project-tasks`,
   },
   //   {
   //     content: `To plan weekly lessons for projects, head to the “Project Weekly Plan” section. After selecting how many weeks your project will run, fill in basic details like class and topic. The AI will automatically generate weekly breakdowns, reflection prompts, and cross-disciplinary teaching cues. You can review and adjust the content, then save the facilitation plan for teaching use.
@@ -512,202 +576,208 @@ export const homePageWalkthroughSteps: IWalkthroughSteps[] = [
 
 export const helpWalkthroughSteps: IWalkthroughSteps[] = [
   {
-    content: "To begin generating content, simply navigate to the Lesson Plan Generator page. Select options from the dropdowns like class, subject, and topic. After that, click “Generate” and the AI will produce a complete SMART lesson plan. Each form field also includes a “Suggestions for Refinement” box where you can guide the AI to make outputs more interactive or visually engaging. If the “Generate” button isn’t responding, ensure all required fields are filled. If issues continue, try refreshing the page. Note that currently, outputs aren’t saved, so download your PDF immediately. A saved dashboard feature is coming soon.",
+    content:
+      'To begin generating content, simply navigate to the Lesson Plan Generator page. Select options from the dropdowns like class, subject, and topic. After that, click “Generate” and the AI will produce a complete SMART lesson plan. Each form field also includes a “Suggestions for Refinement” box where you can guide the AI to make outputs more interactive or visually engaging. If the “Generate” button isn’t responding, ensure all required fields are filled. If issues continue, try refreshing the page. Note that currently, outputs aren’t saved, so download your PDF immediately. A saved dashboard feature is coming soon.',
     selector: `#${faqCategories[0].id}`,
   },
   {
-    content: "Every AI-generated lesson plan is designed to be classroom-ready. It includes structured elements like objectives, materials, introductions, student and teaching activities, assessments, and conclusions. You’ll also find project tasks — interdisciplinary, real-world learning activities that support entrepreneurial thinking. While PDFs can't be edited directly, you can use the refinement boxes to adjust instructions and re-generate better versions. If an output seems too short, consider selecting a higher Bloom’s Taxonomy level such as “Analyze” or “Create,” or provide a more detailed topic.",
-    selector: `#${faqCategories[1].id}`
+    content:
+      "Every AI-generated lesson plan is designed to be classroom-ready. It includes structured elements like objectives, materials, introductions, student and teaching activities, assessments, and conclusions. You’ll also find project tasks — interdisciplinary, real-world learning activities that support entrepreneurial thinking. While PDFs can't be edited directly, you can use the refinement boxes to adjust instructions and re-generate better versions. If an output seems too short, consider selecting a higher Bloom’s Taxonomy level such as “Analyze” or “Create,” or provide a more detailed topic.",
+    selector: `#${faqCategories[1].id}`,
   },
   {
-    content: "If the AI doesn’t understand your input, try simplifying your language or double-check that all dropdown selections are complete. Blank or empty outputs usually indicate that some required fields are missing. Refresh the page and try again. If problems continue, you can email support at t-world@tongston.com. For any feedback, simply use the thumbs up/down buttons or star ratings available after generation — this helps improve future outputs.",
-    selector: `#${faqCategories[2].id}`
+    content:
+      'If the AI doesn’t understand your input, try simplifying your language or double-check that all dropdown selections are complete. Blank or empty outputs usually indicate that some required fields are missing. Refresh the page and try again. If problems continue, you can email support at t-world@tongston.com. For any feedback, simply use the thumbs up/down buttons or star ratings available after generation — this helps improve future outputs.',
+    selector: `#${faqCategories[2].id}`,
   },
   {
-    content: "To manage your profile on the LMS, log into your dashboard and click on “My Profile” to update details such as subjects and certifications. The “AI Assistant” tab is your go-to tool for generating lesson plans, assessments, and more. If you’re looking to enhance your teaching skills, check the “My Courses” section — it includes CPD-accredited trainings that can help you level up professionally and improve classroom effectiveness.",
-    selector: `#${faqCategories[3].id}`
+    content:
+      'To manage your profile on the LMS, log into your dashboard and click on “My Profile” to update details such as subjects and certifications. The “AI Assistant” tab is your go-to tool for generating lesson plans, assessments, and more. If you’re looking to enhance your teaching skills, check the “My Courses” section — it includes CPD-accredited trainings that can help you level up professionally and improve classroom effectiveness.',
+    selector: `#${faqCategories[3].id}`,
   },
   {
-    content: "The AI Assistant is built to support, not replace, teachers. It helps you quickly generate high-quality lesson plans, assessments, project ideas, and character-building templates aligned with curriculum goals. If you're new to AI, simply select a generator (like Lesson Plan), fill in your class and subject info, and click Generate. Be prepared with your topic, lesson duration, and any special curriculum instructions. The interface is beginner-friendly — just fill out the form and let the AI handle the rest.",
-    selector: `#${faqCategories[4].id}`
+    content:
+      "The AI Assistant is built to support, not replace, teachers. It helps you quickly generate high-quality lesson plans, assessments, project ideas, and character-building templates aligned with curriculum goals. If you're new to AI, simply select a generator (like Lesson Plan), fill in your class and subject info, and click Generate. Be prepared with your topic, lesson duration, and any special curriculum instructions. The interface is beginner-friendly — just fill out the form and let the AI handle the rest.",
+    selector: `#${faqCategories[4].id}`,
   },
   {
-    content: "Many new users wonder whether AI is replacing teachers — it’s not. The AI serves as your assistant, allowing you to prepare better and faster. All content is based on Tongston’s curriculum and should still be reviewed for personal classroom use. The PDFs generated are fully ready to use in class, and if you ever don’t understand an output, you can rephrase your inputs or contact support for help. Remember, you're in control of what gets used in your classroom.",
-    selector: `#${faqCategories[4].id}`
+    content:
+      "Many new users wonder whether AI is replacing teachers — it’s not. The AI serves as your assistant, allowing you to prepare better and faster. All content is based on Tongston’s curriculum and should still be reviewed for personal classroom use. The PDFs generated are fully ready to use in class, and if you ever don’t understand an output, you can rephrase your inputs or contact support for help. Remember, you're in control of what gets used in your classroom.",
+    selector: `#${faqCategories[4].id}`,
   },
   {
-    content: "To generate a Subject Lesson Plan, visit the “Subject Lesson Plan & Notes Generator,” choose class, subject, topic, duration, and Bloom’s level, then click Generate. For Subject Assessments, use the “Continuous Assessment / End of Term Generator,” select similar fields, pick the number of questions, and generate the output. To create Student Conduct and Character Lesson Plans, go to the respective generator, select class and KPI topic, then click Generate for a structured behavior-focused lesson. For Project Tasks, open the Project Generator, choose class and subject, define the topic, and generate an interdisciplinary project ready for use.",
-    selector: `#${faqCategories[4].id}`
+    content:
+      'To generate a Subject Lesson Plan, visit the “Subject Lesson Plan & Notes Generator,” choose class, subject, topic, duration, and Bloom’s level, then click Generate. For Subject Assessments, use the “Continuous Assessment / End of Term Generator,” select similar fields, pick the number of questions, and generate the output. To create Student Conduct and Character Lesson Plans, go to the respective generator, select class and KPI topic, then click Generate for a structured behavior-focused lesson. For Project Tasks, open the Project Generator, choose class and subject, define the topic, and generate an interdisciplinary project ready for use.',
+    selector: `#${faqCategories[4].id}`,
   },
 ]
 
 export const latestPlanList = [
-  "projectTaskFacilitationPlan",
-  "projectTaskPlan",
-  "reportGenerator",
+  'projectTaskFacilitationPlan',
+  'projectTaskPlan',
+  'reportGenerator',
 ]
 
-export const latestLesson = "subjectLessonPlan"
+export const latestLesson = 'subjectLessonPlan'
 
 export const latestAssessmentPlan = [
-  "subjectAssessmentPlan",
-  "studentConductCharacterAssessmentPlan",
+  'subjectAssessmentPlan',
+  'studentConductCharacterAssessmentPlan',
 ]
 
 export const latestStudentConductPlan = [
-  "studentConductCharacterPlan",
-  "studentConductCharacterAssessmentPlan"
+  'studentConductCharacterPlan',
+  'studentConductCharacterAssessmentPlan',
 ]
-
 
 // admin
 export const mockFaqs: FAQ[] = [
   {
-    id: "1",
-    heading: "How do I reset my password?",
+    id: '1',
+    heading: 'How do I reset my password?',
     description:
       "To reset your password, go to the login page and click 'Forgot Password'. Enter your email address and follow the instructions sent to your email.",
-    category: "Account Management",
+    category: 'Account Management',
   },
   {
-    id: "2",
-    heading: "What payment methods do you accept?",
+    id: '2',
+    heading: 'What payment methods do you accept?',
     description:
-      "We accept all major credit cards (Visa, MasterCard, American Express), PayPal, and bank transfers for enterprise accounts.",
-    category: "Billing & Payments",
+      'We accept all major credit cards (Visa, MasterCard, American Express), PayPal, and bank transfers for enterprise accounts.',
+    category: 'Billing & Payments',
   },
   {
-    id: "3",
-    heading: "How do I use the AI Generator?",
+    id: '3',
+    heading: 'How do I use the AI Generator?',
     description:
       "The AI Generator is easy to use. Simply enter your prompt in the text box, select your preferred settings, and click 'Generate'. The AI will create content based on your input.",
-    category: "Navigating the AI Generator",
+    category: 'Navigating the AI Generator',
   },
 ]
 
-export type ApiType = typeof apisList[number]
-
-
-
+export type ApiType = (typeof apisList)[number]
 
 // analytics\
 
 export const FILTER_BUTTONS = [
   {
-    key: "subjectLessonPlan",
-    label: "Subject Lesson Plans",
+    key: 'subjectLessonPlan',
+    label: 'Subject Lesson Plans',
     icon: BookOpen,
-    color: "from-[#ffb900] to-[#fe9a00]",
+    color: 'from-[#ffb900] to-[#fe9a00]',
   },
   {
-    key: "subjectAssessmentPlan",
-    label: "Subject Assessments",
+    key: 'subjectAssessmentPlan',
+    label: 'Subject Assessments',
     icon: ClipboardCheck,
-    color: "from-[#E04A2F] to-[#ff6b4a]",
+    color: 'from-[#E04A2F] to-[#ff6b4a]',
   },
   {
-    key: "studentConductCharacterAssessmentPlan",
-    label: "Student Conduct & Character Assessments",
+    key: 'studentConductCharacterAssessmentPlan',
+    label: 'Student Conduct & Character Assessments',
     icon: Users,
-    color: "from-[#111111] to-[#333333]",
+    color: 'from-[#111111] to-[#333333]',
   },
   {
-    key: "projectTaskPlan",
-    label: "Project (Tasks)",
+    key: 'projectTaskPlan',
+    label: 'Project (Tasks)',
     icon: FolderOpen,
-    color: "from-[#F5C242] to-[#ffd700]",
+    color: 'from-[#F5C242] to-[#ffd700]',
   },
   {
-    key: "projectTaskFacilitationPlan",
-    label: "Project (Tasks) Facilitation Plans",
+    key: 'projectTaskFacilitationPlan',
+    label: 'Project (Tasks) Facilitation Plans',
     icon: Settings,
-    color: "from-[#707070] to-[#909090]",
+    color: 'from-[#707070] to-[#909090]',
   },
   {
-    key: "studentConductCharacterPlan",
-    label: "Student Conduct & Character Lesson Plans",
+    key: 'studentConductCharacterPlan',
+    label: 'Student Conduct & Character Lesson Plans',
     icon: User,
-    color: "from-[#E04A2F] to-[#ff6b4a]",
+    color: 'from-[#E04A2F] to-[#ff6b4a]',
   },
   {
-    key: "reportGenerator",
-    label: "Lesson Plan Marking & Reports",
+    key: 'reportGenerator',
+    label: 'Lesson Plan Marking & Reports',
     icon: FileText,
-    color: "from-[#ffb900] to-[#fe9a00]",
+    color: 'from-[#ffb900] to-[#fe9a00]',
   },
 
   // 🔽 Newly added items
   {
-    key: "type",
-    label: "Type",
+    key: 'type',
+    label: 'Type',
     icon: Tag,
-    color: "from-[#fc4a1a] to-[#f7b733]",
+    color: 'from-[#fc4a1a] to-[#f7b733]',
   },
   {
-    key: "discipline",
-    label: "Discipline",
+    key: 'discipline',
+    label: 'Discipline',
     icon: ClipboardCheck,
-    color: "from-[#43e97b] to-[#38f9d7]",
+    color: 'from-[#43e97b] to-[#38f9d7]',
   },
   {
-    key: "subjectUnitTopic",
-    label: "Subject Unit/Topic",
+    key: 'subjectUnitTopic',
+    label: 'Subject Unit/Topic',
     icon: FolderOpen,
-    color: "from-[#36d1dc] to-[#5b86e5]",
+    color: 'from-[#36d1dc] to-[#5b86e5]',
   },
   {
-    key: "studentConductCharacterUnitTopic",
-    label: "Student Conduct & Character Unit/Topic",
+    key: 'studentConductCharacterUnitTopic',
+    label: 'Student Conduct & Character Unit/Topic',
     icon: User,
-    color: "from-[#b24592] to-[#f15f79]",
+    color: 'from-[#b24592] to-[#f15f79]',
   },
   {
-    key: "task",
-    label: "Task",
+    key: 'task',
+    label: 'Task',
     icon: Settings,
-    color: "from-[#ff512f] to-[#dd2476]",
+    color: 'from-[#ff512f] to-[#dd2476]',
   },
   {
-    key: "subTask",
-    label: "Sub-Task",
+    key: 'subTask',
+    label: 'Sub-Task',
     icon: FileText,
-    color: "from-[#56ab2f] to-[#a8e063]",
+    color: 'from-[#56ab2f] to-[#a8e063]',
   },
   {
-    key: "subject",
-    label: "Subject",
+    key: 'subject',
+    label: 'Subject',
     icon: BookOpen,
-    color: "from-[#4facfe] to-[#00f2fe]",
+    color: 'from-[#4facfe] to-[#00f2fe]',
     list: [subjectLists.map((item) => item.subject)].flat(),
   },
   {
-    key: "classYear",
-    label: "Class/Year",
+    key: 'classYear',
+    label: 'Class/Year',
     icon: Users,
-    color: "from-[#ff6a00] to-[#ee0979]",
-    list: yearClasses
+    color: 'from-[#ff6a00] to-[#ee0979]',
+    list: yearClasses,
   },
 
   {
-    key: "week",
-    label: "Week",
+    key: 'week',
+    label: 'Week',
     icon: Calendar,
-    color: "from-[#8e2de2] to-[#4a00e0]",
+    color: 'from-[#8e2de2] to-[#4a00e0]',
     list: weekList,
   },
   {
-    key: "term",
-    label: "Term",
+    key: 'term',
+    label: 'Term',
     icon: CalendarDays,
-    color: "from-[#11998e] to-[#38ef7d]",
-    list: ["Personal Development", "Professional Development", "Public Development"]
+    color: 'from-[#11998e] to-[#38ef7d]',
+    list: [
+      'Personal Development',
+      'Professional Development',
+      'Public Development',
+    ],
   },
-
-];
+]
 
 export const LEVEL_COLORS: Record<Level, string> = {
   Nursery: '#F5C242',
   Primary: '#E04A2F',
   Secondary: '#111111',
   University: '#707070',
-};
+}

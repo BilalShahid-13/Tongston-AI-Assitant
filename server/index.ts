@@ -18,7 +18,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: "*" }));
 app.use(bodyParser.json());
 
-
 app.get("/", (req: Request, res: Response) => {
   res.send("hello world!");
 });
@@ -28,17 +27,16 @@ app.get("/", (req: Request, res: Response) => {
 
 // app.use("/api", searchRouter);
 // app.use("/api", feedbackRouter);
-app.use("/api", KnowledgeBaseRouter)
+app.use("/api", KnowledgeBaseRouter);
 app.use("/api", userRouter);
 app.use("/api", faqRouter);
 app.use("/api", feedbackRouter);
 app.use("/api", subjectLessonRouter);
 app.use("/api", studentConductRouter);
-app.use("/api", projectTaskRouter)
-app.use("/api", reportRouter)
-app.use("/api", otpRouter)
-app.use("/api", ratingRouter)
-
+app.use("/api", projectTaskRouter);
+app.use("/api", reportRouter);
+app.use("/api", otpRouter);
+app.use("/api", ratingRouter);
 
 // insertFaq();
 // console.log(parseExcelLink('./public/AI Chatbot (K12) Knowledge base sort sheet.xlsx'))
