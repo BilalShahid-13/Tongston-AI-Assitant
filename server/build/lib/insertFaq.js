@@ -10,10 +10,10 @@ const dotenv_1 = require("dotenv");
 const mongodb_1 = require("mongodb");
 const pdf_parse_1 = __importDefault(require("pdf-parse"));
 const connectDb_1 = require("../lib/connectDb");
-const openai_1 = __importDefault(require("../lib/openai"));
+const openai_1 = require("../lib/openai");
+const faqKnowledgeBase_1 = require("../model/faqKnowledgeBase");
 const parseExcelFile_1 = require("../utils/parseExcelFile");
 const googleDriveDriver_1 = require("./googleDriveDriver");
-const faqKnowledgeBase_1 = require("../model/faqKnowledgeBase");
 (0, dotenv_1.config)();
 const splitter = new textsplitters_1.RecursiveCharacterTextSplitter({
     chunkSize: 512,
@@ -74,12 +74,13 @@ async function processSinglePdf(fileId) {
             console.log(`⏩ Skipping chunk ${i} of file ${fileId} (already in DB)`);
             continue;
         }
-        const embedding = await openai_1.default.embeddings.create({
-            model: "text-embedding-3-small",
-            input: chunk,
-            encoding_format: "float",
-        });
-        const vector = embedding.data[0].embedding;
+        const vector = await (0, openai_1.embedQuery)(chunk); // ✅ official Gemini SDK
+        // const embedding = await openai.embeddings.create({
+        //   model: "text-embedding-3-small",
+        //   input: chunk,
+        //   encoding_format: "float",
+        // });
+        // const vector = embedding.data[0].embedding;
         await faqKnowledgeBase_1.faqKnowledgeBase.create({
             fileId,
             chunkIndex: i,

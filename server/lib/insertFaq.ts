@@ -4,10 +4,10 @@ import { config } from "dotenv";
 import { Db, MongoClient } from "mongodb";
 import PdfParse from "pdf-parse";
 import { connectMongo } from "../lib/connectDb";
-import openai from "../lib/openai";
+import { embedQuery } from "../lib/openai";
+import { faqKnowledgeBase } from "../model/faqKnowledgeBase";
 import { parseExcelLink } from "../utils/parseExcelFile";
 import { listPdfFilesInFolder } from "./googleDriveDriver";
-import { faqKnowledgeBase } from "../model/faqKnowledgeBase";
 
 
 config();
@@ -84,13 +84,15 @@ async function processSinglePdf(fileId: string) {
       continue;
     }
 
-    const embedding = await openai.embeddings.create({
-      model: "text-embedding-3-small",
-      input: chunk,
-      encoding_format: "float",
-    });
+    const vector = await embedQuery(chunk); // ✅ official Gemini SDK
 
-    const vector = embedding.data[0].embedding;
+    // const embedding = await openai.embeddings.create({
+    //   model: "text-embedding-3-small",
+    //   input: chunk,
+    //   encoding_format: "float",
+    // });
+
+    // const vector = embedding.data[0].embedding;
 
     await faqKnowledgeBase.create({
       fileId,

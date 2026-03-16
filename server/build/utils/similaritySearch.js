@@ -5,40 +5,50 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.faqSimilaritySearch = faqSimilaritySearch;
 exports.planSimilaritySearch = planSimilaritySearch;
-const mongodb_1 = require("@langchain/mongodb");
-const openai_1 = require("@langchain/openai");
 const dotenv_1 = require("dotenv");
-const mongodb_2 = require("mongodb");
 const mongoose_1 = __importDefault(require("mongoose"));
 const connectDb_1 = require("../lib/connectDb");
-const openai_2 = __importDefault(require("../lib/openai"));
+const openai_1 = require("../lib/openai");
 const faqHistory_1 = require("../model/faqHistory");
 const userHistorySchema_1 = require("../model/userHistorySchema");
 const globalChatHistory_1 = require("./globalChatHistory");
 (0, dotenv_1.config)();
-const uri = process.env.MONGODB_URI || "mongodb://localhost:27017";
-const client = new mongodb_2.MongoClient(uri);
-const embeddings = new openai_1.OpenAIEmbeddings();
-const db = client.db();
-const collection = db.collection("faqKnowledgeBase");
-const vectorStore = new mongodb_1.MongoDBAtlasVectorSearch(embeddings, {
-    collection,
-    indexName: "faq_index",
-    textKey: "content",
-    embeddingKey: "vector",
-});
+// const uri = process.env.MONGODB_URI || "mongodb://localhost:27017";
+// const client = new MongoClient(uri);
+// const embeddings = new OpenAIEmbeddings();
+// const db = client.db();
+// const model = "openrouter/hunter-alpha";
+// const model = "meta-llama/llama-3.1-8b-instruct:free";
+const model = "models/gemini-2.5-flash";
+async function vectorSearch(queryText, limit = 10) {
+    console.log("🔍 Running vectorSearch...");
+    const collection = mongoose_1.default.connection.db.collection("faqKnowledgeBase");
+    const queryVector = await (0, openai_1.embedQuery)(queryText);
+    console.log("✅ Embedding done, querying MongoDB...");
+    return collection.aggregate([
+        {
+            $vectorSearch: {
+                index: "faq_index",
+                path: "vector",
+                queryVector,
+                numCandidates: 100,
+                limit,
+            },
+        },
+        { $project: { content: 1, _id: 0 } },
+    ]).toArray();
+}
+// const vectorStore = new MongoDBAtlasVectorSearch(embeddings, {
+//   collection,
+//   indexName: "faq_index",
+//   textKey: "content",
+//   embeddingKey: "vector",
+// });
 async function faqSimilaritySearch(req, query, res, instructionFn) {
     await (0, connectDb_1.connectMongo)();
-    const results = await vectorStore.similaritySearch(query, 10);
+    const results = await vectorSearch(query, 10);
+    // const results = await vectorStore.similaritySearch(query, 10);
     const context = results.map((doc) => doc.pageContent).join("\n");
-    // let chatHistory = await faqHistory.find({});
-    // chatHistory
-    // const roleAndContentOnly = chatHistory.flatMap(doc =>
-    //   doc.messages.map((msg: any) => ({
-    //     role: msg.role,
-    //     content: msg.content
-    //   }))
-    // );
     res.setHeader("Access-Control-Allow-Origin", "*");
     // res.setHeader("Access-Control-Allow-Origin", process.env.ORIGIN_URL!);
     res.setHeader("Access-Control-Allow-Credentials", "false");
@@ -46,18 +56,27 @@ async function faqSimilaritySearch(req, query, res, instructionFn) {
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Connection", "keep-alive");
     let fullResponse = "";
-    const stream = await openai_2.default.chat.completions.create({
-        model: "gpt-4o-mini",
-        messages: [
-            { role: "assistant", content: instructionFn(context, query) },
-            // ...roleAndContentOnly,
-            ...globalChatHistory_1.chatHistory,
-        ],
-        temperature: 0.7,
-        stream: true,
-    });
+    // const stream = await openai.chat.completions.create({
+    //   model: model,
+    //   messages: [
+    //     { role: "assistant", content: instructionFn(context, query) },
+    //     // ...roleAndContentOnly,
+    //     ...chatHistory,
+    //   ],
+    //   temperature: 0.7,
+    //   stream: true,
+    // });
+    const stream = await (0, openai_1.streamChat)(model, [
+        { role: "assistant", content: instructionFn(context, query) },
+        ...globalChatHistory_1.chatHistory,
+    ]);
+    // const stream = await streamChat("models/gemini-2.0-flash-lite", [
+    //   { role: "assistant", content: instructionFn(context, query) },
+    //   ...chatHistory,
+    // ]);
     for await (const chunk of stream) {
-        const content = chunk.choices?.[0]?.delta?.content;
+        const content = chunk.text;
+        // const content = chunk.choices?.[0]?.delta?.content;
         if (content) {
             fullResponse += content;
             res.write(`data: ${content}\n\n`);
@@ -77,24 +96,29 @@ async function faqSimilaritySearch(req, query, res, instructionFn) {
 async function planSimilaritySearch(req, query, res, instructionFn, // should return string
 planName, metaData) {
     try {
-        const results = await vectorStore.similaritySearch(JSON.stringify(query), 10);
+        // const results = await vectorStore.similaritySearch(JSON.stringify(query), 10);
+        const results = await vectorSearch(JSON.stringify(query), 10);
         const context = results.map((doc) => doc.pageContent).join("\n");
         // console.log('context', context)
         let fullResponse = "";
-        const stream = await openai_2.default.chat.completions.create({
-            model: "gpt-4o-mini",
-            messages: [
-                {
-                    role: "system",
-                    content: instructionFn(query, context),
-                },
-            ],
-            temperature: 0.7,
-            stream: true,
-            max_tokens: 3000,
-        });
+        // const stream = await openai.chat.completions.create({
+        //   model: model,
+        //   messages: [
+        //     {
+        //       role: "system",
+        //       content: instructionFn(query, context),
+        //     },
+        //   ],
+        //   temperature: 0.7,
+        //   stream: true,
+        //   max_tokens: 3000,
+        // });
+        const stream = await (0, openai_1.streamChat)(model, [
+            { role: "system", content: instructionFn(query, context) },
+        ], 0.7, 3000);
         for await (const chunk of stream) {
-            const content = chunk.choices?.[0]?.delta?.content;
+            const content = chunk.text;
+            // const content = chunk.choices?.[0]?.delta?.content;
             if (content) {
                 fullResponse += content;
                 res.write(content);

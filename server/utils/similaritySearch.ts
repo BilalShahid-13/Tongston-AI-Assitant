@@ -1,44 +1,54 @@
-import { MongoDBAtlasVectorSearch } from "@langchain/mongodb";
-import { OpenAIEmbeddings } from "@langchain/openai";
 import { config } from "dotenv";
 import { Request, Response } from "express";
-import { MongoClient } from "mongodb";
 import mongoose from "mongoose";
 import { connectMongo } from "../lib/connectDb";
-import openai from "../lib/openai";
+import openai, { embedQuery, streamChat } from "../lib/openai";
 import { faqHistory } from "../model/faqHistory";
 import { History } from "../model/userHistorySchema";
 import { chatHistory } from "./globalChatHistory";
 
 config();
 
-const uri = process.env.MONGODB_URI || "mongodb://localhost:27017";
-const client = new MongoClient(uri);
-const embeddings = new OpenAIEmbeddings();
+// const uri = process.env.MONGODB_URI || "mongodb://localhost:27017";
+// const client = new MongoClient(uri);
+// const embeddings = new OpenAIEmbeddings();
 
-const db = client.db();
-const collection = db.collection("faqKnowledgeBase");
+// const db = client.db();
+// const model = "openrouter/hunter-alpha";
+// const model = "meta-llama/llama-3.1-8b-instruct:free";
+const model = "models/gemini-2.5-flash";
+async function vectorSearch(queryText: string, limit = 10) {
+  console.log("🔍 Running vectorSearch...");
+  const collection = mongoose.connection.db!.collection("faqKnowledgeBase");
+  const queryVector = await embedQuery(queryText);
+  console.log("✅ Embedding done, querying MongoDB...");
+  return collection.aggregate([
+    {
+      $vectorSearch: {
+        index: "faq_index",
+        path: "vector",
+        queryVector,
+        numCandidates: 100,
+        limit,
+      },
+    },
+    { $project: { content: 1, _id: 0 } },
+  ]).toArray();
+}
 
-const vectorStore = new MongoDBAtlasVectorSearch(embeddings, {
-  collection,
-  indexName: "faq_index",
-  textKey: "content",
-  embeddingKey: "vector",
-});
+// const vectorStore = new MongoDBAtlasVectorSearch(embeddings, {
+//   collection,
+//   indexName: "faq_index",
+//   textKey: "content",
+//   embeddingKey: "vector",
+// });
 
 export async function faqSimilaritySearch(req: Request, query: string, res: Response, instructionFn: (context: string, query: string) => string
 ) {
   await connectMongo();
-  const results = await vectorStore.similaritySearch(query, 10);
+  const results = await vectorSearch(query, 10);
+  // const results = await vectorStore.similaritySearch(query, 10);
   const context = results.map((doc) => doc.pageContent).join("\n");
-  // let chatHistory = await faqHistory.find({});
-  // chatHistory
-  // const roleAndContentOnly = chatHistory.flatMap(doc =>
-  //   doc.messages.map((msg: any) => ({
-  //     role: msg.role,
-  //     content: msg.content
-  //   }))
-  // );
   res.setHeader("Access-Control-Allow-Origin", "*");
   // res.setHeader("Access-Control-Allow-Origin", process.env.ORIGIN_URL!);
   res.setHeader("Access-Control-Allow-Credentials", "false");
@@ -48,18 +58,27 @@ export async function faqSimilaritySearch(req: Request, query: string, res: Resp
 
   let fullResponse = "";
 
-  const stream = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [
-      { role: "assistant", content: instructionFn(context, query) },
-      // ...roleAndContentOnly,
-      ...chatHistory,
-    ],
-    temperature: 0.7,
-    stream: true,
-  });
+  // const stream = await openai.chat.completions.create({
+  //   model: model,
+  //   messages: [
+  //     { role: "assistant", content: instructionFn(context, query) },
+  //     // ...roleAndContentOnly,
+  //     ...chatHistory,
+  //   ],
+  //   temperature: 0.7,
+  //   stream: true,
+  // });
+  const stream = await streamChat(model, [
+    { role: "assistant", content: instructionFn(context, query) },
+    ...chatHistory,
+  ]);
+  // const stream = await streamChat("models/gemini-2.0-flash-lite", [
+  //   { role: "assistant", content: instructionFn(context, query) },
+  //   ...chatHistory,
+  // ]);
   for await (const chunk of stream) {
-    const content = chunk.choices?.[0]?.delta?.content;
+    const content = chunk.text;
+    // const content = chunk.choices?.[0]?.delta?.content;
     if (content) {
       fullResponse += content;
       res.write(`data: ${content}\n\n`);
@@ -87,24 +106,29 @@ export async function planSimilaritySearch(
   metaData: string,
 ): Promise<void> {
   try {
-    const results = await vectorStore.similaritySearch(JSON.stringify(query), 10);
+    // const results = await vectorStore.similaritySearch(JSON.stringify(query), 10);
+    const results = await vectorSearch(JSON.stringify(query), 10);
     const context = results.map((doc) => doc.pageContent).join("\n");
     // console.log('context', context)
     let fullResponse = "";
-    const stream = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        {
-          role: "system",
-          content: instructionFn(query, context),
-        },
-      ],
-      temperature: 0.7,
-      stream: true,
-      max_tokens:3000,
-    });
+    // const stream = await openai.chat.completions.create({
+    //   model: model,
+    //   messages: [
+    //     {
+    //       role: "system",
+    //       content: instructionFn(query, context),
+    //     },
+    //   ],
+    //   temperature: 0.7,
+    //   stream: true,
+    //   max_tokens: 3000,
+    // });
+    const stream = await streamChat(model, [
+      { role: "system", content: instructionFn(query, context) },
+    ], 0.7, 3000);
     for await (const chunk of stream) {
-      const content = chunk.choices?.[0]?.delta?.content;
+      const content = chunk.text;
+      // const content = chunk.choices?.[0]?.delta?.content;
       if (content) {
         fullResponse += content;
         res.write(content);

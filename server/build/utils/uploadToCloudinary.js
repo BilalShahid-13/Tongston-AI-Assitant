@@ -5,16 +5,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uploadToCloudinary = void 0;
 const cloudinary_1 = __importDefault(require("../config/cloudinary"));
-const uploadToCloudinary = (buffer, filename, folder = "/") => {
+const uploadToCloudinary = (buffer, filename, folder = "knowledgeBase") => {
     return new Promise((resolve, reject) => {
+        const nameWithoutExtension = filename.replace(/\.[^/.]+$/, '');
         const stream = cloudinary_1.default.uploader.upload_stream({
-            public_id: `${folder}${Date.now()}-${filename.replace(/\s+/g, "_")}`,
+            folder: `tongston/${folder}`, // ✅ No leading slashes
+            public_id: `${Date.now()}-${nameWithoutExtension.replace(/\s+/g, "_")}`,
             resource_type: "auto"
         }, (error, result) => {
-            if (error)
+            if (error) {
+                console.error("❌ Cloudinary upload error:", error);
                 reject(error);
-            else
+            }
+            else if (result) {
                 resolve(result);
+            }
+            else {
+                reject(new Error("Upload failed: No result returned"));
+            }
         });
         stream.end(buffer);
     });

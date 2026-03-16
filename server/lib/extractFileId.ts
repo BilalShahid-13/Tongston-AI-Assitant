@@ -1,8 +1,8 @@
-import axios from "axios";
-import { pdfToText } from "./pdfToText";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
-import openai from "./openai";
+import axios from "axios";
 import { faqKnowledgeBase } from "../model/faqKnowledgeBase";
+import { embedQuery } from "./openai";
+import { pdfToText } from "./pdfToText";
 
 export const extractFileId = (link: string): string => {
   const match = link.match(/\/d\/([a-zA-Z0-9_-]+)/);
@@ -31,13 +31,15 @@ export async function processSinglePdf(fileId: string) {
   const chunks = await splitter.splitText(content);
 
   for (const chunk of chunks) {
-    const embedding = await openai.embeddings.create({
-      model: "text-embedding-3-small",
-      input: chunk,
-      encoding_format: "float",
-    });
+    // embeddings.embedQuery
+    const vector = await embedQuery(chunk);
+    // const embedding = await openai.embeddings.create({
+    //   model: "gemini-embedding-001",
+    //   input: chunk,
+    //   encoding_format: "float",
+    // });
 
-    const vector = embedding.data[0].embedding;
+    // const vector = embedding.data[0].embedding;
 
     await faqKnowledgeBase.insertOne({
       content: chunk,
